@@ -1,11 +1,11 @@
-import {Theme, createStyles} from "@material-ui/core";
+import {Theme, createStyles, makeStyles} from "@material-ui/core";
 import {
     drawerMiniWidth,
     drawerWidth,
     transition,
 } from "components/style";
 
-const styles = (theme: Theme) => createStyles({
+const useStyles = makeStyles((theme: Theme) => createStyles({
     wrapper: {
         position: "relative",
         top: "0",
@@ -39,6 +39,6 @@ const styles = (theme: Theme) => createStyles({
     mainPanelWithPerfectScrollbar: {
         overflow: "hidden !important"
     }
-});
+}));
 
-export default styles
+export default useStyles

@@ -1,10 +1,8 @@
 import React, {useState} from 'react'
 import Sidebar from 'components/Sidebar'
+import Header from 'components/Header'
 import cx from 'classnames'
-import {makeStyles} from '@material-ui/core'
-import styles from './style'
-
-const useStyles = makeStyles(styles)
+import useStyles from './style'
 
 export const App: React.FC = () => {
     const classes = useStyles()
@@ -26,6 +24,11 @@ export const App: React.FC = () => {
                         navigator.platform.indexOf('Win') > -1,
                     })
                 }
+            />
+            <Header
+                miniActive={false}
+                sidebarMinimize={() => undefined}
+                handleSidebarToggle={() => undefined}
             />
         </div>
     )
