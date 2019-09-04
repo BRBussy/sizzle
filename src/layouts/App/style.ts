@@ -3,6 +3,7 @@ import {
     drawerMiniWidth,
     drawerWidth,
     transition,
+    containerFluid,
 } from "components/style";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -38,7 +39,19 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     mainPanelWithPerfectScrollbar: {
         overflow: "hidden !important"
-    }
+    },
+    content: {
+        marginTop: "50px",
+        padding: "8px 2px",
+
+        height: "calc(100vh)",
+        overflowY: "hidden",
+    },
+    container: {
+        ...containerFluid,
+        height: "calc(100vh - 55px)",
+        overflowY: "scroll",
+    },
 }));
 
 export default useStyles

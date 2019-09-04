@@ -25,8 +25,8 @@ function useWidth() {
 
 interface HeaderProps {
     miniActive: boolean,
-    sidebarMinimize: () => undefined,
-    handleSidebarToggle: () => undefined,
+    sidebarMinimize: () => void,
+    handleSidebarToggle: () => void,
 }
 
 export const Header = (props: HeaderProps) => {

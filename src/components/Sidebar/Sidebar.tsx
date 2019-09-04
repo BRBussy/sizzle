@@ -1,24 +1,56 @@
 import React, {useState} from 'react'
+import logo from 'assets/images/logo/logo_emblem_transparent.png'
 import cx from 'classnames'
 import {
     makeStyles, Drawer, List,
     ListItem, ListItemIcon, ListItemText,
     Hidden, Collapse,
 } from '@material-ui/core'
-import styles from './style'
+import useStyles from './style'
 
-const useStyles = makeStyles(styles)
+interface SidebarContentWrapperProps {
+    className: string,
+    links: any,
+    user: any,
+}
+
+const SidebarContentWrapper = (props: SidebarContentWrapperProps) => {
+       return (
+           <div className={props.className}>
+               {props.links}
+               {props.user}
+           </div>
+       )
+}
 
 interface SidebarProps {
     children?: React.ReactNode,
     open: boolean,
     miniActive: boolean,
-    handleSidebarToggle: () => undefined,
+    handleSidebarToggle: () => void,
 }
 
 export const Sidebar = (props: SidebarProps) => {
-    const [miniActive, setMiniActive] = useState(false)
+    const [miniActive, setMiniActive] = useState(true)
     const classes = useStyles()
+
+    const logoNormal =
+        cx(
+            classes.logoNormal,
+            {
+                [classes.logoNormalSidebarMini]:
+                props.miniActive && miniActive,
+            }
+        )
+
+    const brand = (
+        <div className={classes.logo}>
+            <img src={logo} alt="logo" className={classes.logoImg}/>
+            <div className={logoNormal}>
+                Sizzle
+            </div>
+        </div>
+    )
 
     const drawerPaper =
         classes.drawerPaper +
@@ -29,10 +61,10 @@ export const Sidebar = (props: SidebarProps) => {
         })
 
     return (
-        <div className={classes.wrapper}>
+        <div>
             <Hidden mdUp>
                 <Drawer
-                    variant="temporary"
+                    variant={'temporary'}
                     anchor={'right'}
                     open={props.open}
                     classes={{
@@ -43,7 +75,8 @@ export const Sidebar = (props: SidebarProps) => {
                         keepMounted: true, // Better open performance on mobile.
                     }}
                 >
-                    <div>stuff</div>
+                    {brand}
+                    <div className={classes.background}/>
                 </Drawer>
             </Hidden>
             <Hidden smDown>
