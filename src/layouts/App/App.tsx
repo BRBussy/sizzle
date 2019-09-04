@@ -20,7 +20,10 @@ export const App: React.FC = () => {
 
     return (
         <div className={classes.wrapper}>
-            <Sidebar/>
+            <Sidebar
+                open={true}
+                handleSidebarToggle={() => undefined}
+            />
         </div>
     )
 }
