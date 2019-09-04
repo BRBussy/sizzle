@@ -81,6 +81,8 @@ export const Sidebar = (props: SidebarProps) => {
             </Hidden>
             <Hidden smDown>
                 <Drawer
+                    onMouseOver={() => setMiniActive(false)}
+                    onMouseOut={() => setMiniActive(true)}
                     anchor={'left'}
                     variant={'permanent'}
                     open
