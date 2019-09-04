@@ -21,16 +21,27 @@ interface SidebarContentWrapperProps {
 }
 
 const SidebarContentWrapper = (props: SidebarContentWrapperProps) => {
-       return (
-           <div className={props.className}>
-               {props.links}
-               {props.user}
-           </div>
-       )
+    return (
+        <div className={props.className}>
+            {props.links}
+            {props.user}
+        </div>
+    )
 }
 
 interface User {
     name: string,
+}
+
+interface LinkRoute {
+    state: string,
+    name: string,
+    redirect: boolean,
+    collapse: boolean,
+}
+
+interface AppRoute {
+    sidebarLinkRoutes: LinkRoute[],
 }
 
 interface SidebarProps {
@@ -39,13 +50,25 @@ interface SidebarProps {
     miniActive: boolean,
     handleSidebarToggle: () => void,
     user: User,
+    appRoutes: AppRoute,
+}
+
+interface CollapseState {
+    [key: string]: boolean,
 }
 
 export const Sidebar = (props: SidebarProps) => {
     const [miniActive, setMiniActive] = useState(true)
     const [openAvatar, setOpenAvatar] = useState(true)
-    const [collapseState, setCollapseState] = useState({})
+    const [collapseState, setCollapseState] = React.useState<CollapseState>({})
     const classes = useStyles()
+
+    const openCollapse = (state: string) => {
+        setCollapseState({
+            ...collapseState,
+            [state]: false,
+        })
+    }
 
     const itemText =
         classes.itemText +
@@ -71,10 +94,7 @@ export const Sidebar = (props: SidebarProps) => {
                     <NavLink
                         to={'#'}
                         className={classes.itemLink + ' ' + classes.userCollapseButton}
-                        onClick={() => setCollapseState({
-                            ...collapseState,
-                            openAvatar: false,
-                        })}
+                        onClick={() => openCollapse('avatar')}
                     >
                         <ListItemText
                             primary={props.user.name}
@@ -152,6 +172,137 @@ export const Sidebar = (props: SidebarProps) => {
                 </ListItem>
             </List>
         </div>
+    )
+    const links = (
+        <List className={classes.list}>
+            {props.appRoutes.sidebarLinkRoutes.map((prop, key) => {
+                if (prop.redirect) {
+                    return null
+                }
+                if (prop.collapse) {
+                    const navLinkClasses =
+                        classes.itemLink +
+                        ' ' +
+                        cx({
+                            [' ' + classes.collapseActive]: false,
+                        })
+                    const itemText =
+                        classes.itemText +
+                        ' ' +
+                        cx({
+                            [classes.itemTextMini]:
+                            props.miniActive && miniActive,
+                        })
+                    const collapseItemText = cx(
+                        classes.collapseItemText,
+                        {
+                            [classes.collapseItemTextMini]:
+                            props.miniActive && miniActive,
+                        },
+                    )
+
+                    return (
+                        <ListItem key={key} className={classes.item}>
+                            <NavLink
+                                to={'#'}
+                                className={navLinkClasses}
+                                onClick={() => openCollapse(prop.state)}
+                            >
+                                <ListItemIcon className={classes.itemIcon}>
+                                    <MenuIcon/>
+                                </ListItemIcon>
+                                <ListItemText
+                                    primary={prop.name}
+                                    secondary={
+                                        <b
+                                            className={
+                                                classes.caret +
+                                                ' ' +
+                                                (collapseState[prop.state] ? classes.caretActive : '')
+                                            }
+                                        />
+                                    }
+                                    disableTypography={true}
+                                    className={itemText}
+                                />
+                            </NavLink>
+                            <Collapse in={collapseState[prop.state]} unmountOnExit>
+                                <List className={classes.list + ' ' + classes.collapseList}>
+                                    {prop.views.map((prop, key) => {
+
+                                        if (prop.redirect) {
+                                            return null
+                                        }
+
+                                        return (
+                                            <ListItem key={key} className={classes.collapseItem}>
+                                                <NavLink
+                                                    id={prop.sidebarLinkID}
+                                                    to={prop.path}
+                                                    className={cx(
+                                                        classes.collapseItemLink,
+                                                        {[classes.blue]: false},
+                                                    )}
+                                                >
+                                                    {prop.icon
+                                                        ? (
+                                                            <ListItemIcon className={classes.collapseItemIcon}>
+                                                                <prop.icon/>
+                                                            </ListItemIcon>
+                                                        )
+                                                        : (
+                                                            <span className={classes.collapseItemMini}>
+                                  {prop.mini}
+                                </span>
+                                                        )
+                                                    }
+                                                    <ListItemText
+                                                        primary={prop.name}
+                                                        disableTypography={true}
+                                                        className={collapseItemText}
+                                                    />
+                                                </NavLink>
+                                            </ListItem>
+                                        )
+                                    })}
+                                </List>
+                            </Collapse>
+                        </ListItem>
+                    )
+                }
+                const navLinkClasses =
+                    classes.itemLink +
+                    ' ' +
+                    cx({
+                        [' ' + classes.blue]: false,
+                    })
+                const itemText =
+                    classes.itemText +
+                    ' ' +
+                    cx({
+                        [classes.itemTextMini]:
+                        props.miniActive && miniActive,
+                    })
+                return (
+                    <ListItem key={key} className={classes.item}>
+                        <NavLink
+                            id={prop.sidebarLinkID}
+                            to={prop.path}
+                            className={navLinkClasses}
+                        >
+                            <ListItemIcon className={classes.itemIcon}>
+                                <prop.icon/>
+                            </ListItemIcon>
+                            <ListItemText
+                                primary={prop.name}
+                                disableTypography={true}
+                                className={itemText}
+                            />
+                        </NavLink>
+                    </ListItem>
+                )
+            })}
+        </List>
     )
 
     const logoNormal =
