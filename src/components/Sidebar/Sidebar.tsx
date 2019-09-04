@@ -1,4 +1,5 @@
-import React from 'react'
+import React, {useState} from 'react'
+import cx from 'classnames'
 import {
     makeStyles, Drawer, List,
     ListItem, ListItemIcon, ListItemText,
@@ -11,11 +12,21 @@ const useStyles = makeStyles(styles)
 interface SidebarProps {
     children?: React.ReactNode,
     open: boolean,
+    miniActive: boolean,
     handleSidebarToggle: () => undefined,
 }
 
 export const Sidebar = (props: SidebarProps) => {
+    const [miniActive, setMiniActive] = useState(false)
     const classes = useStyles()
+
+    const drawerPaper =
+        classes.drawerPaper +
+        ' ' +
+        cx({
+            [classes.drawerPaperMini]:
+            props.miniActive && miniActive,
+        })
 
     return (
         <div className={classes.wrapper}>
@@ -25,7 +36,7 @@ export const Sidebar = (props: SidebarProps) => {
                     anchor={'right'}
                     open={props.open}
                     classes={{
-                        paper: classes.blackBackground,
+                        paper: drawerPaper + ' ' + classes.blackBackground,
                     }}
                     onClose={props.handleSidebarToggle}
                     ModalProps={{
@@ -38,13 +49,13 @@ export const Sidebar = (props: SidebarProps) => {
             <Hidden smDown>
                 <Drawer
                     anchor={'left'}
-                    variant="permanent"
+                    variant={'permanent'}
                     open
                     classes={{
-                        paper: classes.blackBackground,
+                        paper: drawerPaper + ' ' + classes.blackBackground,
                     }}
                 >
-                    <div>stuff in drawer</div>
+                    <div className={classes.background}/>
                 </Drawer>
             </Hidden>
         </div>

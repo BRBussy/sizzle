@@ -21,6 +21,7 @@ export const App: React.FC = () => {
     return (
         <div className={classes.wrapper}>
             <Sidebar
+                miniActive={false}
                 open={true}
                 handleSidebarToggle={() => undefined}
             />
