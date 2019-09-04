@@ -13,6 +13,9 @@ export const App: React.FC = () => {
     return (
         <div className={classes.wrapper}>
             <Sidebar
+                appRoutes={{
+                    sidebarLinkRoutes: [],
+                }}
                 user={{
                     name: 'Test',
                 }}

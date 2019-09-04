@@ -33,11 +33,20 @@ interface User {
     name: string,
 }
 
+interface View {
+    redirect: boolean,
+    path: string,
+    mini: string
+    name: string,
+}
+
 interface LinkRoute {
     state: string,
     name: string,
     redirect: boolean,
     collapse: boolean,
+    views: View[],
+    path: string,
 }
 
 interface AppRoute {
@@ -237,25 +246,15 @@ export const Sidebar = (props: SidebarProps) => {
                                         return (
                                             <ListItem key={key} className={classes.collapseItem}>
                                                 <NavLink
-                                                    id={prop.sidebarLinkID}
                                                     to={prop.path}
                                                     className={cx(
                                                         classes.collapseItemLink,
                                                         {[classes.blue]: false},
                                                     )}
                                                 >
-                                                    {prop.icon
-                                                        ? (
-                                                            <ListItemIcon className={classes.collapseItemIcon}>
-                                                                <prop.icon/>
-                                                            </ListItemIcon>
-                                                        )
-                                                        : (
-                                                            <span className={classes.collapseItemMini}>
-                                  {prop.mini}
-                                </span>
-                                                        )
-                                                    }
+                                                    {<span className={classes.collapseItemMini}>
+                                                        {prop.mini}
+                                                     </span>}
                                                     <ListItemText
                                                         primary={prop.name}
                                                         disableTypography={true}
@@ -286,12 +285,11 @@ export const Sidebar = (props: SidebarProps) => {
                 return (
                     <ListItem key={key} className={classes.item}>
                         <NavLink
-                            id={prop.sidebarLinkID}
                             to={prop.path}
                             className={navLinkClasses}
                         >
                             <ListItemIcon className={classes.itemIcon}>
-                                <prop.icon/>
+                                <MenuIcon/>
                             </ListItemIcon>
                             <ListItemText
                                 primary={prop.name}
