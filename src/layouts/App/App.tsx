@@ -13,6 +13,9 @@ export const App: React.FC = () => {
     return (
         <div className={classes.wrapper}>
             <Sidebar
+                user={{
+                    name: 'Test',
+                }}
                 miniActive={miniActive}
                 open={sidebarOpen}
                 handleSidebarToggle={() => setSidebarOpen(!sidebarOpen)}
