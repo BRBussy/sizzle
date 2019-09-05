@@ -6,10 +6,12 @@ export interface PublicRouteType {
     component: React.ComponentType | null,
 }
 
-export const routes: PublicRouteType[] = [
+const routes: PublicRouteType[] = [
     {
         redirect: false,
         path: '/login',
         component: null,
     },
 ];
+
+export default routes
