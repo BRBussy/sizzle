@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import useStyles from './style'
 import {Link} from 'react-router-dom'
 import {
@@ -9,6 +9,11 @@ import {
     FaGithub as GitHubIcon,
     FaMicrosoft as MicrosoftIcon,
 } from 'react-icons/fa'
+
+function useProviderSignIn() {
+    const [signInInProgress, setSignInInProgress] = useState(false)
+
+}
 
 const SignIn = () => {
     const classes = useStyles()
