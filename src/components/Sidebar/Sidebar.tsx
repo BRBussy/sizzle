@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import {NavLink} from 'react-router-dom';
 import cx from 'classnames'
 import logo from 'assets/images/logo/logo_emblem_transparent.png'
-import RouteType from 'types/Route'
+import {AppRouteType} from 'layouts/App/routes'
 import {History} from 'history'
 import {
     Drawer, List,
@@ -26,9 +26,9 @@ interface SidebarProps {
     handleSidebarToggle: () => void,
     user: User,
     appRoutes: {
-        homeRoute: RouteType,
-        profileRoute: RouteType,
-        sidebarRoutes: RouteType[],
+        homeRoute: AppRouteType,
+        profileRoute: AppRouteType,
+        sidebarRoutes: AppRouteType[],
     },
     history: History,
 }

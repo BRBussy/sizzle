@@ -1,4 +1,3 @@
-import RouteType from 'types/Route'
 import {
     Mail as MailIcon,
     Money as MoneyIcon,
@@ -9,11 +8,29 @@ import View1View from 'views/View1'
 import View2View from 'views/View2'
 import ProfileView from 'views/Profile'
 import {Party1HomeView} from 'views/Home'
+import React from "react";
+
+export interface AppRouteType {
+    redirect: boolean,
+    name: string,
+    path: string,
+    icon: React.ComponentType,
+    component: React.ComponentType | null,
+
+    collapse: boolean,
+    views: {
+        redirect: boolean,
+        name: string,
+        path: string,
+        icon: React.ComponentType,
+        component: React.ComponentType,
+    }[] | null,
+}
 
 /**
  * General Routes, specified with view permissions etc.
  */
-export const routes: RouteType[] = [
+export const routes: AppRouteType[] = [
     // single route, no collapsible menu
     {
         redirect: false,
@@ -50,9 +67,9 @@ export const routes: RouteType[] = [
 
 
 export const routeBuilder: (partyType: string) => ({
-    homeRoute: RouteType,
-    profileRoute: RouteType,
-    sidebarRoutes: RouteType[],
+    homeRoute: AppRouteType,
+    profileRoute: AppRouteType,
+    sidebarRoutes: AppRouteType[],
 }) = (partyType: string) => {
     // do processing on party type and permissions to return routes
 
