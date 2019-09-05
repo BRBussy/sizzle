@@ -11,7 +11,7 @@ interface appProps {
     history: History,
 }
 
-export const App = (props: appProps) => {
+const App = (props: appProps) => {
     const classes = useStyles()
     const [miniActive, setMiniActive] = useState(false)
     const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -113,3 +113,5 @@ export const App = (props: appProps) => {
         </div>
     )
 }
+
+export default App

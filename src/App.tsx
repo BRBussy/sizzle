@@ -1,6 +1,7 @@
 import React from 'react';
 import {BrowserRouter, Route, Switch, Redirect} from 'react-router-dom';
 import AppLayout from 'layouts/App';
+import PublicLayout from 'layouts/Public';
 
 const App: React.FC = () => {
   return (
@@ -13,7 +14,7 @@ const App: React.FC = () => {
             />
             <Route
                 path={'/'}
-                render={() => <Redirect to={'/app'}/>}
+                render={(props: any) => <PublicLayout {...props}/>}
             />
           </Switch>
         </div>
