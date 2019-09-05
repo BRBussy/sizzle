@@ -104,7 +104,7 @@ export const Sidebar = (props: SidebarProps) => {
                             <React.Fragment>
                                 <ListItem onClick={() => openCollapse(prop.name)}>
                                     <ListItemIcon className={classes.itemIcon}>
-                                        <MenuIcon/>
+                                        <prop.icon/>
                                     </ListItemIcon>
                                     <ListItemText
                                         primary={prop.name}
@@ -124,7 +124,7 @@ export const Sidebar = (props: SidebarProps) => {
                                         return (
                                             <ListItem>
                                                 <ListItemIcon className={classes.itemIcon}>
-                                                    <LockIcon/>
+                                                    <prop.icon/>
                                                 </ListItemIcon>
                                                 <ListItemText
                                                     primary={prop.name}
