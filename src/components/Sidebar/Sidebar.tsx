@@ -148,7 +148,7 @@ export const Sidebar = (props: SidebarProps) => {
                                             <ListItem
                                                 key={key}
                                                 className={classes.listItem}
-                                                onClick={()=>props.history.push(prop.path)}
+                                                onClick={() => props.history.push(prop.path)}
                                             >
                                                 <ListItemIcon className={classes.itemIcon}>
                                                     <prop.icon/>
@@ -174,7 +174,7 @@ export const Sidebar = (props: SidebarProps) => {
                         <ListItem
                             key={key}
                             className={classes.listItem}
-                            onClick={()=>props.history.push(prop.path)}
+                            onClick={() => props.history.push(prop.path)}
                         >
                             <ListItemIcon className={classes.itemIcon}>
                                 <prop.icon/>
@@ -194,19 +194,15 @@ export const Sidebar = (props: SidebarProps) => {
         </div>
     )
 
-    const logoNormal =
-        cx(
-            classes.logoNormal,
-            {
-                [classes.logoNormalSidebarMini]:
-                props.miniActive && miniActive,
-            }
-        )
-
     const brand = (
         <div className={classes.brandLayout}>
             <img src={logo} alt="logo" className={classes.logoImg}/>
-            <div className={logoNormal}>
+            <div
+                className={cx(
+                    classes.logoNormal,
+                    {[classes.logoNormalSidebarMini]: props.miniActive && miniActive}
+                )}
+            >
                 Sizzle
             </div>
         </div>
