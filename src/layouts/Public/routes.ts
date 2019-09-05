@@ -1,5 +1,6 @@
 import React from "react";
-import Login from "views/Login"
+import SignInView from "views/SignIn"
+import SignUpView from "views/SignUp"
 
 export interface PublicRouteType {
     // props for redirection
@@ -16,8 +17,15 @@ const routes: PublicRouteType[] = [
         redirect: false,
         redirectTo: '',
 
-        path: '/login',
-        component: Login,
+        path: '/sign-in',
+        component: SignInView,
+    },
+    {
+        redirect: false,
+        redirectTo: '',
+
+        path: '/sign-up',
+        component: SignUpView,
     },
 ];
 

@@ -29,9 +29,9 @@ const Public = () => {
                 )
             })}
             <Route
-                // redirect all traffic to root to login
+                // redirect all traffic that does not match a path to sign in
                 path={''}
-                render={()=>(<Redirect to={'/login'}/>)}
+                render={()=>(<Redirect to={'/sign-in'}/>)}
             />
         </Switch>
     )
