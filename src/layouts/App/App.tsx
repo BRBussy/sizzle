@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {Switch, Route} from 'react-router-dom'
+import {Switch, Route, Redirect} from 'react-router-dom'
 import Sidebar from 'components/Sidebar'
 import Header from 'components/Header'
 import cx from 'classnames'
@@ -68,8 +68,12 @@ const App = (props: appProps) => {
                             {routes.sidebarRoutes.map((route, key) => {
                                 // if route is a redirect a redirect route object is rendered
                                 if (route.redirect) {
-                                    // TODO: return redirect object
-                                    return null
+                                    return (
+                                        <Route
+                                            path={route.path}
+                                            render={()=>(<Redirect to={route.redirectTo}/>)}
+                                        />
+                                    )
                                 }
 
                                 // for collapsed routes, we return a route object for each embedded view

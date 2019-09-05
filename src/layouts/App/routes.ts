@@ -12,6 +12,8 @@ import React from "react";
 
 export interface AppRouteType {
     redirect: boolean,
+    redirectTo: string,
+
     name: string,
     path: string,
     icon: React.ComponentType,
@@ -19,7 +21,6 @@ export interface AppRouteType {
 
     collapse: boolean,
     views: {
-        redirect: boolean,
         name: string,
         path: string,
         icon: React.ComponentType,
@@ -34,6 +35,8 @@ export const routes: AppRouteType[] = [
     // single route, no collapsible menu
     {
         redirect: false,
+        redirectTo: '',
+
         name: 'View 1',
         path: '/app/view1',
         icon: MoneyIcon,
@@ -47,6 +50,8 @@ export const routes: AppRouteType[] = [
     // multiple routes accessed from collapsible menu
     {
         redirect: false,
+        redirectTo: '',
+
         name: 'More Views',
         path: '/app/views',
         icon: MailIcon,
@@ -55,7 +60,6 @@ export const routes: AppRouteType[] = [
         collapse: true,
         views: [
             {
-                redirect: false,
                 name: 'View 2',
                 path: '/app/views/view2',
                 icon: MapIcon,
@@ -76,6 +80,8 @@ export const routeBuilder: (partyType: string) => ({
     return {
         homeRoute: {
             redirect: false,
+            redirectTo: '',
+
             name: 'Home',
             path: '/app',
             icon: MoneyIcon,
@@ -85,6 +91,8 @@ export const routeBuilder: (partyType: string) => ({
         },
         profileRoute: {
             redirect: false,
+            redirectTo: '',
+
             name: 'Profile',
             path: '/app/profile',
             icon: MoneyIcon,

@@ -7,8 +7,12 @@ const Public = () => {
         <Switch>
             {routes.map((route, key) => {
                 if (route.redirect) {
-                    // TODO: return redirect object here
-                    return null
+                    return (
+                        <Route
+                            path={route.path}
+                            render={()=>(<Redirect to={route.redirectTo}/>)}
+                        />
+                    )
                 }
 
                 if (route.component == null) {
