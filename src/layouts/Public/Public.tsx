@@ -6,6 +6,7 @@ const Public = () => {
     return (
         <Switch>
             {routes.map((route, key) => {
+                // if route is a redirect a redirect route object is rendered
                 if (route.redirect) {
                     return (
                         <Route
@@ -18,7 +19,6 @@ const Public = () => {
                 if (route.component == null) {
                     return null
                 }
-
                 return (
                     <Route
                         exact
@@ -29,6 +29,7 @@ const Public = () => {
                 )
             })}
             <Route
+                // redirect all traffic to root to login
                 path={''}
                 render={()=>(<Redirect to={'/login'}/>)}
             />
