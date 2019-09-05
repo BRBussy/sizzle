@@ -1,8 +1,6 @@
 import React, {useState} from 'react'
-import {NavLink} from 'react-router-dom'
 import cx from 'classnames'
 import logo from 'assets/images/logo/logo_emblem_transparent.png'
-import avatar from 'assets/images/user.png'
 import RouteType from 'types/Route'
 import {
     Drawer, List,
@@ -44,230 +42,104 @@ export const Sidebar = (props: SidebarProps) => {
         })
     }
 
-    const itemText =
-        classes.itemText +
-        ' ' +
-        cx({
-            [classes.itemTextMini]: props.miniActive && miniActive,
-        })
-    const collapseItemText =
-        classes.collapseItemText +
-        ' ' +
-        cx({
-            [classes.collapseItemTextMini]:
-            props.miniActive && miniActive,
-        })
-
     console.log('item text mini!!', props.miniActive && miniActive)
 
-    const user = (
-        <div className={classes.user}>
-            <div className={classes.photo}>
-                <img src={avatar} className={classes.avatarImg} alt={'...'}/>
-            </div>
-            <List className={classes.list}>
-                <ListItem className={classes.item + ' ' + classes.userItem}>
-                    <NavLink
-                        to={'#'}
-                        className={classes.itemLink + ' ' + classes.userCollapseButton}
-                        onClick={() => openCollapse('userMenu')}
-                    >
-                        <ListItemText
-                            primary={props.user.name}
-                            secondary={
-                                <b
-                                    className={
-                                        classes.caret +
-                                        ' ' +
-                                        classes.userCaret +
-                                        ' ' +
-                                        (collapseState['userMenu'] ? classes.caretActive : '')
-                                    }
-                                />
-                            }
-                            disableTypography={true}
-                            className={itemText + ' ' + classes.userItemText}
-                        />
-                    </NavLink>
-                    <Collapse in={collapseState['userMenu']} unmountOnExit>
-                        <List className={classes.list + ' ' + classes.collapseList}>
-                            <ListItem className={classes.collapseItem}>
-                                <NavLink
-                                    to={'#'}
-                                    className={
-                                        classes.itemLink + ' ' + classes.userCollapseLinks
-                                    }
-                                >
-                                    <ListItemIcon className={classes.collapseItemIcon}>
-                                        <MenuIcon/>
-                                    </ListItemIcon>
-                                    <ListItemText
-                                        primary={'Profile'}
-                                        disableTypography={true}
-                                        className={collapseItemText}
-                                    />
-                                </NavLink>
-                            </ListItem>
-                            <ListItem className={classes.collapseItem}>
-                                <NavLink
-                                    to={'#'}
-                                    className={
-                                        classes.itemLink + ' ' + classes.userCollapseLinks
-                                    }
-                                >
-                                    <ListItemIcon className={classes.collapseItemIcon}>
-                                        <MenuIcon/>
-                                    </ListItemIcon>
-                                    <ListItemText
-                                        primary={'User'}
-                                        disableTypography={true}
-                                        className={collapseItemText}
-                                    />
-                                </NavLink>
-                            </ListItem>
-                            <ListItem className={classes.collapseItem}>
-                                <NavLink
-                                    to={'#'}
-                                    id={'sidebarLogoutLink'}
-                                    className={
-                                        classes.itemLink + ' ' + classes.userCollapseLinks
-                                    }
-                                >
-                                    <ListItemIcon className={classes.collapseItemIcon}>
-                                        <LockIcon/>
-                                    </ListItemIcon>
-                                    <ListItemText
-                                        primary={'Logout'}
-                                        disableTypography={true}
-                                        className={collapseItemText}
-                                    />
-                                </NavLink>
-                            </ListItem>
-                        </List>
-                    </Collapse>
+    const userMenuLinks = (
+        <div>
+            <List>
+                <ListItem onClick={() => openCollapse('userMenu')}>
+                    <ListItemIcon className={classes.itemIcon}>
+                        <MenuIcon/>
+                    </ListItemIcon>
+                    <ListItemText
+                        primary={'User'}
+                        secondary={
+                            <b
+                                className={cx(
+                                    classes.caret,
+                                    {[classes.caretActive]: collapseState['userMenu']},
+                                )}
+                            />
+                        }
+                        disableTypography={true}
+                    />
                 </ListItem>
+                <Collapse in={collapseState['userMenu']} unmountOnExit>
+                    <ListItem>
+                        <ListItemIcon className={classes.itemIcon}>
+                            <MenuIcon/>
+                        </ListItemIcon>
+                        <ListItemText
+                            primary={'Profile'}
+                            disableTypography={true}
+                        />
+                    </ListItem>
+                    <ListItem>
+                        <ListItemIcon className={classes.itemIcon}>
+                            <LockIcon/>
+                        </ListItemIcon>
+                        <ListItemText
+                            primary={'Logout'}
+                            disableTypography={true}
+                        />
+                    </ListItem>
+                </Collapse>
             </List>
         </div>
     )
-    const links = (
-        <List className={classes.list}>
-            {props.appRoutes.map((prop, key) => {
-                if (prop.redirect) {
-                    return null
-                }
-                if (prop.collapse) {
-                    const navLinkClasses =
-                        classes.itemLink +
-                        ' ' +
-                        cx({
-                            [' ' + classes.collapseActive]: false,
-                        })
-                    const itemText =
-                        classes.itemText +
-                        ' ' +
-                        cx({
-                            [classes.itemTextMini]:
-                            props.miniActive && miniActive,
-                        })
-                    const collapseItemText = cx(
-                        classes.collapseItemText,
-                        {
-                            [classes.collapseItemTextMini]:
-                            props.miniActive && miniActive,
-                        },
-                    )
 
-                    return (
-                        <ListItem key={key} className={classes.item}>
-                            <NavLink
-                                to={'#'}
-                                className={navLinkClasses}
-                                onClick={() => openCollapse(prop.name)}
-                            >
-                                <ListItemIcon className={classes.itemIcon}>
-                                    <MenuIcon/>
-                                </ListItemIcon>
-                                <ListItemText
-                                    primary={prop.name}
-                                    secondary={
-                                        <b
-                                            className={
-                                                classes.caret +
-                                                ' ' +
-                                                (collapseState[prop.name] ? classes.caretActive : '')
-                                            }
-                                        />
-                                    }
-                                    disableTypography={true}
-                                    className={itemText}
-                                />
-                            </NavLink>
-                            <Collapse in={collapseState[prop.name]} unmountOnExit>
-                                <List className={classes.list + ' ' + classes.collapseList}>
-                                    {prop.views.map((prop, key) => {
+    const viewLinks = (
+        <div>
+            <List>
+                {props.appRoutes.map((prop, key) => {
+                    // ignore redirects, these do not get links as they are used
+                    // in the browser router to force a redirect
+                    if (prop.redirect) {
+                        return null
+                    }
 
-                                        if (prop.redirect) {
-                                            return null
+                    // route items with collapse
+                    if (prop.collapse) {
+                        return (
+                            <React.Fragment>
+                                <ListItem onClick={() => openCollapse(prop.name)}>
+                                    <ListItemIcon className={classes.itemIcon}>
+                                        <MenuIcon/>
+                                    </ListItemIcon>
+                                    <ListItemText
+                                        primary={prop.name}
+                                        secondary={
+                                            <b
+                                                className={cx(
+                                                    classes.caret,
+                                                    {[classes.caretActive]: collapseState[prop.name]},
+                                                )}
+                                            />
                                         }
-
+                                        disableTypography={true}
+                                    />
+                                </ListItem>
+                                <Collapse in={collapseState[prop.name]} unmountOnExit>
+                                    {prop.views.map((prop, key) => {
                                         return (
-                                            <ListItem key={key} className={classes.collapseItem}>
-                                                <NavLink
-                                                    to={prop.path}
-                                                    className={cx(
-                                                        classes.collapseItemLink,
-                                                        {[classes.blue]: false},
-                                                    )}
-                                                >
-                                                    {<span className={classes.collapseItemMini}>
-                                                        {prop.mini}
-                                                     </span>}
-                                                    <ListItemText
-                                                        primary={prop.name}
-                                                        disableTypography={true}
-                                                        className={collapseItemText}
-                                                    />
-                                                </NavLink>
+                                            <ListItem>
+                                                <ListItemIcon className={classes.itemIcon}>
+                                                    <LockIcon/>
+                                                </ListItemIcon>
+                                                <ListItemText
+                                                    primary={prop.name}
+                                                    disableTypography={true}
+                                                />
                                             </ListItem>
                                         )
                                     })}
-                                </List>
-                            </Collapse>
-                        </ListItem>
-                    )
-                }
-                const navLinkClasses =
-                    classes.itemLink +
-                    ' ' +
-                    cx({
-                        [' ' + classes.blue]: false,
-                    })
-                const itemText =
-                    classes.itemText +
-                    ' ' +
-                    cx({
-                        [classes.itemTextMini]:
-                        props.miniActive && miniActive,
-                    })
-                return (
-                    <ListItem key={key} className={classes.item}>
-                        <NavLink
-                            to={prop.path}
-                            className={navLinkClasses}
-                        >
-                            <ListItemIcon className={classes.itemIcon}>
-                                <MenuIcon/>
-                            </ListItemIcon>
-                            <ListItemText
-                                primary={prop.name}
-                                disableTypography={true}
-                                className={itemText}
-                            />
-                        </NavLink>
-                    </ListItem>
-                )
-            })}
-        </List>
+                                </Collapse>
+                            </React.Fragment>
+                        )
+                    }
+                })}
+            </List>
+        </div>
     )
 
     const logoNormal =
@@ -323,8 +195,8 @@ export const Sidebar = (props: SidebarProps) => {
                 >
                     {brand}
                     <div className={sidebarWrapperClass}>
-                        {user}
-                        {links}
+                        {userMenuLinks}
+                        {viewLinks}
                     </div>
                     <div className={classes.background}/>
                 </Drawer>
@@ -342,8 +214,8 @@ export const Sidebar = (props: SidebarProps) => {
                 >
                     {brand}
                     <div className={sidebarWrapperClass}>
-                        {user}
-                        {links}
+                        {userMenuLinks}
+                        {viewLinks}
                     </div>
                     <div className={classes.background}/>
                 </Drawer>

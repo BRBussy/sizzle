@@ -8,6 +8,24 @@ import {
 } from "components/style";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
+    caret: {
+        marginTop: "13px",
+        position: "absolute",
+        right: "18px",
+        transition: "all 150ms ease-in",
+        display: "inline-block",
+        width: "0",
+        height: "0",
+        marginLeft: "2px",
+        verticalAlign: "middle",
+        borderTop: "4px solid",
+        borderRight: "4px solid transparent",
+        borderLeft: "4px solid transparent"
+    },
+    caretActive: {
+        transform: "rotate(180deg)"
+    },
+
     drawerPaper: {
         border: "none",
         position: "fixed",
@@ -237,6 +255,16 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
             color: "inherit"
         }
     },
+    sidebarItemText: {
+        color: "inherit",
+        lineHeight: "30px",
+        fontSize: "14px",
+        position: "relative",
+        display: "block",
+        height: "auto",
+        whiteSpace: "nowrap"
+    },
+
     collapseItemIcon: {
         color: "inherit",
         width: "30px",
@@ -272,26 +300,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         transform: "translate3d(-25px, 0, 0)",
         opacity: 0
     },
-    caret: {
-        marginTop: "13px",
-        position: "absolute",
-        right: "18px",
-        transition: "all 150ms ease-in",
-        display: "inline-block",
-        width: "0",
-        height: "0",
-        marginLeft: "2px",
-        verticalAlign: "middle",
-        borderTop: "4px solid",
-        borderRight: "4px solid transparent",
-        borderLeft: "4px solid transparent"
-    },
-    userCaret: {
-        marginTop: "10px"
-    },
-    caretActive: {
-        transform: "rotate(180deg)"
-    },
     blue: {
         "&,&:hover,&:focus": {
             color: "#FFFFFF",
@@ -316,6 +324,10 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     sidebarWrapperWithPerfectScrollbar: {
         overflow: "hidden !important"
     },
+
+    // user section of sidebar
+    userMenuLayout: {
+    },
     user: {
         paddingBottom: "20px",
         margin: "20px auto 0",
@@ -330,6 +342,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
             backgroundColor: "hsla(0,0%,100%,.3)"
         }
     },
+
+
     photo: {
         transition: "all 300ms linear",
         width: "34px",
