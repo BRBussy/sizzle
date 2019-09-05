@@ -1,5 +1,5 @@
 import React from 'react'
-import {Route, Switch} from "react-router";
+import {Route, Switch, Redirect} from "react-router";
 import routes from './routes'
 
 const Public = () => {
@@ -17,11 +17,17 @@ const Public = () => {
 
                 return (
                     <Route
+                        exact
+                        key={key}
                         path={route.path}
                         component={route.component}
                     />
                 )
             })}
+            <Route
+                path={''}
+                render={()=>(<Redirect to={'/login'}/>)}
+            />
         </Switch>
     )
 }
