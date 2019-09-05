@@ -45,9 +45,12 @@ export const Sidebar = (props: SidebarProps) => {
     console.log('item text mini!!', props.miniActive && miniActive)
 
     const userMenuLinks = (
-        <div>
+        <div className={classes.userMenuLayout}>
             <List>
-                <ListItem onClick={() => openCollapse('userMenu')}>
+                <ListItem
+                    onClick={() => openCollapse('userMenu')}
+                    className={classes.listItem}
+                >
                     <ListItemIcon className={classes.itemIcon}>
                         <MenuIcon/>
                     </ListItemIcon>
@@ -65,7 +68,7 @@ export const Sidebar = (props: SidebarProps) => {
                     />
                 </ListItem>
                 <Collapse in={collapseState['userMenu']} unmountOnExit>
-                    <ListItem>
+                    <ListItem className={classes.listItem}>
                         <ListItemIcon className={classes.itemIcon}>
                             <MenuIcon/>
                         </ListItemIcon>
@@ -74,7 +77,7 @@ export const Sidebar = (props: SidebarProps) => {
                             disableTypography={true}
                         />
                     </ListItem>
-                    <ListItem>
+                    <ListItem className={classes.listItem}>
                         <ListItemIcon className={classes.itemIcon}>
                             <LockIcon/>
                         </ListItemIcon>
@@ -102,7 +105,10 @@ export const Sidebar = (props: SidebarProps) => {
                     if (prop.collapse) {
                         return (
                             <React.Fragment>
-                                <ListItem onClick={() => openCollapse(prop.name)}>
+                                <ListItem
+                                    onClick={() => openCollapse(prop.name)}
+                                    className={classes.listItem}
+                                >
                                     <ListItemIcon className={classes.itemIcon}>
                                         <prop.icon/>
                                     </ListItemIcon>
@@ -122,7 +128,9 @@ export const Sidebar = (props: SidebarProps) => {
                                 <Collapse in={collapseState[prop.name]} unmountOnExit>
                                     {prop.views.map((prop, key) => {
                                         return (
-                                            <ListItem>
+                                            <ListItem
+                                                className={classes.listItem}
+                                            >
                                                 <ListItemIcon className={classes.itemIcon}>
                                                     <prop.icon/>
                                                 </ListItemIcon>
@@ -152,7 +160,7 @@ export const Sidebar = (props: SidebarProps) => {
         )
 
     const brand = (
-        <div className={classes.logo}>
+        <div className={classes.brandLayout}>
             <img src={logo} alt="logo" className={classes.logoImg}/>
             <div className={logoNormal}>
                 Sizzle
@@ -166,16 +174,6 @@ export const Sidebar = (props: SidebarProps) => {
         cx({
             [classes.drawerPaperMini]:
             props.miniActive && miniActive,
-        })
-
-    const sidebarWrapperClass =
-        classes.sidebarWrapper +
-        ' ' +
-        cx({
-            [classes.drawerPaperMini]:
-            props.miniActive && miniActive,
-            [classes.sidebarWrapperWithPerfectScrollbar]:
-            navigator.platform.indexOf('Win') > -1,
         })
 
     return (
@@ -194,7 +192,7 @@ export const Sidebar = (props: SidebarProps) => {
                     }}
                 >
                     {brand}
-                    <div className={sidebarWrapperClass}>
+                    <div className={classes.sidebarLinksLayout}>
                         {userMenuLinks}
                         {viewLinks}
                     </div>
@@ -213,7 +211,7 @@ export const Sidebar = (props: SidebarProps) => {
                     }}
                 >
                     {brand}
-                    <div className={sidebarWrapperClass}>
+                    <div className={classes.sidebarLinksLayout}>
                         {userMenuLinks}
                         {viewLinks}
                     </div>

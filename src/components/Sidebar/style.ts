@@ -4,10 +4,21 @@ import {
     drawerWidth,
     transition,
     boxShadow,
-    infoColor,
 } from "components/style";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
+    userMenuLayout: {
+        position: "relative",
+        "&:after": {
+            content: '""',
+            position: "absolute",
+            bottom: "0",
+            height: "1px",
+            right: "15px",
+            width: "calc(100% - 30px)",
+            backgroundColor: "hsla(0,0%,100%,.3)"
+        }
+    },
     caret: {
         marginTop: "13px",
         position: "absolute",
@@ -24,6 +35,22 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     caretActive: {
         transform: "rotate(180deg)"
+    },
+    sidebarLinksLayout: {
+        position: "relative",
+        height: "calc(100vh - 75px)",
+        overflow: "auto",
+        width: "260px",
+        zIndex: 4,
+        overflowScrolling: "touch",
+        transitionProperty: "top, bottom, width",
+        transitionDuration: ".2s, .2s, .35s",
+        transitionTimingFunction: "linear, linear, ease",
+        color: "inherit",
+        paddingBottom: "30px"
+    },
+    listItem: {
+      cursor: 'pointer',
     },
 
     drawerPaper: {
@@ -83,7 +110,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     drawerPaperMini: {
         width: drawerMiniWidth + "px!important"
     },
-    logo: {
+    brandLayout: {
         cursor: "pointer",
         padding: "15px 0px",
         margin: "0",
@@ -140,55 +167,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         backgroundPosition: "center center",
         transition: "all 300ms linear"
     },
-    list: {
-        marginTop: "15px",
-        paddingLeft: "0",
-        paddingTop: "0",
-        paddingBottom: "0",
-        marginBottom: "0",
-        listStyle: "none",
-        color: "inherit",
-        "&:before,&:after": {
-            display: "table",
-            content: '" "'
-        },
-        "&:after": {
-            clear: "both"
-        }
-    },
-    item: {
-        color: "inherit",
-        position: "relative",
-        display: "block",
-        textDecoration: "none",
-        margin: "0",
-        padding: "0"
-    },
-    userItem: {
-        "&:last-child": {
-            paddingBottom: "0px"
-        }
-    },
-    itemLink: {
-        transition: "all 300ms linear",
-        margin: "10px 15px 0",
-        borderRadius: "3px",
-        position: "relative",
-        display: "block",
-        paddingLeft: "10px",
-        paddingRight: "10px",
-        padding: "10px 15px",
-        backgroundColor: "transparent",
-        width: "auto",
-        "&:hover": {
-            outline: "none",
-            backgroundColor: "rgba(200, 200, 200, 0.2)",
-            boxShadow: "none"
-        },
-        "&,&:hover,&:focus": {
-            color: "inherit"
-        }
-    },
     itemIcon: {
         color: "inherit",
         width: "30px",
@@ -201,179 +179,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         verticalAlign: "middle",
         opacity: 0.8
     },
-    itemText: {
-        color: "inherit",
-        margin: "0",
-        lineHeight: "30px",
-        fontSize: "14px",
-        transform: "translate3d(0px, 0, 0)",
-        opacity: 1,
-        transition: "transform 300ms ease 0s, opacity 300ms ease 0s",
-        position: "relative",
-        display: "block",
-        height: "auto",
-        whiteSpace: "nowrap"
-    },
-    userItemText: {
-        lineHeight: "22px"
-    },
-    itemTextMini: {
-        transform: "translate3d(-25px, 0, 0)",
-        opacity: 1
-    },
-    collapseList: {
-        marginTop: "0"
-    },
-    collapseItem: {
-        position: "relative",
-        display: "block",
-        textDecoration: "none",
-        margin: "10px 0 0 8px",
-        padding: "0"
-    },
-    collapseActive: {
-        outline: "none",
-        backgroundColor: "rgba(200, 200, 200, 0.2)",
-        boxShadow: "none"
-    },
-    collapseItemLink: {
-        transition: "all 300ms linear",
-        margin: "0 15px",
-        borderRadius: "3px",
-        position: "relative",
-        display: "flex",
-        alignItems: 'center',
-        padding: "10px",
-        backgroundColor: "transparent",
-        width: "auto",
-        "&:hover": {
-            outline: "none",
-            backgroundColor: "rgba(200, 200, 200, 0.2)",
-            boxShadow: "none"
-        },
-        "&,&:hover,&:focus": {
-            color: "inherit"
-        }
-    },
-    sidebarItemText: {
-        color: "inherit",
-        lineHeight: "30px",
-        fontSize: "14px",
-        position: "relative",
-        display: "block",
-        height: "auto",
-        whiteSpace: "nowrap"
-    },
-
-    collapseItemIcon: {
-        color: "inherit",
-        width: "30px",
-        height: "24px",
-        float: "left",
-        position: "relative",
-        marginRight: "15px",
-    },
-    collapseItemMini: {
-        color: "inherit",
-        textTransform: "uppercase",
-        width: "30px",
-        marginRight: "15px",
-        textAlign: "center",
-        letterSpacing: "1px",
-        position: "relative",
-        float: "left",
-        display: "inherit",
-        transition: "transform 300ms ease 0s, opacity 300ms ease 0s",
-        fontSize: "14px"
-    },
-    collapseItemText: {
-        color: "inherit",
-        margin: "0",
-        position: "relative",
-        transform: "translateX(0px)",
-        opacity: 1,
-        whiteSpace: "nowrap",
-        transition: "transform 300ms ease 0s, opacity 300ms ease 0s",
-        fontSize: "14px"
-    },
-    collapseItemTextMini: {
-        transform: "translate3d(-25px, 0, 0)",
-        opacity: 0
-    },
-    blue: {
-        "&,&:hover,&:focus": {
-            color: "#FFFFFF",
-            backgroundColor: infoColor,
-            boxShadow:
-                "0 12px 20px -10px rgba(0,188,212,.28), 0 4px 20px 0 rgba(0,0,0,.12), 0 7px 8px -5px rgba(0,188,212,.2)"
-        }
-    },
-    sidebarWrapper: {
-        position: "relative",
-        height: "calc(100vh - 75px)",
-        overflow: "auto",
-        width: "260px",
-        zIndex: 4,
-        overflowScrolling: "touch",
-        transitionProperty: "top, bottom, width",
-        transitionDuration: ".2s, .2s, .35s",
-        transitionTimingFunction: "linear, linear, ease",
-        color: "inherit",
-        paddingBottom: "30px"
-    },
-    sidebarWrapperWithPerfectScrollbar: {
-        overflow: "hidden !important"
-    },
-
-    // user section of sidebar
-    userMenuLayout: {
-    },
-    user: {
-        paddingBottom: "20px",
-        margin: "20px auto 0",
-        position: "relative",
-        "&:after": {
-            content: '""',
-            position: "absolute",
-            bottom: "0",
-            right: "15px",
-            height: "1px",
-            width: "calc(100% - 30px)",
-            backgroundColor: "hsla(0,0%,100%,.3)"
-        }
-    },
-
-
-    photo: {
-        transition: "all 300ms linear",
-        width: "34px",
-        height: "34px",
-        overflow: "hidden",
-        float: "left",
-        zIndex: 5,
-        marginRight: "11px",
-        borderRadius: "50%",
-        marginLeft: "23px",
-        ...boxShadow
-    },
-    avatarImg: {
-        width: "100%",
-        verticalAlign: "middle",
-        border: "0"
-    },
-    userCollapseButton: {
-        margin: "0",
-        padding: "6px 15px",
-        "&:hover": {
-            background: "none"
-        }
-    },
-    userCollapseLinks: {
-        marginTop: "-4px",
-        "&:hover,&:focus": {
-            color: "#FFFFFF"
-        }
-    }
 }));
 
 export default useStyles
