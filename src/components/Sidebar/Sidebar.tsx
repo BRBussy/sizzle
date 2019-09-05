@@ -3,6 +3,7 @@ import {NavLink} from 'react-router-dom'
 import cx from 'classnames'
 import logo from 'assets/images/logo/logo_emblem_transparent.png'
 import avatar from 'assets/images/user.png'
+import RouteType from 'types/Route'
 import {
     Drawer, List,
     ListItem, ListItemIcon, ListItemText,
@@ -14,43 +15,8 @@ import {
 } from "@material-ui/icons"
 import useStyles from './style'
 
-interface SidebarContentWrapperProps {
-    className: string,
-    links: any,
-    user: any,
-}
-
-const SidebarContentWrapper = (props: SidebarContentWrapperProps) => {
-    return (
-        <div className={props.className}>
-            {props.links}
-            {props.user}
-        </div>
-    )
-}
-
 interface User {
     name: string,
-}
-
-interface View {
-    redirect: boolean,
-    path: string,
-    mini: string
-    name: string,
-}
-
-interface LinkRoute {
-    state: string,
-    name: string,
-    redirect: boolean,
-    collapse: boolean,
-    views: View[],
-    path: string,
-}
-
-interface AppRoute {
-    sidebarLinkRoutes: LinkRoute[],
 }
 
 interface SidebarProps {
@@ -59,7 +25,7 @@ interface SidebarProps {
     miniActive: boolean,
     handleSidebarToggle: () => void,
     user: User,
-    appRoutes: AppRoute,
+    appRoutes: RouteType[],
 }
 
 interface CollapseState {
@@ -68,14 +34,13 @@ interface CollapseState {
 
 export const Sidebar = (props: SidebarProps) => {
     const [miniActive, setMiniActive] = useState(true)
-    const [openAvatar, setOpenAvatar] = useState(true)
     const [collapseState, setCollapseState] = React.useState<CollapseState>({})
     const classes = useStyles()
 
     const openCollapse = (state: string) => {
         setCollapseState({
             ...collapseState,
-            [state]: false,
+            [state]: !collapseState[state],
         })
     }
 
@@ -93,17 +58,19 @@ export const Sidebar = (props: SidebarProps) => {
             props.miniActive && miniActive,
         })
 
+    console.log('item text mini!!', props.miniActive && miniActive)
+
     const user = (
         <div className={classes.user}>
             <div className={classes.photo}>
-                <img src={avatar} className={classes.avatarImg} alt="..."/>
+                <img src={avatar} className={classes.avatarImg} alt={'...'}/>
             </div>
             <List className={classes.list}>
                 <ListItem className={classes.item + ' ' + classes.userItem}>
                     <NavLink
                         to={'#'}
                         className={classes.itemLink + ' ' + classes.userCollapseButton}
-                        onClick={() => openCollapse('avatar')}
+                        onClick={() => openCollapse('userMenu')}
                     >
                         <ListItemText
                             primary={props.user.name}
@@ -114,7 +81,7 @@ export const Sidebar = (props: SidebarProps) => {
                                         ' ' +
                                         classes.userCaret +
                                         ' ' +
-                                        (openAvatar ? classes.caretActive : '')
+                                        (collapseState['userMenu'] ? classes.caretActive : '')
                                     }
                                 />
                             }
@@ -122,7 +89,7 @@ export const Sidebar = (props: SidebarProps) => {
                             className={itemText + ' ' + classes.userItemText}
                         />
                     </NavLink>
-                    <Collapse in={openAvatar} unmountOnExit>
+                    <Collapse in={collapseState['userMenu']} unmountOnExit>
                         <List className={classes.list + ' ' + classes.collapseList}>
                             <ListItem className={classes.collapseItem}>
                                 <NavLink
@@ -184,7 +151,7 @@ export const Sidebar = (props: SidebarProps) => {
     )
     const links = (
         <List className={classes.list}>
-            {props.appRoutes.sidebarLinkRoutes.map((prop, key) => {
+            {props.appRoutes.map((prop, key) => {
                 if (prop.redirect) {
                     return null
                 }
@@ -215,7 +182,7 @@ export const Sidebar = (props: SidebarProps) => {
                             <NavLink
                                 to={'#'}
                                 className={navLinkClasses}
-                                onClick={() => openCollapse(prop.state)}
+                                onClick={() => openCollapse(prop.name)}
                             >
                                 <ListItemIcon className={classes.itemIcon}>
                                     <MenuIcon/>
@@ -227,7 +194,7 @@ export const Sidebar = (props: SidebarProps) => {
                                             className={
                                                 classes.caret +
                                                 ' ' +
-                                                (collapseState[prop.state] ? classes.caretActive : '')
+                                                (collapseState[prop.name] ? classes.caretActive : '')
                                             }
                                         />
                                     }
@@ -235,7 +202,7 @@ export const Sidebar = (props: SidebarProps) => {
                                     className={itemText}
                                 />
                             </NavLink>
-                            <Collapse in={collapseState[prop.state]} unmountOnExit>
+                            <Collapse in={collapseState[prop.name]} unmountOnExit>
                                 <List className={classes.list + ' ' + classes.collapseList}>
                                     {prop.views.map((prop, key) => {
 
@@ -329,6 +296,16 @@ export const Sidebar = (props: SidebarProps) => {
             props.miniActive && miniActive,
         })
 
+    const sidebarWrapperClass =
+        classes.sidebarWrapper +
+        ' ' +
+        cx({
+            [classes.drawerPaperMini]:
+            props.miniActive && miniActive,
+            [classes.sidebarWrapperWithPerfectScrollbar]:
+            navigator.platform.indexOf('Win') > -1,
+        })
+
     return (
         <div>
             <Hidden mdUp>
@@ -345,6 +322,10 @@ export const Sidebar = (props: SidebarProps) => {
                     }}
                 >
                     {brand}
+                    <div className={sidebarWrapperClass}>
+                        {user}
+                        {links}
+                    </div>
                     <div className={classes.background}/>
                 </Drawer>
             </Hidden>
@@ -360,6 +341,10 @@ export const Sidebar = (props: SidebarProps) => {
                     }}
                 >
                     {brand}
+                    <div className={sidebarWrapperClass}>
+                        {user}
+                        {links}
+                    </div>
                     <div className={classes.background}/>
                 </Drawer>
             </Hidden>

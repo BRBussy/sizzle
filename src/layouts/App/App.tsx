@@ -4,6 +4,7 @@ import Sidebar from 'components/Sidebar'
 import Header from 'components/Header'
 import cx from 'classnames'
 import useStyles from './style'
+import routes from './routes'
 
 export const App: React.FC = () => {
     const classes = useStyles()
@@ -13,9 +14,7 @@ export const App: React.FC = () => {
     return (
         <div className={classes.wrapper}>
             <Sidebar
-                appRoutes={{
-                    sidebarLinkRoutes: [],
-                }}
+                appRoutes={routes}
                 user={{
                     name: 'Test',
                 }}
