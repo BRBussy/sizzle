@@ -18,7 +18,7 @@ export const routes: RouteType[] = [
     {
         redirect: false,
         name: 'View 1',
-        path: 'app/view1',
+        path: '/app/view1',
         icon: MoneyIcon,
         component: View1View,
 
@@ -31,7 +31,7 @@ export const routes: RouteType[] = [
     {
         redirect: false,
         name: 'More Views',
-        path: 'app/views',
+        path: '/app/views',
         icon: MailIcon,
         component: null,
 
@@ -40,7 +40,7 @@ export const routes: RouteType[] = [
             {
                 redirect: false,
                 name: 'View 2',
-                path: 'app/views/view2',
+                path: '/app/views/view2',
                 icon: MapIcon,
                 component: View2View,
             },
@@ -60,7 +60,7 @@ export const routeBuilder: (partyType: string) => ({
         homeRoute: {
             redirect: false,
             name: 'Home',
-            path: 'app/',
+            path: '/app',
             icon: MoneyIcon,
             component: Party1HomeView,
             collapse: false,
@@ -69,7 +69,7 @@ export const routeBuilder: (partyType: string) => ({
         profileRoute: {
             redirect: false,
             name: 'Profile',
-            path: 'app/profile',
+            path: '/app/profile',
             icon: MoneyIcon,
             component: ProfileView,
             collapse: false,

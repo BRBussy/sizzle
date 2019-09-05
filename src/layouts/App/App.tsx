@@ -18,6 +18,13 @@ export const App = (props: appProps) => {
 
     const routes = routeBuilder('partyType')
 
+    if (
+        (routes.homeRoute.component == null) ||
+        (routes.profileRoute.component == null)
+    ) {
+        return (<div>Error building routes!</div>)
+    }
+
     return (
         <div className={classes.wrapper}>
             <Sidebar
@@ -50,8 +57,13 @@ export const App = (props: appProps) => {
                         <Switch>
                             <Route
                                 exact
-                                path={'/app'}
-                                component={() => (<div>Home</div>)}
+                                path={routes.homeRoute.path}
+                                component={routes.homeRoute.component}
+                            />
+                            <Route
+                                exact
+                                path={routes.profileRoute.path}
+                                component={routes.profileRoute.component}
                             />
                             {routes.sidebarRoutes.map((route, key) => {
                                 // if route is a redirect a redirect route object is rendered
@@ -73,7 +85,7 @@ export const App = (props: appProps) => {
                                                         key={key}
                                                         exact
                                                         path={route.path}
-                                                        component={() => (<div>{route.name}</div>)}
+                                                        component={route.component}
                                                     />
                                                 )
                                             })}
@@ -82,12 +94,15 @@ export const App = (props: appProps) => {
                                 }
 
                                 // for normal route objects, we return a route object
+                                if (route.component == null) {
+                                    return null
+                                }
                                 return (
                                     <Route
                                         key={key}
                                         exact
                                         path={route.path}
-                                        component={() => (<div>{route.name}</div>)}
+                                        component={route.component}
                                     />
                                 )
                             })}
