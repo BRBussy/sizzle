@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import cx from 'classnames'
 import logo from 'assets/images/logo/logo_emblem_transparent.png'
 import RouteType from 'types/Route'
+import {History} from 'history'
 import {
     Drawer, List,
     ListItem, ListItemIcon, ListItemText,
@@ -24,6 +25,7 @@ interface SidebarProps {
     handleSidebarToggle: () => void,
     user: User,
     appRoutes: RouteType[],
+    history: History,
 }
 
 interface CollapseState {
@@ -41,8 +43,6 @@ export const Sidebar = (props: SidebarProps) => {
             [state]: !collapseState[state],
         })
     }
-
-    console.log('item text mini!!', props.miniActive && miniActive)
 
     const userMenuLinks = (
         <div className={classes.userMenuLayout}>
@@ -65,6 +65,10 @@ export const Sidebar = (props: SidebarProps) => {
                             />
                         }
                         disableTypography={true}
+                        className={cx(
+                            classes.listItemText,
+                            {[classes.listItemTextSidebarMinimized]: props.miniActive && miniActive}
+                        )}
                     />
                 </ListItem>
                 <Collapse in={collapseState['userMenu']} unmountOnExit>
@@ -75,6 +79,10 @@ export const Sidebar = (props: SidebarProps) => {
                         <ListItemText
                             primary={'Profile'}
                             disableTypography={true}
+                            className={cx(
+                                classes.listItemText,
+                                {[classes.listItemTextSidebarMinimized]: props.miniActive && miniActive}
+                            )}
                         />
                     </ListItem>
                     <ListItem className={classes.listItem}>
@@ -84,6 +92,10 @@ export const Sidebar = (props: SidebarProps) => {
                         <ListItemText
                             primary={'Logout'}
                             disableTypography={true}
+                            className={cx(
+                                classes.listItemText,
+                                {[classes.listItemTextSidebarMinimized]: props.miniActive && miniActive}
+                            )}
                         />
                     </ListItem>
                 </Collapse>
@@ -104,8 +116,9 @@ export const Sidebar = (props: SidebarProps) => {
                     // route items with collapse
                     if (prop.collapse) {
                         return (
-                            <React.Fragment>
+                            <React.Fragment key={key}>
                                 <ListItem
+                                    key={key}
                                     onClick={() => openCollapse(prop.name)}
                                     className={classes.listItem}
                                 >
@@ -123,13 +136,19 @@ export const Sidebar = (props: SidebarProps) => {
                                             />
                                         }
                                         disableTypography={true}
+                                        className={cx(
+                                            classes.listItemText,
+                                            {[classes.listItemTextSidebarMinimized]: props.miniActive && miniActive}
+                                        )}
                                     />
                                 </ListItem>
                                 <Collapse in={collapseState[prop.name]} unmountOnExit>
                                     {prop.views.map((prop, key) => {
                                         return (
                                             <ListItem
+                                                key={key}
                                                 className={classes.listItem}
+                                                onClick={()=>props.history.push(prop.path)}
                                             >
                                                 <ListItemIcon className={classes.itemIcon}>
                                                     <prop.icon/>
@@ -137,6 +156,10 @@ export const Sidebar = (props: SidebarProps) => {
                                                 <ListItemText
                                                     primary={prop.name}
                                                     disableTypography={true}
+                                                    className={cx(
+                                                        classes.listItemText,
+                                                        {[classes.listItemTextSidebarMinimized]: props.miniActive && miniActive}
+                                                    )}
                                                 />
                                             </ListItem>
                                         )
@@ -145,6 +168,27 @@ export const Sidebar = (props: SidebarProps) => {
                             </React.Fragment>
                         )
                     }
+
+                    // other route items
+                    return (
+                        <ListItem
+                            key={key}
+                            className={classes.listItem}
+                            onClick={()=>props.history.push(prop.path)}
+                        >
+                            <ListItemIcon className={classes.itemIcon}>
+                                <prop.icon/>
+                            </ListItemIcon>
+                            <ListItemText
+                                primary={prop.name}
+                                disableTypography={true}
+                                className={cx(
+                                    classes.listItemText,
+                                    {[classes.listItemTextSidebarMinimized]: props.miniActive && miniActive}
+                                )}
+                            />
+                        </ListItem>
+                    )
                 })}
             </List>
         </div>

@@ -50,7 +50,16 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         paddingBottom: "30px"
     },
     listItem: {
-      cursor: 'pointer',
+        cursor: 'pointer',
+        marginLeft: '15px',
+        width: '200px'
+    },
+    listItemText: {
+
+    },
+    listItemTextSidebarMinimized: {
+        opacity: 0,
+        transform: "translate3d(-25px, 0, 0)"
     },
 
     drawerPaper: {

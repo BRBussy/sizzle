@@ -5,8 +5,13 @@ import Header from 'components/Header'
 import cx from 'classnames'
 import useStyles from './style'
 import routes from './routes'
+import {History} from 'history'
 
-export const App: React.FC = () => {
+interface appProps {
+    history: History,
+}
+
+export const App = (props: appProps) => {
     const classes = useStyles()
     const [miniActive, setMiniActive] = useState(false)
     const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -14,6 +19,7 @@ export const App: React.FC = () => {
     return (
         <div className={classes.wrapper}>
             <Sidebar
+                history={props.history}
                 appRoutes={routes}
                 user={{
                     name: 'Test',
