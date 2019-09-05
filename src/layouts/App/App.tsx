@@ -29,7 +29,7 @@ export const App = (props: appProps) => {
         <div className={classes.wrapper}>
             <Sidebar
                 history={props.history}
-                appRoutes={routes.sidebarRoutes}
+                appRoutes={routes}
                 user={{
                     name: 'Test',
                 }}

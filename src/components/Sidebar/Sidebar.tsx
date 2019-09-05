@@ -25,7 +25,11 @@ interface SidebarProps {
     miniActive: boolean,
     handleSidebarToggle: () => void,
     user: User,
-    appRoutes: RouteType[],
+    appRoutes: {
+        homeRoute: RouteType,
+        profileRoute: RouteType,
+        sidebarRoutes: RouteType[],
+    },
     history: History,
 }
 
@@ -61,7 +65,7 @@ export const Sidebar = (props: SidebarProps) => {
                         <MenuIcon/>
                     </ListItemIcon>
                     <ListItemText
-                        primary={'User'}
+                        primary={'Username'}
                         secondary={
                             <b
                                 className={cx(
@@ -84,8 +88,8 @@ export const Sidebar = (props: SidebarProps) => {
                         </ListItemIcon>
                         <ListItemText
                             primary={
-                                <NavLink to={'/app'}>
-                                    Profile
+                                <NavLink to={props.appRoutes.profileRoute.path}>
+                                    {props.appRoutes.profileRoute.name}
                                 </NavLink>
                             }
                             disableTypography={true}
@@ -116,7 +120,7 @@ export const Sidebar = (props: SidebarProps) => {
     const viewLinks = (
         <div>
             <List>
-                {props.appRoutes.map((prop, key) => {
+                {props.appRoutes.sidebarRoutes.map((prop, key) => {
                     // ignore redirects, these do not get links as they are used
                     // in the browser router to force a redirect
                     if (prop.redirect) {
@@ -167,7 +171,11 @@ export const Sidebar = (props: SidebarProps) => {
                                                     <prop.icon/>
                                                 </ListItemIcon>
                                                 <ListItemText
-                                                    primary={prop.name}
+                                                    primary={
+                                                        <NavLink to={prop.path}>
+                                                            {prop.name}
+                                                        </NavLink>
+                                                    }
                                                     disableTypography={true}
                                                     className={cx(
                                                         classes.listItemText,
@@ -193,7 +201,11 @@ export const Sidebar = (props: SidebarProps) => {
                                 <prop.icon/>
                             </ListItemIcon>
                             <ListItemText
-                                primary={prop.name}
+                                primary={
+                                    <NavLink to={prop.path}>
+                                        {prop.name}
+                                    </NavLink>
+                                }
                                 disableTypography={true}
                                 className={cx(
                                     classes.listItemText,
