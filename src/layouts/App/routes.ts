@@ -5,31 +5,76 @@ import {
     Map as MapIcon,
 } from '@material-ui/icons'
 
-const routes: RouteType[] = [
+import View1View from 'views/View1'
+import View2View from 'views/View2'
+import ProfileView from 'views/Profile'
+import {Party1HomeView} from 'views/Home'
+
+/**
+ * General Routes, specified with view permissions etc.
+ */
+export const routes: RouteType[] = [
+    // single route, no collapsible menu
     {
         redirect: false,
         name: 'View 1',
-        collapse: false,
-        views: [],
         path: 'app/view1',
         icon: MoneyIcon,
+        component: View1View,
+
+        // views null since collapse is false
+        collapse: false,
+        views: null,
     },
+
+    // multiple routes accessed from collapsible menu
     {
         redirect: false,
-        name: 'Views',
-        collapse: true,
+        name: 'More Views',
+        path: 'app/views',
         icon: MailIcon,
+        component: null,
+
+        collapse: true,
         views: [
             {
                 redirect: false,
                 name: 'View 2',
                 path: 'app/views/view2',
-                mini: 'V',
                 icon: MapIcon,
+                component: View2View,
             },
         ],
-        path: 'app/views',
     },
 ];
 
-export default routes
+
+export const routeBuilder: (partyType: string) => ({
+    homeRoute: RouteType,
+    profileRoute: RouteType,
+    sidebarRoutes: RouteType[],
+}) = (partyType: string) => {
+    // do processing on party type and permissions to return routes
+
+    return {
+        homeRoute: {
+            redirect: false,
+            name: 'Home',
+            path: 'app/',
+            icon: MoneyIcon,
+            component: Party1HomeView,
+            collapse: false,
+            views: null,
+        },
+        profileRoute: {
+            redirect: false,
+            name: 'Profile',
+            path: 'app/profile',
+            icon: MoneyIcon,
+            component: ProfileView,
+            collapse: false,
+            views: null,
+        },
+        sidebarRoutes: routes,
+    }
+}

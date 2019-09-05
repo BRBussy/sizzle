@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import {NavLink} from 'react-router-dom';
 import cx from 'classnames'
 import logo from 'assets/images/logo/logo_emblem_transparent.png'
 import RouteType from 'types/Route'
@@ -82,7 +83,11 @@ export const Sidebar = (props: SidebarProps) => {
                             <MenuIcon/>
                         </ListItemIcon>
                         <ListItemText
-                            primary={'Profile'}
+                            primary={
+                                <NavLink to={'/app'}>
+                                    Profile
+                                </NavLink>
+                            }
                             disableTypography={true}
                             className={cx(
                                 classes.listItemText,
@@ -120,6 +125,9 @@ export const Sidebar = (props: SidebarProps) => {
 
                     // route items with collapse
                     if (prop.collapse) {
+                        if (prop.views == null) {
+                            return null
+                        }
                         return (
                             <React.Fragment key={key}>
                                 <ListItem
