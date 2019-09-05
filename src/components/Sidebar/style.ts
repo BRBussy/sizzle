@@ -51,8 +51,11 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     listItem: {
         cursor: 'pointer',
-        marginLeft: '15px',
-        width: '200px'
+        paddingLeft: '30px',
+        width: drawerWidth,
+    },
+    listItemSidebarMinimized: {
+        width: drawerMiniWidth,
     },
     listItemText: {
 

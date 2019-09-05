@@ -44,12 +44,17 @@ export const Sidebar = (props: SidebarProps) => {
         })
     }
 
+    const sidebarMinimized = props.miniActive && miniActive
+
     const userMenuLinks = (
         <div className={classes.userMenuLayout}>
             <List>
                 <ListItem
                     onClick={() => openCollapse('userMenu')}
-                    className={classes.listItem}
+                    className={cx(
+                        classes.listItem,
+                        {[classes.listItemSidebarMinimized]: sidebarMinimized},
+                    )}
                 >
                     <ListItemIcon className={classes.itemIcon}>
                         <MenuIcon/>
@@ -67,7 +72,7 @@ export const Sidebar = (props: SidebarProps) => {
                         disableTypography={true}
                         className={cx(
                             classes.listItemText,
-                            {[classes.listItemTextSidebarMinimized]: props.miniActive && miniActive}
+                            {[classes.listItemTextSidebarMinimized]: sidebarMinimized}
                         )}
                     />
                 </ListItem>
@@ -81,7 +86,7 @@ export const Sidebar = (props: SidebarProps) => {
                             disableTypography={true}
                             className={cx(
                                 classes.listItemText,
-                                {[classes.listItemTextSidebarMinimized]: props.miniActive && miniActive}
+                                {[classes.listItemTextSidebarMinimized]: sidebarMinimized}
                             )}
                         />
                     </ListItem>
@@ -94,7 +99,7 @@ export const Sidebar = (props: SidebarProps) => {
                             disableTypography={true}
                             className={cx(
                                 classes.listItemText,
-                                {[classes.listItemTextSidebarMinimized]: props.miniActive && miniActive}
+                                {[classes.listItemTextSidebarMinimized]: sidebarMinimized}
                             )}
                         />
                     </ListItem>
@@ -138,7 +143,7 @@ export const Sidebar = (props: SidebarProps) => {
                                         disableTypography={true}
                                         className={cx(
                                             classes.listItemText,
-                                            {[classes.listItemTextSidebarMinimized]: props.miniActive && miniActive}
+                                            {[classes.listItemTextSidebarMinimized]: sidebarMinimized}
                                         )}
                                     />
                                 </ListItem>
@@ -158,7 +163,7 @@ export const Sidebar = (props: SidebarProps) => {
                                                     disableTypography={true}
                                                     className={cx(
                                                         classes.listItemText,
-                                                        {[classes.listItemTextSidebarMinimized]: props.miniActive && miniActive}
+                                                        {[classes.listItemTextSidebarMinimized]: sidebarMinimized}
                                                     )}
                                                 />
                                             </ListItem>
@@ -184,7 +189,7 @@ export const Sidebar = (props: SidebarProps) => {
                                 disableTypography={true}
                                 className={cx(
                                     classes.listItemText,
-                                    {[classes.listItemTextSidebarMinimized]: props.miniActive && miniActive}
+                                    {[classes.listItemTextSidebarMinimized]: sidebarMinimized}
                                 )}
                             />
                         </ListItem>
@@ -200,7 +205,7 @@ export const Sidebar = (props: SidebarProps) => {
             <div
                 className={cx(
                     classes.logoNormal,
-                    {[classes.logoNormalSidebarMini]: props.miniActive && miniActive}
+                    {[classes.logoNormalSidebarMini]: sidebarMinimized}
                 )}
             >
                 Sizzle
@@ -208,13 +213,14 @@ export const Sidebar = (props: SidebarProps) => {
         </div>
     )
 
-    const drawerPaper =
-        classes.drawerPaper +
-        ' ' +
-        cx({
+    const drawerPaper = cx(
+        classes.drawerPaper,
+        classes.blackBackground,
+        {
             [classes.drawerPaperMini]:
-            props.miniActive && miniActive,
-        })
+            sidebarMinimized,
+        },
+    )
 
     return (
         <div>
@@ -223,9 +229,7 @@ export const Sidebar = (props: SidebarProps) => {
                     variant={'temporary'}
                     anchor={'right'}
                     open={props.open}
-                    classes={{
-                        paper: drawerPaper + ' ' + classes.blackBackground,
-                    }}
+                    classes={{paper: drawerPaper}}
                     onClose={props.handleSidebarToggle}
                     ModalProps={{
                         keepMounted: true, // Better open performance on mobile.
@@ -246,9 +250,7 @@ export const Sidebar = (props: SidebarProps) => {
                     anchor={'left'}
                     variant={'permanent'}
                     open
-                    classes={{
-                        paper: drawerPaper + ' ' + classes.blackBackground,
-                    }}
+                    classes={{paper: drawerPaper}}
                 >
                     {brand}
                     <div className={classes.sidebarLinksLayout}>
