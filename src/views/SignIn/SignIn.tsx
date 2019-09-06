@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useContext} from 'react'
 import useStyles from './style'
 import {Link} from 'react-router-dom'
 import {
@@ -9,6 +9,7 @@ import {
     FaGithub as GitHubIcon,
     FaMicrosoft as MicrosoftIcon,
 } from 'react-icons/fa'
+import {FirebaseContext} from 'components/Firebase';
 
 function useProviderSignIn() {
     const [signInInProgress, setSignInInProgress] = useState(false)
@@ -17,6 +18,8 @@ function useProviderSignIn() {
 
 const SignIn = () => {
     const classes = useStyles()
+    const firebaseContext = useContext(FirebaseContext)
+    console.log('firebase context!', firebaseContext)
 
     return (
         <div className={classes.root}>
