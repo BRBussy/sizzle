@@ -1,8 +1,8 @@
-import React, {useContext} from 'react'
+import React, {useState, useContext} from 'react'
 import useStyles from './style'
 import {Link} from 'react-router-dom'
 import {
-    Typography, Button, TextField,
+    Typography, Button, TextField, CircularProgress,
 } from "@material-ui/core"
 import {
     FaGoogle as GoogleIcon,
@@ -13,18 +13,59 @@ import {FirebaseContext} from 'components/Firebase';
 
 const SignIn = () => {
     const classes = useStyles()
-    const firebaseContext = useContext(FirebaseContext)
-    console.log('firebase context!', firebaseContext)
+    const firebase = useContext(FirebaseContext)
+    const [state, setState] = useState({
+        email: '',
+        password: '',
+    });
+    const [signUpInProgress, setSignUpInProgress] = useState(false)
+    const [signUpErrorMessage, setSignUpErrorMessage] = useState('' as string | null)
+    const [signUpSuccessMessage, setSignUpSuccessMessage] = useState('' as string | null)
+
+    const doFirebaseSignInUserWithEmailAndPassword = async () => {
+        if (firebase == null) {
+            console.error('cannot sign user in, firebase is null')
+            setSignUpErrorMessage('firebase is null')
+            return
+        }
+        // clear error message and start progress indicator
+        setSignUpErrorMessage(null)
+        setSignUpInProgress(true)
+        try {
+            // try and sign the user up
+            await firebase.doSignInWithEmailAndPassword(
+                state.email,
+                state.password,
+            )
+            // user signed up successfully, stop progress indicator
+            setSignUpInProgress(false)
+
+            // display success message
+            setSignUpSuccessMessage('Signed In Successfully!')
+
+            // wait for a second
+            await new Promise(resolve => setTimeout(resolve, 1000))
+
+            // navigate to sign in
+            // props.history.push('/sign-in')
+
+        } catch (e) {
+            console.error('error performing user sign up', e)
+            setSignUpErrorMessage(e.message ? e.message : e.toString())
+            setSignUpInProgress(false)
+            return
+        }
+    }
 
     return (
         <div className={classes.root}>
             <div className={classes.content}>
-                <Typography
-                    className={classes.title}
-                    variant={"h2"}
-                >
-                    Sign in
-                </Typography>
+                <div className={classes.titleLayout}>
+                    <Typography variant={"h2"}>
+                        Sign In
+                    </Typography>
+                    {signUpInProgress && <CircularProgress/>}
+                </div>
                 <Button
                     className={classes.button}
                     href={''}
@@ -64,6 +105,13 @@ const SignIn = () => {
                             type={"text"}
                             variant={"outlined"}
                             autoComplete='email-address'
+                            value={state.email}
+                            onChange={e => {
+                                setState({
+                                    ...state,
+                                    email: e.target.value,
+                                })
+                            }}
                         />
                         <TextField
                             className={classes.textField}
@@ -72,6 +120,13 @@ const SignIn = () => {
                             type={"password"}
                             variant={"outlined"}
                             autoComplete='current-password'
+                            value={state.password}
+                            onChange={e => {
+                                setState({
+                                    ...state,
+                                    password: e.target.value,
+                                })
+                            }}
                         />
                         <Button
                             className={classes.button}
@@ -79,8 +134,9 @@ const SignIn = () => {
                             href={''}
                             size={"large"}
                             variant={"contained"}
+                            onClick={doFirebaseSignInUserWithEmailAndPassword}
                         >
-                            Sign in now
+                            Sign In now
                         </Button>
                     </form>
                 </div>
@@ -88,14 +144,20 @@ const SignIn = () => {
                     className={classes.signUpLink}
                     variant={"body1"}
                 >
-                    Don&#39;t have an account?
+                    Don't have an account?
                     <Link
                         className={classes.signUpLinkText}
                         to={"/sign-up"}
                     >
-                        Sign up
+                        Sign Up
                     </Link>
                 </Typography>
+                {signUpErrorMessage && <Typography color={'error'}>
+                    {signUpErrorMessage}
+                </Typography>}
+                {signUpSuccessMessage && <Typography>
+                    {signUpSuccessMessage}
+                </Typography>}
             </div>
         </div>
     )
