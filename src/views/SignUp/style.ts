@@ -13,8 +13,10 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         flexDirection: 'column',
         alignItems: 'center',
     },
-    title: {
-        marginTop: theme.spacing(3)
+    titleLayout: {
+        marginTop: theme.spacing(3),
+        display: 'flex',
+        alignItems: 'center',
     },
     signInLink: {
         marginTop: theme.spacing(2),

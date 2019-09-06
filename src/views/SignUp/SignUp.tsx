@@ -1,38 +1,58 @@
-import React, {useState, useContext} from 'react'
+import React, {useState, useContext, useEffect} from 'react'
 import useStyles from './style'
 import {Link} from 'react-router-dom'
 import {
-    Typography, Button, TextField,
+    Typography, Button, TextField, CircularProgress,
 } from "@material-ui/core"
 import {
     FaGoogle as GoogleIcon,
     FaGithub as GitHubIcon,
     FaMicrosoft as MicrosoftIcon,
 } from 'react-icons/fa'
-import {FirebaseContext} from 'components/Firebase';
+import Firebase, {FirebaseContext} from 'components/Firebase';
 import User from 'api/User'
-
-function useProviderSignIn() {
-    const [signInInProgress, setSignInInProgress] = useState(false)
-
-}
 
 const SignUp = () => {
     const classes = useStyles()
-    const firebaseContext = useContext(FirebaseContext)
+    const firebase = useContext(FirebaseContext)
     const [state, setState] = useState({
         user: new User(),
     });
+    const [signUpInProgress, setSignUpInProgress] = useState(false)
+    const [signUpError, setSignUpError] = useState('' as string | null)
+    const [userCredential, setUserCredential] = useState({} as firebase.auth.UserCredential)
+
+    const doFirebaseSignUpUserWithEmailAndPassword = async () => {
+        if (firebase == null) {
+            console.error('cannot sign user up, firebase is null')
+            setSignUpError('firebase is null')
+            return
+        }
+        setSignUpError(null)
+        setSignUpInProgress(true)
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000))
+            const userCredential = await firebase.doCreateUserWithEmailAndPassword(
+                state.user.email,
+                state.user.password,
+            )
+            setUserCredential(userCredential)
+        } catch (e) {
+            console.error('error performing user sign up', e)
+            setSignUpError(e.message ? e.message : e.toString())
+        }
+        setSignUpInProgress(false)
+    }
 
     return (
         <div className={classes.root}>
             <div className={classes.content}>
-                <Typography
-                    className={classes.title}
-                    variant={"h2"}
-                >
-                    Sign Up
-                </Typography>
+                <div className={classes.titleLayout}>
+                    <Typography variant={"h2"}>
+                        Sign Up
+                    </Typography>
+                    {signUpInProgress && <CircularProgress/>}
+                </div>
                 <Button
                     className={classes.button}
                     href={''}
@@ -103,6 +123,7 @@ const SignUp = () => {
                             href={''}
                             size={"large"}
                             variant={"contained"}
+                            onClick={doFirebaseSignUpUserWithEmailAndPassword}
                         >
                             Sign Up now
                         </Button>
@@ -120,6 +141,9 @@ const SignUp = () => {
                         Sign In
                     </Link>
                 </Typography>
+                {signUpError && <Typography color={'error'}>
+                    {signUpError}
+                </Typography>}
             </div>
         </div>
     )
