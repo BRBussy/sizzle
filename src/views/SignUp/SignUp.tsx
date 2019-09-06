@@ -10,6 +10,7 @@ import {
     FaMicrosoft as MicrosoftIcon,
 } from 'react-icons/fa'
 import {FirebaseContext} from 'components/Firebase';
+import User from 'api/User'
 
 function useProviderSignIn() {
     const [signInInProgress, setSignInInProgress] = useState(false)
@@ -19,7 +20,9 @@ function useProviderSignIn() {
 const SignUp = () => {
     const classes = useStyles()
     const firebaseContext = useContext(FirebaseContext)
-    console.log('firebase context!', firebaseContext)
+    const [state, setState] = useState({
+        user: new User(),
+    });
 
     return (
         <div className={classes.root}>
@@ -69,6 +72,14 @@ const SignUp = () => {
                             type={"text"}
                             variant={"outlined"}
                             autoComplete='email-address'
+                            value={state.user.email}
+                            onChange={e => {
+                                state.user.email = e.target.value
+                                setState({
+                                    ...state,
+                                    user: state.user,
+                                })
+                            }}
                         />
                         <TextField
                             className={classes.textField}
@@ -77,6 +88,14 @@ const SignUp = () => {
                             type={"password"}
                             variant={"outlined"}
                             autoComplete='current-password'
+                            value={state.user.password}
+                            onChange={e => {
+                                state.user.password = e.target.value
+                                setState({
+                                    ...state,
+                                    user: state.user,
+                                })
+                            }}
                         />
                         <Button
                             className={classes.button}
