@@ -1,5 +1,6 @@
-import React, {useState, useContext, useEffect} from 'react'
+import React, {useState, useContext} from 'react'
 import useStyles from './style'
+import {History} from 'history';
 import {Link} from 'react-router-dom'
 import {
     Typography, Button, TextField, CircularProgress,
@@ -9,39 +10,56 @@ import {
     FaGithub as GitHubIcon,
     FaMicrosoft as MicrosoftIcon,
 } from 'react-icons/fa'
-import Firebase, {FirebaseContext} from 'components/Firebase';
+import {FirebaseContext} from 'components/Firebase';
 import User from 'api/User'
 
-const SignUp = () => {
+interface SignUpProps {
+    history: History,
+}
+
+const SignUp = (props: SignUpProps) => {
     const classes = useStyles()
     const firebase = useContext(FirebaseContext)
     const [state, setState] = useState({
         user: new User(),
     });
     const [signUpInProgress, setSignUpInProgress] = useState(false)
-    const [signUpError, setSignUpError] = useState('' as string | null)
-    const [userCredential, setUserCredential] = useState({} as firebase.auth.UserCredential)
+    const [signUpErrorMessage, setSignUpErrorMessage] = useState('' as string | null)
+    const [signUpSuccessMessage, setSignUpSuccessMessage] = useState('' as string | null)
 
     const doFirebaseSignUpUserWithEmailAndPassword = async () => {
         if (firebase == null) {
             console.error('cannot sign user up, firebase is null')
-            setSignUpError('firebase is null')
+            setSignUpErrorMessage('firebase is null')
             return
         }
-        setSignUpError(null)
+        // clear error message and start progress indicator
+        setSignUpErrorMessage(null)
         setSignUpInProgress(true)
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000))
-            const userCredential = await firebase.doCreateUserWithEmailAndPassword(
+            // try and sign the user up
+            await firebase.doCreateUserWithEmailAndPassword(
                 state.user.email,
                 state.user.password,
             )
-            setUserCredential(userCredential)
+            // user signed up successfully, stop progress indicator
+            setSignUpInProgress(false)
+
+            // display success message
+            setSignUpSuccessMessage('Signed Up Successfully!')
+
+            // wait for a second
+            await new Promise(resolve => setTimeout(resolve, 1000))
+
+            // navigate to sign in
+            props.history.push('/sign-in')
+
         } catch (e) {
             console.error('error performing user sign up', e)
-            setSignUpError(e.message ? e.message : e.toString())
+            setSignUpErrorMessage(e.message ? e.message : e.toString())
+            setSignUpInProgress(false)
+            return
         }
-        setSignUpInProgress(false)
     }
 
     return (
@@ -141,8 +159,11 @@ const SignUp = () => {
                         Sign In
                     </Link>
                 </Typography>
-                {signUpError && <Typography color={'error'}>
-                    {signUpError}
+                {signUpErrorMessage && <Typography color={'error'}>
+                    {signUpErrorMessage}
+                </Typography>}
+                {signUpSuccessMessage && <Typography>
+                    {signUpSuccessMessage}
                 </Typography>}
             </div>
         </div>

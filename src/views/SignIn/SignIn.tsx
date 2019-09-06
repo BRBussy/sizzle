@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react'
+import React, {useContext} from 'react'
 import useStyles from './style'
 import {Link} from 'react-router-dom'
 import {
@@ -10,11 +10,6 @@ import {
     FaMicrosoft as MicrosoftIcon,
 } from 'react-icons/fa'
 import {FirebaseContext} from 'components/Firebase';
-
-function useProviderSignIn() {
-    const [signInInProgress, setSignInInProgress] = useState(false)
-
-}
 
 const SignIn = () => {
     const classes = useStyles()
