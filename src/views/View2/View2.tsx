@@ -1,11 +1,11 @@
-import React from 'react'
+import React from 'react';
 
 const View2 = () => {
     return (
         <div>
             View 2!
         </div>
-    )
-}
+    );
+};
 
-export default View2
+export default View2;

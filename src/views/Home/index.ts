@@ -1,5 +1,5 @@
-import Party1HomeView from './Party1'
+import Party1HomeView from './Party1';
 
 export {
-    Party1HomeView,
-}
+  Party1HomeView
+};

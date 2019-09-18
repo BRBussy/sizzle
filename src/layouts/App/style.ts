@@ -1,13 +1,13 @@
-import {Theme, createStyles, makeStyles} from '@material-ui/core'
+import { createStyles, makeStyles, Theme } from '@material-ui/core';
 
-const drawerWidth = 260
-const drawerMiniWidth = 80
+const drawerWidth = 260;
+const drawerMiniWidth = 80;
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   wrapper: {
-    position: 'relative',
-    top: '0',
-    height: '100vh',
+    'position': 'relative',
+    'top': '0',
+    'height': '100vh',
     '&:after': {
       display: 'table',
       clear: 'both',
@@ -42,23 +42,23 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     padding: '8px 2px',
 
     height: 'calc(100vh)',
-    overflowY: 'hidden',
+    overflowY: 'hidden'
   },
   container: {
-      paddingRight: "15px",
-      paddingLeft: "15px",
-      marginRight: "auto",
-      marginLeft: "auto",
-      "&:before,&:after": {
-          display: "table",
-          content: '" "'
-      },
-      "&:after": {
-          clear: "both" as "both"
-      },
-    height: 'calc(100vh - 55px)',
-    overflowY: 'scroll',
-  },
-}))
+    'paddingRight': '15px',
+    'paddingLeft': '15px',
+    'marginRight': 'auto',
+    'marginLeft': 'auto',
+    '&:before,&:after': {
+      display: 'table',
+      content: '" "'
+    },
+    '&:after': {
+      clear: 'both' as 'both'
+    },
+    'height': 'calc(100vh - 55px)',
+    'overflowY': 'scroll'
+  }
+}));
 
-export default useStyles
+export default useStyles;

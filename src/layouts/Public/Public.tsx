@@ -1,28 +1,14 @@
-import React from 'react'
-import {Route, Switch, Redirect} from "react-router"
-import SignInView from "views/SignIn"
-import SignUpView from "views/SignUp"
+import React from 'react';
+import useStyles from './style';
 
-const Public = () => {
-    return (
-        <Switch>
-            <Route
-                exact
-                path={'/sign-up'}
-                component={SignUpView}
-            />
-            <Route
-                exact
-                path={'/sign-in'}
-                component={SignInView}
-            />
-            <Route
-                // redirect all traffic that does not match a path to sign in
-                path={''}
-                render={() => (<Redirect to={'/sign-in'}/>)}
-            />
-        </Switch>
-    )
-}
+const Public: React.FC = ({ children }: { children?: React.ReactNode }) => {
+  const classes = useStyles();
 
-export default Public
+  return (
+    <div className={classes.root}>
+      {children}
+    </div>
+  );
+};
+
+export default Public;

@@ -1,55 +1,57 @@
-import React, {useState} from 'react'
-import {NavLink} from 'react-router-dom';
-import cx from 'classnames'
-import logo from 'assets/images/logo/logo_emblem_transparent.png'
-import {AppRouteType} from 'layouts/App/routes'
-import {History} from 'history'
 import {
-    Drawer, List,
-    ListItem, ListItemIcon, ListItemText,
-    Hidden, Collapse,
-} from '@material-ui/core'
+    Collapse, Drawer,
+    Hidden, List, ListItem,
+    ListItemIcon, ListItemText
+} from '@material-ui/core';
 import {
-    Menu as MenuIcon,
     Lock as LockIcon,
-} from "@material-ui/icons"
-import useStyles from './style'
+    Menu as MenuIcon
+} from '@material-ui/icons';
+import logo from 'assets/images/logo/logo_emblem_transparent.png';
+import cx from 'classnames';
+import { useFirebaseContext } from 'context/Firebase';
+import {History} from 'history';
+import React, {useState} from 'react';
+import {NavLink} from 'react-router-dom';
+import {RouteType} from 'routes/Route';
+import useStyles from './style';
 
 interface User {
-    name: string,
+    name: string;
 }
 
 interface SidebarProps {
-    children?: React.ReactNode,
-    open: boolean,
-    miniActive: boolean,
-    handleSidebarToggle: () => void,
-    user: User,
+    children?: React.ReactNode;
+    open: boolean;
+    miniActive: boolean;
+    handleSidebarToggle: () => void;
+    user: User;
     appRoutes: {
-        homeRoute: AppRouteType,
-        profileRoute: AppRouteType,
-        sidebarRoutes: AppRouteType[],
-    },
-    history: History,
+        homeRoute: RouteType,
+        profileRoute: RouteType,
+        sidebarRoutes: RouteType[]
+    };
+    history: History;
 }
 
 interface CollapseState {
-    [key: string]: boolean,
+    [key: string]: boolean;
 }
 
 export const Sidebar = (props: SidebarProps) => {
-    const [miniActive, setMiniActive] = useState(true)
-    const [collapseState, setCollapseState] = React.useState<CollapseState>({})
-    const classes = useStyles()
+    const { firebase } = useFirebaseContext();
+    const [miniActive, setMiniActive] = useState(true);
+    const [collapseState, setCollapseState] = React.useState<CollapseState>({});
+    const classes = useStyles();
 
     const openCollapse = (state: string) => {
         setCollapseState({
             ...collapseState,
-            [state]: !collapseState[state],
-        })
-    }
+            [state]: !collapseState[state]
+        });
+    };
 
-    const sidebarMinimized = props.miniActive && miniActive
+    const sidebarMinimized = props.miniActive && miniActive;
 
     const userMenuLinks = (
         <div className={classes.userMenuLayout}>
@@ -58,7 +60,7 @@ export const Sidebar = (props: SidebarProps) => {
                     onClick={() => openCollapse('userMenu')}
                     className={cx(
                         classes.listItem,
-                        {[classes.listItemSidebarMinimized]: sidebarMinimized},
+                        {[classes.listItemSidebarMinimized]: sidebarMinimized}
                     )}
                 >
                     <ListItemIcon className={classes.itemIcon}>
@@ -70,7 +72,7 @@ export const Sidebar = (props: SidebarProps) => {
                             <b
                                 className={cx(
                                     classes.caret,
-                                    {[classes.caretActive]: collapseState['userMenu']},
+                                    {[classes.caretActive]: collapseState.userMenu}
                                 )}
                             />
                         }
@@ -81,7 +83,7 @@ export const Sidebar = (props: SidebarProps) => {
                         )}
                     />
                 </ListItem>
-                <Collapse in={collapseState['userMenu']} unmountOnExit>
+                <Collapse in={collapseState.userMenu} unmountOnExit>
                     <ListItem className={classes.listItem}>
                         <ListItemIcon className={classes.itemIcon}>
                             <MenuIcon/>
@@ -99,7 +101,20 @@ export const Sidebar = (props: SidebarProps) => {
                             )}
                         />
                     </ListItem>
-                    <ListItem className={classes.listItem}>
+                    <ListItem
+                      className={classes.listItem}
+                      onClick={async () => {
+                          if (firebase === null) {
+                              console.error('firebase is null');
+                              return;
+                          }
+                          try {
+                           await firebase.doSignOut();
+                          } catch (e) {
+                              console.error('error signing out', e);
+                          }
+                      }}
+                    >
                         <ListItemIcon className={classes.itemIcon}>
                             <LockIcon/>
                         </ListItemIcon>
@@ -115,40 +130,34 @@ export const Sidebar = (props: SidebarProps) => {
                 </Collapse>
             </List>
         </div>
-    )
+    );
 
     const viewLinks = (
         <div>
             <List>
-                {props.appRoutes.sidebarRoutes.map((prop, key) => {
-                    // ignore redirects, these do not get links as they are used
-                    // in the browser router to force a redirect
-                    if (prop.redirect) {
-                        return null
-                    }
-
+                {props.appRoutes.sidebarRoutes.map((route, key) => {
                     // route items with collapse
-                    if (prop.collapse) {
-                        if (prop.views == null) {
-                            return null
+                    if (route.collapse) {
+                        if (route.views == null) {
+                            return null;
                         }
                         return (
                             <React.Fragment key={key}>
                                 <ListItem
                                     key={key}
-                                    onClick={() => openCollapse(prop.name)}
+                                    onClick={() => openCollapse(route.name)}
                                     className={classes.listItem}
                                 >
                                     <ListItemIcon className={classes.itemIcon}>
-                                        <prop.icon/>
+                                        <route.icon/>
                                     </ListItemIcon>
                                     <ListItemText
-                                        primary={prop.name}
+                                        primary={route.name}
                                         secondary={
                                             <b
                                                 className={cx(
                                                     classes.caret,
-                                                    {[classes.caretActive]: collapseState[prop.name]},
+                                                    {[classes.caretActive]: collapseState[route.name]}
                                                 )}
                                             />
                                         }
@@ -159,21 +168,21 @@ export const Sidebar = (props: SidebarProps) => {
                                         )}
                                     />
                                 </ListItem>
-                                <Collapse in={collapseState[prop.name]} unmountOnExit>
-                                    {prop.views.map((prop, key) => {
+                                <Collapse in={collapseState[route.name]} unmountOnExit>
+                                    {route.views.map((viewsRoute, viewsKey) => {
                                         return (
                                             <ListItem
-                                                key={key}
+                                                key={viewsKey}
                                                 className={classes.listItem}
-                                                onClick={() => props.history.push(prop.path)}
+                                                onClick={() => props.history.push(viewsRoute.path)}
                                             >
                                                 <ListItemIcon className={classes.itemIcon}>
-                                                    <prop.icon/>
+                                                    <viewsRoute.icon/>
                                                 </ListItemIcon>
                                                 <ListItemText
                                                     primary={
-                                                        <NavLink to={prop.path}>
-                                                            {prop.name}
+                                                        <NavLink to={viewsRoute.path}>
+                                                            {viewsRoute.name}
                                                         </NavLink>
                                                     }
                                                     disableTypography={true}
@@ -183,11 +192,11 @@ export const Sidebar = (props: SidebarProps) => {
                                                     )}
                                                 />
                                             </ListItem>
-                                        )
+                                        );
                                     })}
                                 </Collapse>
                             </React.Fragment>
-                        )
+                        );
                     }
 
                     // other route items
@@ -195,15 +204,15 @@ export const Sidebar = (props: SidebarProps) => {
                         <ListItem
                             key={key}
                             className={classes.listItem}
-                            onClick={() => props.history.push(prop.path)}
+                            onClick={() => props.history.push(route.path)}
                         >
                             <ListItemIcon className={classes.itemIcon}>
-                                <prop.icon/>
+                                <route.icon/>
                             </ListItemIcon>
                             <ListItemText
                                 primary={
-                                    <NavLink to={prop.path}>
-                                        {prop.name}
+                                    <NavLink to={route.path}>
+                                        {route.name}
                                     </NavLink>
                                 }
                                 disableTypography={true}
@@ -213,15 +222,15 @@ export const Sidebar = (props: SidebarProps) => {
                                 )}
                             />
                         </ListItem>
-                    )
+                    );
                 })}
             </List>
         </div>
-    )
+    );
 
     const brand = (
         <div className={classes.brandLayout}>
-            <img src={logo} alt="logo" className={classes.logoImg}/>
+            <img src={logo} alt='logo' className={classes.logoImg}/>
             <div
                 className={cx(
                     classes.logoNormal,
@@ -231,16 +240,16 @@ export const Sidebar = (props: SidebarProps) => {
                 Sizzle
             </div>
         </div>
-    )
+    );
 
     const drawerPaper = cx(
         classes.drawerPaper,
         classes.blackBackground,
         {
             [classes.drawerPaperMini]:
-            sidebarMinimized,
-        },
-    )
+            sidebarMinimized
+        }
+    );
 
     return (
         <div>
@@ -252,7 +261,7 @@ export const Sidebar = (props: SidebarProps) => {
                     classes={{paper: drawerPaper}}
                     onClose={props.handleSidebarToggle}
                     ModalProps={{
-                        keepMounted: true, // Better open performance on mobile.
+                        keepMounted: true // Better open performance on mobile.
                     }}
                 >
                     {brand}
@@ -281,5 +290,5 @@ export const Sidebar = (props: SidebarProps) => {
                 </Drawer>
             </Hidden>
         </div>
-    )
-}
+    );
+};

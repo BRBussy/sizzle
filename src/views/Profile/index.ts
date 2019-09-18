@@ -1,3 +1,3 @@
-import ProfileView from './Profile'
+import ProfileView from './Profile';
 
-export default ProfileView
+export default ProfileView;

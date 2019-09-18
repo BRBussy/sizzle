@@ -1,3 +1,3 @@
-import View2View from './View2'
+import View2View from './View2';
 
-export default View2View
+export default View2View;

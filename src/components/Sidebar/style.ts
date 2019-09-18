@@ -1,11 +1,11 @@
-import {Theme, createStyles, makeStyles} from '@material-ui/core'
+import {createStyles, makeStyles, Theme} from '@material-ui/core';
 
-const drawerWidth = 260
-const drawerMiniWidth = 80
+const drawerWidth = 260;
+const drawerMiniWidth = 80;
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   userMenuLayout: {
-    position: 'relative',
+    'position': 'relative',
     '&:after': {
       content: '""',
       position: 'absolute',
@@ -49,10 +49,10 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   listItem: {
     cursor: 'pointer',
     paddingLeft: '30px',
-    width: drawerWidth,
+    width: drawerWidth
   },
   listItemSidebarMinimized: {
-    width: drawerMiniWidth,
+    width: drawerMiniWidth
   },
   listItemText: {},
   listItemTextSidebarMinimized: {
@@ -61,17 +61,17 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
 
   drawerPaper: {
-    border: 'none',
-    position: 'fixed',
-    top: '0',
-    bottom: '0',
-    left: '0',
-    zIndex: 1032,
-    transitionProperty: 'top, bottom, width',
-    transitionDuration: '.2s, .2s, .35s',
-    transitionTimingFunction: 'linear, linear, ease',
-    boxShadow: '0 10px 30px -12px rgba(0, 0, 0, 0.42), 0 4px 25px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2)',
-    width: drawerWidth,
+    'border': 'none',
+    'position': 'fixed',
+    'top': '0',
+    'bottom': '0',
+    'left': '0',
+    'zIndex': 1032,
+    'transitionProperty': 'top, bottom, width',
+    'transitionDuration': '.2s, .2s, .35s',
+    'transitionTimingFunction': 'linear, linear, ease',
+    'boxShadow': '0 10px 30px -12px rgba(0, 0, 0, 0.42), 0 4px 25px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2)',
+    'width': drawerWidth,
     [theme.breakpoints.up('md')]: {
       width: drawerWidth,
       position: 'fixed',
@@ -94,7 +94,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
       paddingRight: '0px',
       paddingLeft: '0',
       transform: `translate3d(${drawerWidth}px, 0, 0)`,
-      transition: 'all 0.33s cubic-bezier(0.685, 0.0473, 0.346, 1)',
+      transition: 'all 0.33s cubic-bezier(0.685, 0.0473, 0.346, 1)'
     },
     '&:before,&:after': {
       position: 'absolute',
@@ -107,7 +107,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     }
   },
   blackBackground: {
-    color: '#FFFFFF',
+    'color': '#FFFFFF',
     '&:after': {
       background: '#000',
       opacity: 0.6
@@ -117,14 +117,14 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     width: drawerMiniWidth + 'px!important'
   },
   brandLayout: {
-    cursor: 'pointer',
-    padding: '15px 0px',
-    margin: '0',
-    display: 'flex',
-    alignItems: 'center',
-    alignContent: 'center',
-    position: 'relative',
-    zIndex: 4,
+    'cursor': 'pointer',
+    'padding': '15px 0px',
+    'margin': '0',
+    'display': 'flex',
+    'alignItems': 'center',
+    'alignContent': 'center',
+    'position': 'relative',
+    'zIndex': 4,
     '&:after': {
       content: '""',
       position: 'absolute',
@@ -136,14 +136,14 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     }
   },
   logoNormal: {
-    transition: 'all 300ms linear',
-    opacity: 1,
-    transform: 'translate3d(0px, 0, 0)',
-    padding: '5px 0px',
-    fontSize: '18px',
-    whiteSpace: 'nowrap',
-    fontWeight: 400,
-    overflow: 'hidden',
+    'transition': 'all 300ms linear',
+    'opacity': 1,
+    'transform': 'translate3d(0px, 0, 0)',
+    'padding': '5px 0px',
+    'fontSize': '18px',
+    'whiteSpace': 'nowrap',
+    'fontWeight': 400,
+    'overflow': 'hidden',
     '&,&:hover,&:focus': {
       color: 'inherit'
     }
@@ -159,7 +159,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     opacity: 1,
     float: 'left',
     marginLeft: '22px',
-    marginRight: '18px',
+    marginRight: '18px'
   },
   background: {
     position: 'absolute',
@@ -184,7 +184,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     textAlign: 'center',
     verticalAlign: 'middle',
     opacity: 0.8
-  },
-}))
+  }
+}));
 
-export default useStyles
+export default useStyles;
