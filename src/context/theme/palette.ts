@@ -1,9 +1,9 @@
 const primary = {
-  main: '#2FAFAF'
+  main: '#0E2F56'
 };
 
 const secondary = {
-  main: '#DE1B57'
+  main: '#FF304F'
 };
 
 const text = {
@@ -11,8 +11,7 @@ const text = {
 };
 
 const background = {
-  default: '#121027',
-  paper: '#232041'
+  default: '#cbcbcb'
 };
 
 export const paletteDefault = {
