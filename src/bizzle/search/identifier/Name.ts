@@ -2,13 +2,13 @@ import {NameIdentifierType} from './types';
 
 interface NameIdentifier {
     type: string;
-    id: string;
+    name: string;
 }
 
-function NameIdentifier(id: string): NameIdentifier {
+function NameIdentifier(name: string): NameIdentifier {
     return {
         type: NameIdentifierType,
-        id
+        name
     };
 }
 
