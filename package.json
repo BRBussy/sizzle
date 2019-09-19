@@ -1,5 +1,5 @@
 {
-  "name": "feather",
+  "name": "sizzle",
   "version": "0.1.0",
   "jest": {
     "collectCoverageFrom": [
