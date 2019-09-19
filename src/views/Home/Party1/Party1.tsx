@@ -56,7 +56,7 @@ const testId = async () => {
       url: 'http://localhost:8080',
       method: 'Role-Store.FindOne',
       request: {
-        identifier: IDIdentifier('1234')
+        identifier: IDIdentifier('1bf2918d-bc34-4df9-850a-393b4b228873')
       },
       verbose: true
     });
