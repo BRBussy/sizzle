@@ -7,7 +7,7 @@ import {RouteType} from 'routes/Route';
 import { Party1HomeView } from 'views/Home';
 import ProfileView from 'views/Profile';
 import View1View from 'views/View1';
-import View2View from 'views/View2';
+import RoleView from 'views/Role';
 
 export const routes: RouteType[] = [
   // single route, no collapsible menu
@@ -24,18 +24,18 @@ export const routes: RouteType[] = [
 
   // multiple routes accessed from collapsible menu
   {
-    name: 'More Views',
-    path: '/app/views',
+    name: 'Setup',
+    path: '/app/setup',
     icon: MailIcon,
     component: null,
 
     collapse: true,
     views: [
       {
-        name: 'View 2',
-        path: '/app/views/view2',
+        name: 'Role',
+        path: '/app/setup/role',
         icon: MapIcon,
-        component: View2View
+        component: RoleView
       }
     ]
   }
