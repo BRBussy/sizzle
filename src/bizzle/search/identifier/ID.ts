@@ -1,3 +1,5 @@
+import {IDIdentifierType} from './types';
+
 interface IDIdentifier {
     type: string;
     id: string;
@@ -5,7 +7,7 @@ interface IDIdentifier {
 
 function IDIdentifier(id: string): IDIdentifier {
     return {
-        type: 'id',
+        type: IDIdentifierType,
         id
     };
 }

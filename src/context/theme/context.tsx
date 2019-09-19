@@ -1,7 +1,6 @@
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import { ThemeProvider } from '@material-ui/styles';
 import React from 'react';
-import overrides from './overrides';
 import { paletteDefault } from './palette';
 
 const theme = createMuiTheme({
@@ -14,8 +13,6 @@ const theme = createMuiTheme({
     fontWeightMedium: 500
   }
 });
-
-theme.overrides = overrides(theme);
 
 function MuiThemeContext({ children }: { children: React.ReactNode }) {
   return (

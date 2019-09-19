@@ -5,6 +5,7 @@ import {
   StringExact,
   StringSubstring
 } from 'bizzle/search/criterion';
+import {IDIdentifier} from 'bizzle/search/identifier';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import jsonRPCRequest from 'utilities/network/jsonRPCRequest';
@@ -49,13 +50,35 @@ const testCrit = async () => {
   }
 };
 
+const testId = async () => {
+  try {
+    await jsonRPCRequest({
+      url: 'http://localhost:8080',
+      method: 'Role-Store.FindOne',
+      request: {
+        identifier: IDIdentifier('1234')
+      },
+      verbose: true
+    });
+  } catch (e) {
+    console.error('jsonrpc failure:', e);
+  }
+};
+
 const Party1 = () => {
   return (
     <div>
       <Button
         onClick={testCrit}
+        variant={'contained'}
       >
         Test Criterion
+      </Button>
+      <Button
+        onClick={testId}
+        variant={'contained'}
+      >
+        Test Identifier
       </Button>
       <Typography variant={'body1'}>
         <Link to={'/pubView'}>
