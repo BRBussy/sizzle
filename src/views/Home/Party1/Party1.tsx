@@ -71,7 +71,7 @@ const testName = async () => {
       url: 'http://localhost:8080',
       method: 'Role-Store.FindOne',
       request: {
-        identifier: NameIdentifier('1bf2918d-bc34-4df9-850a-393b4b228873')
+        identifier: NameIdentifier('user')
       },
       verbose: true
     });
