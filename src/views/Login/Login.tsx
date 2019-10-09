@@ -1,11 +1,13 @@
 import {
     Button, CircularProgress, TextField, Typography
 } from '@material-ui/core';
+import {useAppContext} from 'context/App';
 import React, {useState} from 'react';
 import {Link} from 'react-router-dom';
 import useStyles from './style';
 
 const Login: React.FC = () => {
+    const {appContextLogin} = useAppContext();
     const classes = useStyles();
     const [state, setState] = useState({
         email: '',
@@ -20,6 +22,7 @@ const Login: React.FC = () => {
         setLoginInProgress(true);
 
         try {
+            await appContextLogin(state.email, state.password);
         } catch (e) {
             console.error('error performing user login', e);
             // generic error message, detailed message in console
