@@ -32,7 +32,7 @@ const Login: React.FC = () => {
         // 1. an error was thrown during the login process
         // 2. credentials were incorrect or the account is not verified
         // stop the progress indicator
-        if (window.location.pathname === '/sign-in') {
+        if (window.location.pathname === '/login') {
             setLoginInProgress(false);
         }
     };

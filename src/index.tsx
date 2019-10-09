@@ -13,7 +13,7 @@ try {
     console.error('error determining subdomain', e);
 }
 
-if (subdomain === 'localHost') {
+if (subdomain === 'localhost') {
     config.set({
         authURL: 'http://localhost:8080',
         userURL: 'http://localhost:8081',
