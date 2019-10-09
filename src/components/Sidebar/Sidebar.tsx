@@ -9,7 +9,6 @@ import {
 } from '@material-ui/icons';
 import logo from 'assets/images/logo/logo_emblem_transparent.png';
 import cx from 'classnames';
-import { useFirebaseContext } from 'context/Firebase';
 import {History} from 'history';
 import React, {useState} from 'react';
 import {NavLink} from 'react-router-dom';
@@ -39,7 +38,6 @@ interface CollapseState {
 }
 
 export const Sidebar = (props: SidebarProps) => {
-    const { firebase } = useFirebaseContext();
     const [miniActive, setMiniActive] = useState(true);
     const [collapseState, setCollapseState] = React.useState<CollapseState>({});
     const classes = useStyles();
@@ -101,20 +99,7 @@ export const Sidebar = (props: SidebarProps) => {
                             )}
                         />
                     </ListItem>
-                    <ListItem
-                      className={classes.listItem}
-                      onClick={async () => {
-                          if (firebase === null) {
-                              console.error('firebase is null');
-                              return;
-                          }
-                          try {
-                           await firebase.doSignOut();
-                          } catch (e) {
-                              console.error('error signing out', e);
-                          }
-                      }}
-                    >
+                    <ListItem className={classes.listItem}>
                         <ListItemIcon className={classes.itemIcon}>
                             <LockIcon/>
                         </ListItemIcon>
