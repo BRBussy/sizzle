@@ -1,4 +1,3 @@
-import uuid from 'uuid/v1';
 import ContactFailedError from './ContactFailedError';
 import MethodFailedError from './MethodFailedError';
 
@@ -10,7 +9,6 @@ interface JSONRPCRequestProps {
 }
 
 export default async function jsonRPCRequest({url, method, request, verbose}: JSONRPCRequestProps) {
-    const id = uuid();
     const header = new Headers({
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json'
@@ -20,7 +18,7 @@ export default async function jsonRPCRequest({url, method, request, verbose}: JS
         jsonrpc: '2.0',
         method,
         params: [request],
-        id
+        id: 1234
     };
     console.debug(`API Request: ${body.method} -->\n`, body.params[0]);
     if (verbose) {

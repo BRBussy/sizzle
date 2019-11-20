@@ -15,9 +15,10 @@ try {
 
 if (subdomain === 'localhost') {
     config.set({
-        authURL: 'http://localhost:8080',
-        userURL: 'http://localhost:8081',
-        roleURL: 'http://localhost:8082'
+        authURL: 'http://localhost:8080/api',
+        userURL: 'http://localhost:8081/api',
+        roleURL: 'http://localhost:8082/api',
+        exerciseURL: 'http://localhost:8083/api'
     });
 } else {
     config.set({
