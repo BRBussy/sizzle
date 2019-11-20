@@ -20,13 +20,13 @@ export default async function jsonRPCRequest({url, method, request, verbose}: JS
         params: request,
         id: 1234
     };
-    console.debug(`API Request: ${body.method} -->\n`, body.params[0]);
+    console.debug(`API Request: ${body.method} -->\n`, body.params);
     if (verbose) {
         try {
-            console.debug('\n', JSON.parse(JSON.stringify(body.params[0])));
-            console.debug('\n', JSON.stringify(body.params[0]));
+            console.debug('\n', JSON.parse(JSON.stringify(body.params)));
+            console.debug('\n', JSON.stringify(body.params));
         } catch (e) {
-            console.error('error parsing stringified body.params[0]');
+            console.error('error parsing stringified body.params');
         }
     }
 
