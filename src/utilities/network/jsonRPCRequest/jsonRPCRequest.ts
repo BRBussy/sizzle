@@ -17,7 +17,7 @@ export default async function jsonRPCRequest({url, method, request, verbose}: JS
     const body = {
         jsonrpc: '2.0',
         method,
-        params: [request],
+        params: request,
         id: 1234
     };
     console.debug(`API Request: ${body.method} -->\n`, body.params[0]);
