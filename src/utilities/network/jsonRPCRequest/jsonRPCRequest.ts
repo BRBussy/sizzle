@@ -10,7 +10,6 @@ interface JSONRPCRequestProps {
 
 export default async function jsonRPCRequest({url, method, request, verbose}: JSONRPCRequestProps) {
     const header = new Headers({
-        'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json'
     });
 

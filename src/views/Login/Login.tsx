@@ -3,7 +3,9 @@ import {
 } from '@material-ui/core';
 import {useAppContext} from 'context/App';
 import React, {useState} from 'react';
+import config from 'react-global-configuration';
 import {Link} from 'react-router-dom';
+import jsonRPCRequest from '../../utilities/network/jsonRPCRequest';
 import useStyles from './style';
 
 const Login: React.FC = () => {
