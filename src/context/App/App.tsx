@@ -18,13 +18,28 @@ const AppContext: React.FC = ({children}: { children?: React.ReactNode }) => {
     useEffect(() => {
         try {
             const jwt = localStorage.getItem('jwt');
+            if (jwt) {
+                setAccessToken(jwt);
+            }
         } catch (e) {
             console.error('error determining logged in from local storage');
         }
     }, []);
 
+    useEffect(() => {
+        if (accessToken !== '') {
+            localStorage.setItem('jwt', accessToken);
+            console.log('there is an access token');
+        }
+    }, [accessToken]);
+
     const login: (email: string, password: string) => Promise<void> = async (email: string, password: string) => {
-        const loginResponse = await Authenticator.Login({email, password});
+        try {
+            const loginResponse = await Authenticator.Login({email, password});
+            setAccessToken(loginResponse.jwt);
+        } catch (e) {
+            console.error('error logging in', e);
+        }
     };
 
     return (
