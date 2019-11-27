@@ -1,5 +1,6 @@
 import {Authenticator} from 'bizzle/authenticator';
 import React, {useContext, useEffect, useState} from 'react';
+import {LoginClaims} from '../../bizzle/security/claims';
 
 interface Context {
     appContextLoggedIn: boolean;
@@ -15,10 +16,19 @@ const AppContext: React.FC = ({children}: { children?: React.ReactNode }) => {
     const [loading, setLoading] = useState(false);
     const [accessToken, setAccessToken] = useState('');
 
+    const resetState = () => {
+        localStorage.removeItem('jwt');
+        setLoggedIn(false);
+        setLoading(false);
+    };
+
+    // on first app load
     useEffect(() => {
         try {
+            // look for token in local storage
             const jwt = localStorage.getItem('jwt');
             if (jwt) {
+                // if one is found, set it
                 setAccessToken(jwt);
             }
         } catch (e) {
@@ -26,17 +36,48 @@ const AppContext: React.FC = ({children}: { children?: React.ReactNode }) => {
         }
     }, []);
 
+    // if access token changes
     useEffect(() => {
-        setLoading(true);
-        if (accessToken !== '') {
-            localStorage.setItem('jwt', accessToken);
-            console.log('there is an access token');
-        }
-        setLoading(false);
+      const initialise = async () => {
+          setLoading(true);
+
+          // if access token is blank
+          if (accessToken === '') {
+              // perform clean up and log out
+              resetState();
+              return;
+          }
+
+          // if access token is not blank
+          let loginClaims: LoginClaims;
+          try {
+              // try and parse access token to login claims
+              loginClaims = LoginClaims.newFromJWT(accessToken);
+          } catch (e) {
+              console.error('error parsing jwt to login claims', e);
+              // perform clean up and log out
+              resetState();
+              return;
+          }
+
+          // if claims expired
+          if (!loginClaims.notExpired) {
+              // perform clean up and log out
+              resetState();
+              return;
+          }
+
+          // if claims not expired, set claims and declare logged in
+          localStorage.setItem('jwt', accessToken);
+
+          setLoading(false);
+      };
+      initialise().finally();
     }, [accessToken]);
 
     const login: (email: string, password: string) => Promise<void> = async (email: string, password: string) => {
         try {
+            // on successful login set access token
             const loginResponse = await Authenticator.Login({email, password});
             setAccessToken(loginResponse.jwt);
         } catch (e) {
