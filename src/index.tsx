@@ -22,9 +22,10 @@ if (subdomain === 'localhost') {
     });
 } else {
     config.set({
-        authURL: '',
-        userURL: '',
-        roleURL: ''
+        authURL: 'https://auth-ylnmede6pq-uc.a.run.app/api',
+        userURL: 'https://user-ylnmede6pq-uc.a.run.app/api',
+        roleURL: 'https://role-ylnmede6pq-uc.a.run.app/api',
+        exerciseURL: 'http://localhost:8083/api'
     });
 }
 
