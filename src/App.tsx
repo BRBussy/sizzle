@@ -31,7 +31,7 @@ const App: React.FC = () => {
                         // Route catches all paths starting with '/app'
                         path={'/app'}
                         render={(props: any) => {
-                            if (appContextLoggedIn === null) {
+                            if (!appContextLoggedIn) {
                                 // user not logged in, redirect to root
                                 return (
                                     <Redirect to={'/'}/>

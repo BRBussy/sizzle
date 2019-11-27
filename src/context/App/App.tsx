@@ -6,6 +6,7 @@ interface Context {
     appContextLoggedIn: boolean;
     appContextLoading: boolean;
     appContextLogin: (email: string, password: string) => Promise<void>;
+    appContextLogout: () => void;
     appContextAccessToken: string;
 }
 
@@ -27,7 +28,7 @@ const AppContext: React.FC = ({children}: { children?: React.ReactNode }) => {
         try {
             // look for token in local storage
             const jwt = localStorage.getItem('jwt');
-            if (jwt) {
+            if (jwt && jwt !== 'null') {
                 // if one is found, set it
                 setAccessToken(jwt);
             }
@@ -38,42 +39,47 @@ const AppContext: React.FC = ({children}: { children?: React.ReactNode }) => {
 
     // if access token changes
     useEffect(() => {
-      const initialise = async () => {
-          setLoading(true);
+        const initialise = async () => {
+            setLoading(true);
 
-          // if access token is blank
-          if (accessToken === '') {
-              // perform clean up and log out
-              resetState();
-              return;
-          }
+            // if access token is blank
+            if (accessToken === '') {
+                // perform clean up and log out
+                resetState();
+                return;
+            }
 
-          // if access token is not blank
-          let loginClaims: LoginClaims;
-          try {
-              // try and parse access token to login claims
-              loginClaims = LoginClaims.newFromJWT(accessToken);
-          } catch (e) {
-              console.error('error parsing jwt to login claims', e);
-              // perform clean up and log out
-              resetState();
-              return;
-          }
+            // if access token is not blank
+            let loginClaims: LoginClaims;
+            try {
+                // try and parse access token to login claims
+                loginClaims = LoginClaims.newFromJWT(accessToken);
+            } catch (e) {
+                console.error('error parsing jwt to login claims', e);
+                // perform clean up and log out
+                resetState();
+                return;
+            }
 
-          // if claims expired
-          if (!loginClaims.notExpired) {
-              // perform clean up and log out
-              resetState();
-              return;
-          }
+            // if claims expired
+            if (!loginClaims.notExpired) {
+                // perform clean up and log out
+                resetState();
+                return;
+            }
 
-          // if claims not expired, set claims and declare logged in
-          localStorage.setItem('jwt', accessToken);
+            // if claims not expired, set claims and declare logged in
+            localStorage.setItem('jwt', accessToken);
+            setLoggedIn(true);
 
-          setLoading(false);
-      };
-      initialise().finally();
+            setLoading(false);
+        };
+        initialise().finally();
     }, [accessToken]);
+
+    const logout = () => {
+        setAccessToken('');
+    };
 
     const login: (email: string, password: string) => Promise<void> = async (email: string, password: string) => {
         try {
@@ -91,6 +97,7 @@ const AppContext: React.FC = ({children}: { children?: React.ReactNode }) => {
                 appContextLoading: loading,
                 appContextLoggedIn: loggedIn,
                 appContextLogin: login,
+                appContextLogout: logout,
                 appContextAccessToken: accessToken
             }}
         >

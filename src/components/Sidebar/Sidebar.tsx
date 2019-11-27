@@ -9,6 +9,7 @@ import {
 } from '@material-ui/icons';
 import logo from 'assets/images/logo/logo_emblem_transparent.png';
 import cx from 'classnames';
+import {useAppContext} from 'context/App';
 import {History} from 'history';
 import React, {useState} from 'react';
 import {NavLink} from 'react-router-dom';
@@ -41,6 +42,7 @@ export const Sidebar = (props: SidebarProps) => {
     const [miniActive, setMiniActive] = useState(true);
     const [collapseState, setCollapseState] = React.useState<CollapseState>({});
     const classes = useStyles();
+    const {appContextLogout} = useAppContext();
 
     const openCollapse = (state: string) => {
         setCollapseState({
@@ -99,7 +101,10 @@ export const Sidebar = (props: SidebarProps) => {
                             )}
                         />
                     </ListItem>
-                    <ListItem className={classes.listItem}>
+                    <ListItem
+                        className={classes.listItem}
+                        onClick={appContextLogout}
+                    >
                         <ListItemIcon className={classes.itemIcon}>
                             <LockIcon/>
                         </ListItemIcon>
