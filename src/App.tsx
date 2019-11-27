@@ -15,6 +15,7 @@ const App: React.FC = () => {
     } = useAppContext();
 
     if (appContextLoading) {
+        console.log('app is loading...');
         return (
             <div>app loading...</div>
         );

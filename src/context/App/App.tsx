@@ -27,10 +27,12 @@ const AppContext: React.FC = ({children}: { children?: React.ReactNode }) => {
     }, []);
 
     useEffect(() => {
+        setLoading(true);
         if (accessToken !== '') {
             localStorage.setItem('jwt', accessToken);
             console.log('there is an access token');
         }
+        setLoading(false);
     }, [accessToken]);
 
     const login: (email: string, password: string) => Promise<void> = async (email: string, password: string) => {
