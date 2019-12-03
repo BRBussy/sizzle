@@ -9,6 +9,9 @@ const PubView = () => {
             <Typography variant={'body1'}>
                 awe
             </Typography>
+            <Link to={'/app'}>
+                Back to App
+            </Link>
         </div>
     );
 };
