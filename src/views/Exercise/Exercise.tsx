@@ -1,11 +1,11 @@
 import React from 'react';
 
-const View1 = () => {
+const Exercise = () => {
   return (
     <div>
-      View1
+        Exercise
     </div>
   );
 };
 
-export default View1;
+export default Exercise;
