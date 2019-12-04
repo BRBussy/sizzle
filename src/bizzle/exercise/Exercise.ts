@@ -1,6 +1,9 @@
 export enum MuscleGroup {
     BicepsMuscleGroup = 'Biceps',
-    PectoralMuscleGroup = 'Pectoral'
+    PectoralMuscleGroup = 'Pectoral',
+    ShouldersMuscleGroup = 'Shoulders',
+    CoreMuscleGroup = 'Core',
+    LegsMuscleGroup = 'Legs'
 }
 
 export default class Exercise {
