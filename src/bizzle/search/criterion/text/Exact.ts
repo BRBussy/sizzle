@@ -1,13 +1,17 @@
 import { TextExactCriterionType } from 'bizzle/search/criterion';
 
-interface Criteria {
+interface TextExactCriterionType {
   type: string;
   string: string;
 }
 
-export default function StringExact(str: string): Criteria {
+export default TextExactCriterionType;
+
+function TextExact(str: string): TextExactCriterionType {
   return {
     type: TextExactCriterionType,
     string: str
   };
 }
+
+export {TextExact};

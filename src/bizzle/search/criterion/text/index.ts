@@ -1,7 +1,7 @@
-import StringExact from './Exact';
-import StringSubstring from './Substring';
+import {TextExact} from './Exact';
+import {TextSubstring} from './Substring';
 
 export {
-  StringSubstring,
-  StringExact
+  TextSubstring,
+  TextExact
 };

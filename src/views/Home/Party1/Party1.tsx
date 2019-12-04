@@ -2,8 +2,8 @@ import { Button, Typography } from '@material-ui/core';
 import {
   NumberExact,
   NumberRange,
-  StringExact,
-  StringSubstring
+  TextExact,
+  TextSubstring
 } from 'bizzle/search/criterion';
 import {IDIdentifier, NameIdentifier} from 'bizzle/search/identifier';
 import React from 'react';
@@ -12,11 +12,11 @@ import jsonRPCRequest from 'utilities/network/jsonRPCRequest';
 
 const testCrit = async () => {
   const criteria = {
-    name: StringSubstring('sam'),
+    name: TextSubstring('sam'),
     costAmount: NumberExact(1200.234),
     $or: [
       {
-        name: StringExact('sam'),
+        name: TextExact('sam'),
         amountDue: NumberRange(
           {
             number: 100
@@ -29,7 +29,7 @@ const testCrit = async () => {
       {
         $or: [
           {
-            surname: StringSubstring('sam')
+            surname: TextSubstring('sam')
           }
         ]
       }
