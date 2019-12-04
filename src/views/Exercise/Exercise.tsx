@@ -8,6 +8,7 @@ import {Query} from 'bizzle/search/query';
 import {BPTable} from 'components/Table';
 import {SubstringFilter} from 'components/Table/BPTable/filters/text';
 import React, {useEffect, useState} from 'react';
+import useStyles from './style';
 
 let fetchDataTimeout: any;
 
@@ -127,6 +128,7 @@ const Exercise = () => {
         records: [],
         total: 0
     });
+    const classes = useStyles();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -178,8 +180,8 @@ const Exercise = () => {
                         multiple
                         filterSelectedOptions
                         id={'tags-standard'}
-                        options={top100Films}
-                        getOptionLabel={(option) => option.title}
+                        options={AllMuscleGroups}
+                        getOptionLabel={(option) => option}
                         renderInput={(params) => (
                             <TextField
                                 {...params}
@@ -187,6 +189,8 @@ const Exercise = () => {
                                 label='Muscle Group'
                                 placeholder='Select Muscle Group'
                                 margin='normal'
+                                className={classes.muscleGroupFilterSelect}
+                                InputLabelProps={{ shrink: true }}
                             />
                         )}
                     />
