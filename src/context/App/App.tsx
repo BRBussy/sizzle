@@ -14,7 +14,7 @@ const Context = React.createContext({} as Context);
 
 const AppContext: React.FC = ({children}: { children?: React.ReactNode }) => {
     const [loggedIn, setLoggedIn] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [accessToken, setAccessToken] = useState('');
 
     const resetState = () => {

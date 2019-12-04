@@ -21,6 +21,9 @@ const App: React.FC = () => {
         );
     }
 
+    console.log('appContextLoading:', appContextLoading);
+    console.log('appContextLoggedIn:', appContextLoggedIn);
+
     const routes = privateRouteBuilder('a');
 
     return (
