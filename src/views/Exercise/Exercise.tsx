@@ -48,31 +48,27 @@ const Exercise = () => {
 
     const handleCriteriaChange = (newCriteria: TextSubstringCriterionType | null) => {
         setGeneralTextSubstringCriterion(newCriteria);
-        handleCriterionChange(newCriteria, selectedMuscleGroups);
     };
 
-    const handleCriterionChange = (
-        newGeneralCriteria: TextSubstringCriterionType | null,
-        newSelectedMuscleGroups: string[]
-    ) => {
+    useEffect(() => {
         let newCriteria = {};
-        if (newGeneralCriteria) {
+        if (generalTextSubstringCriterion) {
             newCriteria = {
                 ...newCriteria,
                 $or: [
-                    {name: newGeneralCriteria},
-                    {status: newGeneralCriteria}
+                    {name: generalTextSubstringCriterion},
+                    {status: generalTextSubstringCriterion}
                 ]
             };
         }
-        if (newSelectedMuscleGroups.length) {
+        if (selectedMuscleGroups.length) {
             newCriteria = {
                 ...newCriteria,
-                muscleGroup: TextList(newSelectedMuscleGroups)
+                muscleGroup: TextList(selectedMuscleGroups)
             };
         }
         setCriteria(newCriteria);
-    };
+    }, [generalTextSubstringCriterion, selectedMuscleGroups]);
 
     const handleQueryChange = (newQuery: Query) => {
         setQuery(newQuery);
@@ -80,7 +76,6 @@ const Exercise = () => {
 
     const handleMuscleGroupFilterChange = (_: any, updatedSelectedMuscleGroups: string[]) => {
         setSelectedMuscleGroups(updatedSelectedMuscleGroups);
-        handleCriterionChange(generalTextSubstringCriterion, updatedSelectedMuscleGroups);
     };
 
     return (
