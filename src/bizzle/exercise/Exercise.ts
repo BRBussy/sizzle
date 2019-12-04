@@ -6,6 +6,14 @@ export enum MuscleGroup {
     LegsMuscleGroup = 'Legs'
 }
 
+export const AllMuscleGroups: MuscleGroup[] = [
+    MuscleGroup.BicepsMuscleGroup,
+    MuscleGroup.PectoralMuscleGroup,
+    MuscleGroup.ShouldersMuscleGroup,
+    MuscleGroup.CoreMuscleGroup,
+    MuscleGroup.LegsMuscleGroup
+];
+
 export default class Exercise {
     public id: string = '';
     public name: string = '';

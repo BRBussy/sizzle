@@ -1,4 +1,5 @@
 import {ExerciseStore} from 'bizzle/exercise';
+import {AllMuscleGroups} from 'bizzle/exercise';
 import {FindManyResponse as ExerciseFindManyResponse} from 'bizzle/exercise/Store';
 import TextSubstringCriterionType from 'bizzle/search/criterion/text/Substring';
 import {Query} from 'bizzle/search/query';
