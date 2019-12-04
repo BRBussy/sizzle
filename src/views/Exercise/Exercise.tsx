@@ -1,4 +1,4 @@
-import {Chip, TextField} from '@material-ui/core';
+import {TextField} from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import {ExerciseStore} from 'bizzle/exercise';
 import {AllMuscleGroups} from 'bizzle/exercise';
@@ -8,6 +8,7 @@ import {Query} from 'bizzle/search/query';
 import {BPTable} from 'components/Table';
 import {SubstringFilter} from 'components/Table/BPTable/filters/text';
 import React, {useEffect, useState} from 'react';
+import {TextList} from '../../bizzle/search/criterion/text/List';
 import useStyles from './style';
 
 let fetchDataTimeout: any;
@@ -26,6 +27,7 @@ const Exercise = () => {
     });
     const classes = useStyles();
     const [selectedMuscleGroups, setSelectedMuscleGroups] = useState<string[]>([]);
+    const [generalTextSubstringCriterion, setGeneralTextSubstringCriterion] = useState<TextSubstringCriterionType | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -45,16 +47,31 @@ const Exercise = () => {
     }, [query, criteria]);
 
     const handleCriteriaChange = (newCriteria: TextSubstringCriterionType | null) => {
-        if (newCriteria === null) {
-            setCriteria({});
-        } else {
-            setCriteria({
+        setGeneralTextSubstringCriterion(newCriteria);
+        handleCriterionChange(newCriteria, selectedMuscleGroups);
+    };
+
+    const handleCriterionChange = (
+        newGeneralCriteria: TextSubstringCriterionType | null,
+        newSelectedMuscleGroups: string[]
+    ) => {
+        let newCriteria = {};
+        if (newGeneralCriteria) {
+            newCriteria = {
+                ...newCriteria,
                 $or: [
-                    { name: newCriteria },
-                    { status: newCriteria }
+                    {name: newGeneralCriteria},
+                    {status: newGeneralCriteria}
                 ]
-            });
+            };
         }
+        if (newSelectedMuscleGroups.length) {
+            newCriteria = {
+                ...newCriteria,
+                muscleGroup: TextList(newSelectedMuscleGroups)
+            };
+        }
+        setCriteria(newCriteria);
     };
 
     const handleQueryChange = (newQuery: Query) => {
@@ -63,6 +80,7 @@ const Exercise = () => {
 
     const handleMuscleGroupFilterChange = (_: any, updatedSelectedMuscleGroups: string[]) => {
         setSelectedMuscleGroups(updatedSelectedMuscleGroups);
+        handleCriterionChange(generalTextSubstringCriterion, updatedSelectedMuscleGroups);
     };
 
     return (
@@ -93,7 +111,7 @@ const Exercise = () => {
                                 }
                                 margin='normal'
                                 className={classes.muscleGroupFilterSelect}
-                                InputLabelProps={{ shrink: true }}
+                                InputLabelProps={{shrink: true}}
                             />
                         )}
                         onChange={handleMuscleGroupFilterChange}
