@@ -1,3 +1,3 @@
 export enum ClaimsType {
-    LoginClaimsType = 'Login',
+    LoginClaimsType = 'Login'
 }
