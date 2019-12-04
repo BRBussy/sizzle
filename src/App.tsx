@@ -14,6 +14,10 @@ const App: React.FC = () => {
         appContextLoggedIn
     } = useAppContext();
 
+    console.log('_______________________________');
+    console.log('appContextLoading:', appContextLoading);
+    console.log('appContextLoggedIn:', appContextLoggedIn);
+
     if (appContextLoading) {
         console.log('app is loading...');
         return (
@@ -21,8 +25,7 @@ const App: React.FC = () => {
         );
     }
 
-    console.log('appContextLoading:', appContextLoading);
-    console.log('appContextLoggedIn:', appContextLoggedIn);
+    console.log('app is not loading...');
 
     const routes = privateRouteBuilder('a');
 
