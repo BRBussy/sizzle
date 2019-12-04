@@ -1,6 +1,6 @@
 import {Authenticator} from 'bizzle/authenticator';
-import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
-import {LoginClaims} from '../../bizzle/security/claims';
+import {LoginClaims} from 'bizzle/security/claims';
+import React, {useContext, useLayoutEffect, useState} from 'react';
 
 interface Context {
     appContextLoggedIn: boolean;
@@ -15,9 +15,27 @@ const AppContext: React.FC = ({children}: { children?: React.ReactNode }) => {
     const [loggedIn, setLoggedIn] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    const resetState = () => {
-        localStorage.removeItem('jwt');
-        setLoggedIn(false);
+    const processJWT = (jwt: string) => {
+        let loginClaims: LoginClaims;
+        try {
+            // try and parse access token to login claims
+            loginClaims = LoginClaims.newFromJWT(jwt);
+        } catch (e) {
+            console.error('error parsing jwt to login claims', e);
+            // perform clean up and log out
+            logout();
+            return;
+        }
+
+        // if claims expired
+        if (!loginClaims.notExpired) {
+            // perform clean up and log out
+            logout();
+            return;
+        }
+
+        localStorage.setItem('jwt', jwt);
+        setLoggedIn(true);
         setLoading(false);
     };
 
@@ -26,31 +44,8 @@ const AppContext: React.FC = ({children}: { children?: React.ReactNode }) => {
         try {
             // look for token in local storage
             const jwt = localStorage.getItem('jwt');
-            if (
-                jwt &&
-                jwt !== 'null' &&
-                jwt !== ''
-            ) {
-                // token is found, process it
-                let loginClaims: LoginClaims;
-                try {
-                    // try and parse access token to login claims
-                    loginClaims = LoginClaims.newFromJWT(jwt);
-                } catch (e) {
-                    console.error('error parsing jwt to login claims', e);
-                    // perform clean up and log out
-                    logout();
-                    return;
-                }
-
-                // if claims expired
-                if (!loginClaims.notExpired) {
-                    // perform clean up and log out
-                    logout();
-                    return;
-                }
-                setLoggedIn(true);
-                setLoading(false);
+            if (jwt && jwt !== 'null' && jwt !== '') {
+                processJWT(jwt);
             } else {
                 logout();
             }
@@ -69,6 +64,7 @@ const AppContext: React.FC = ({children}: { children?: React.ReactNode }) => {
         try {
             // on successful login set access token
             const loginResponse = await Authenticator.Login({email, password});
+            processJWT(loginResponse.jwt);
         } catch (e) {
             console.error('error logging in', e);
         }

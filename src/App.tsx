@@ -1,3 +1,4 @@
+import {CircularProgress} from '@material-ui/core';
 import {useAppContext} from 'context/App';
 import AppLayout from 'layouts/App';
 import PublicLayout from 'layouts/Public';
@@ -7,25 +8,24 @@ import {Router} from 'routes';
 import publicRoutes from 'routes/public';
 import LoginView from 'views/Login';
 import {privateRouteBuilder} from './routes/private';
+import useStyles from './style';
 
 const App: React.FC = () => {
     const {
         appContextLoading,
         appContextLoggedIn
     } = useAppContext();
-
-    console.log('_______________________________');
-    console.log('appContextLoading:', appContextLoading);
-    console.log('appContextLoggedIn:', appContextLoggedIn);
+    const classes = useStyles();
 
     if (appContextLoading) {
-        console.log('app is loading...');
         return (
-            <div>app loading...</div>
+            <div className={classes.loadingRoot}>
+                <div className={classes.content}>
+                    <CircularProgress/>
+                </div>
+            </div>
         );
     }
-
-    console.log('app is not loading...');
 
     const routes = privateRouteBuilder('a');
 
