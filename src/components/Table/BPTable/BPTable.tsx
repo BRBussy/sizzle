@@ -106,7 +106,7 @@ const BPTable = (props: BPTableProps) => {
             </div>
             <Collapse in={filterPanelOpen}>
                 <div className={classes.filterLayout}>
-                    <Grid container spacing={1}>
+                    <Grid container spacing={2} alignItems={'center'}>
                         {props.filters.map((f, idx) => (
                             <Grid item key={idx}>
                                 {f}
