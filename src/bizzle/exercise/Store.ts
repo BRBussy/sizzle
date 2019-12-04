@@ -8,7 +8,7 @@ interface FindManyRequest {
     query?: Query;
 }
 
-interface FindManyResponse {
+export interface FindManyResponse {
     records: Exercise[];
     total: number;
 }

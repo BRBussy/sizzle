@@ -1,3 +1,3 @@
 export * from './number';
-export * from './string';
+export * from './text';
 export * from './types';

@@ -1,6 +1,6 @@
 // string types
-export const StringSubstringCriterionType: string = 'StringSubstring';
-export const StringExactCriterionType: string = 'StringExact';
+export const TextSubstringCriterionType: string = 'TextSubstring';
+export const TextExactCriterionType: string = 'TextExact';
 
 // number types
 export const NumberRangeCriterionType: string = 'NumberRange';

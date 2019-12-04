@@ -1,4 +1,4 @@
-import { StringExactCriterionType } from 'bizzle/search/criterion';
+import { TextExactCriterionType } from 'bizzle/search/criterion';
 
 interface Criteria {
   type: string;
@@ -7,7 +7,7 @@ interface Criteria {
 
 export default function StringExact(str: string): Criteria {
   return {
-    type: StringExactCriterionType,
+    type: TextExactCriterionType,
     string: str
   };
 }
