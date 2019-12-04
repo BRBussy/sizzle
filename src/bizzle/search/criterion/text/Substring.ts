@@ -2,7 +2,7 @@ import { TextSubstringCriterionType } from 'bizzle/search/criterion';
 
 interface TextSubstringCriterionType {
   type: string;
-  string: string;
+  text: string;
 }
 
 export default TextSubstringCriterionType;
@@ -10,7 +10,7 @@ export default TextSubstringCriterionType;
 function TextSubstring(str: string): TextSubstringCriterionType {
   return {
     type: TextSubstringCriterionType,
-    string: str
+    text: str
   };
 }
 

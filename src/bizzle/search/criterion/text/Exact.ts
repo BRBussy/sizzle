@@ -2,7 +2,7 @@ import { TextExactCriterionType } from 'bizzle/search/criterion';
 
 interface TextExactCriterionType {
   type: string;
-  string: string;
+  text: string;
 }
 
 export default TextExactCriterionType;
@@ -10,7 +10,7 @@ export default TextExactCriterionType;
 function TextExact(str: string): TextExactCriterionType {
   return {
     type: TextExactCriterionType,
-    string: str
+    text: str
   };
 }
 
