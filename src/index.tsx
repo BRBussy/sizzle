@@ -1,4 +1,5 @@
 import AppContext from 'context/App';
+import ThemeContext from 'context/Theme';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import config from 'react-global-configuration';
@@ -30,9 +31,11 @@ if (subdomain === 'localhost') {
 }
 
 ReactDOM.render(
-    <AppContext>
-        <App/>
-    </AppContext>,
+    <ThemeContext>
+        <AppContext>
+            <App/>
+        </AppContext>
+    </ThemeContext>,
     document.getElementById('root')
 );
 
