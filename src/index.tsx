@@ -1,3 +1,4 @@
+import { CssBaseline } from '@material-ui/core';
 import AppContext from 'context/App';
 import ThemeContext from 'context/Theme';
 import React from 'react';
@@ -31,11 +32,12 @@ if (subdomain === 'localhost') {
 }
 
 ReactDOM.render(
-    <ThemeContext>
         <AppContext>
+            <ThemeContext>
+                <CssBaseline/>
             <App/>
-        </AppContext>
-    </ThemeContext>,
+            </ThemeContext>
+        </AppContext>,
     document.getElementById('root')
 );
 
