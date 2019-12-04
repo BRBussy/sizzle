@@ -1,6 +1,7 @@
 import { CssBaseline } from '@material-ui/core';
 import AppContext from 'context/App';
 import ThemeContext from 'context/Theme';
+import 'perfect-scrollbar/css/perfect-scrollbar.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import config from 'react-global-configuration';

@@ -106,6 +106,7 @@ const Party1 = () => {
           go to a Public View
         </Link>
       </Typography>
+      <div style={{height: 1000}}>hello</div>
     </div>
   );
 };

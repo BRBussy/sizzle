@@ -1,5 +1,6 @@
 import cx from 'classnames';
 import Header from 'components/Header';
+import usePerfectScrollbar from 'components/PerfectScrollbar';
 import Sidebar from 'components/Sidebar';
 import { History } from 'history';
 import React, { useState } from 'react';
@@ -18,6 +19,7 @@ const App = (props: AppProps) => {
   const classes = useStyles();
   const [miniActive, setMiniActive] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const setScrollBarElementRef = usePerfectScrollbar();
 
   if (
     (props.homeRoute.component == null) ||
@@ -58,7 +60,10 @@ const App = (props: AppProps) => {
           handleSidebarToggle={() => setSidebarOpen(!sidebarOpen)}
         />
         <div className={classes.content}>
-          <div className={classes.container}>
+          <div
+              className={classes.container}
+              ref={setScrollBarElementRef}
+          >
             {props.children}
           </div>
         </div>
