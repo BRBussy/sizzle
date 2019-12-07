@@ -52,6 +52,7 @@ const AppContext: React.FC = ({children}: { children?: React.ReactNode }) => {
         } catch (e) {
             console.error('error determining logged in from local storage');
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const logout = () => {
