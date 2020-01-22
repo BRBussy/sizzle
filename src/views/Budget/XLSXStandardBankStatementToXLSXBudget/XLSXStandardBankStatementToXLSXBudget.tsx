@@ -1,5 +1,18 @@
-import {Card, CardContent, CardHeader, createStyles, makeStyles, Theme} from '@material-ui/core';
+import {
+    AppBar,
+    Card,
+    CardContent,
+    CardHeader,
+    CircularProgress,
+    createStyles,
+    makeStyles,
+    Tab,
+    Tabs,
+    Theme,
+    Typography
+} from '@material-ui/core';
 import {Budget, BudgetAdmin} from 'bizzle/budget';
+import cx from 'classnames';
 import React, {useCallback, useState} from 'react';
 import {useDropzone} from 'react-dropzone';
 
@@ -8,6 +21,16 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         display: 'grid',
         gridTemplateRows: 'auto 1fr',
         gridRowGap: theme.spacing(1)
+    },
+    budgetsLoadingLayout: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyItems: 'center',
+        justifyContent: 'center'
+    },
+    budgetsLayout: {
+        display: 'grid',
+        gridTemplateRows: 'auto 1fr'
     }
 }));
 
@@ -22,6 +45,7 @@ const XLSXStandardBankStatementToXLSXBudget = () => {
             reader.onabort = () => console.error('file reading was aborted');
             reader.onerror = () => console.error('file reading has failed');
             reader.onloadend = async () => {
+                setLoading(true);
                 const fileData: string = reader.result as string;
                 try {
                     setBudgets((await BudgetAdmin.XLSXStandardBankStatementToBudgets({
@@ -30,6 +54,7 @@ const XLSXStandardBankStatementToXLSXBudget = () => {
                 } catch (e) {
                     console.error('error processing file', e);
                 }
+                setLoading(false);
             };
             reader.readAsDataURL(file);
         });
@@ -50,8 +75,43 @@ const XLSXStandardBankStatementToXLSXBudget = () => {
             </Card>
             <Card>
                 <CardHeader title={'Budgets'}/>
-                <CardContent>
-                    Content
+                <CardContent
+                    classes={{
+                        root: cx({
+                            [classes.budgetsLoadingLayout]: loading,
+                            [classes.budgetsLayout]: !loading
+                        })
+                    }}
+                >
+                    {loading
+                        ? (
+                            <CircularProgress/>
+                        )
+                        : (
+                            <React.Fragment>
+                                {budgets.length
+                                    ? (
+                                        <AppBar position={'static'}>
+                                            <Tabs value={0}>
+                                                {budgets.map((b, idx) => (
+                                                    <Tab
+                                                        key={idx}
+                                                        label={b.month}
+                                                        value={idx}
+                                                    />
+                                                ))}
+                                            </Tabs>
+                                        </AppBar>
+                                    )
+                                    : (
+                                        <Typography>
+                                            No Budgets
+                                        </Typography>
+                                    )
+                                }
+                            </React.Fragment>
+                        )
+                    }
                 </CardContent>
             </Card>
         </div>
