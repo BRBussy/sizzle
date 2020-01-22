@@ -1,5 +1,9 @@
 import BudgetAdmin from './Admin';
+import Budget from './Budget';
+import BudgetEntry from './Entry';
 
 export {
-    BudgetAdmin
+    Budget,
+    BudgetAdmin,
+    BudgetEntry
 };

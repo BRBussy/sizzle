@@ -12,7 +12,7 @@ const XLSXStandardBankStatementToXLSXBudget = () => {
             reader.onloadend = async () => {
                 const fileData: string = reader.result as string;
                 try {
-                    await BudgetAdmin.XLSXStandardBankStatementToXLSXBudget({
+                    await BudgetAdmin.XLSXStandardBankStatementToBudgets({
                         xlsxStatement: fileData.slice(fileData.indexOf(',') + 1)
                     });
                 } catch (e) {
