@@ -21,14 +21,16 @@ if (subdomain === 'localhost') {
         authURL: 'http://localhost:8080/api',
         userURL: 'http://localhost:8081/api',
         roleURL: 'http://localhost:8082/api',
-        exerciseURL: 'http://localhost:8083/api'
+        exerciseURL: 'http://localhost:8083/api',
+        budgetURL: 'http://localhost:8084/api'
     });
 } else {
     config.set({
         authURL: 'https://auth-ylnmede6pq-uc.a.run.app/api',
         userURL: 'https://user-ylnmede6pq-uc.a.run.app/api',
         roleURL: 'https://role-ylnmede6pq-uc.a.run.app/api',
-        exerciseURL: 'https://exercise-ylnmede6pq-uc.a.run.app/api'
+        exerciseURL: 'https://exercise-ylnmede6pq-uc.a.run.app/api',
+        budgetURL: 'https://exercise-ylnmede6pq-uc.a.run.app/api',
     });
 }
 

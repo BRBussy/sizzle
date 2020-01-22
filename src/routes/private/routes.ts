@@ -1,9 +1,10 @@
 import {
-    Mail as MailIcon,
     Map as MapIcon,
-    Money as MoneyIcon
+    Money as MoneyIcon,
+    Pages as BudgetIcon
 } from '@material-ui/icons';
 import {RouteType} from 'routes/Route';
+import XLSXStandardBankStatementToXLSXBudgetView from 'views/Budget/XLSXStandardBankStatementToXLSXBudget';
 import ExerciseView from 'views/Exercise';
 import {Party1HomeView} from 'views/Home';
 import ProfileView from 'views/Profile';
@@ -32,20 +33,19 @@ export const routes: RouteType[] = [
         views: null
     },
 
-    // multiple routes accessed from collapsible menu
     {
-        name: 'Setup',
-        path: '/app/setup',
-        icon: MailIcon,
+        name: 'Budget',
+        path: '/app/budget',
+        icon: BudgetIcon,
         component: null,
 
         collapse: true,
         views: [
             {
-                name: 'Role',
-                path: '/app/setup/role',
+                name: 'Process Bank Statement',
+                path: '/app/budget/xlsxStandardBankStatementToXLSXBudgetView',
                 icon: MapIcon,
-                component: ProfileView
+                component: XLSXStandardBankStatementToXLSXBudgetView
             }
         ]
     }
