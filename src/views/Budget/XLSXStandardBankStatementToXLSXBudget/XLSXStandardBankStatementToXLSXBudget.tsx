@@ -29,8 +29,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         justifyContent: 'center'
     },
     budgetsLayout: {
-        display: 'grid',
-        gridTemplateRows: 'auto 1fr'
+        // display: 'grid',
+        // gridTemplateRows: 'auto 1fr',
+        // gridTemplateColumns: '1fr'
     }
 }));
 
@@ -38,6 +39,7 @@ const XLSXStandardBankStatementToXLSXBudget = () => {
     const classes = useStyles();
     const [budgets, setBudgets] = useState<Budget[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
+    const [selectedBudgetTab, setSelectedBudgetTab] = useState<number>(0);
     const onDrop = useCallback((acceptedFiles) => {
         acceptedFiles.forEach((file: Blob) => {
             const reader = new FileReader();
@@ -60,6 +62,10 @@ const XLSXStandardBankStatementToXLSXBudget = () => {
         });
     }, []);
     const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop});
+
+    const handleBudgetTabChange = (e: any, newTabValue: number) => {
+        setSelectedBudgetTab(newTabValue);
+    };
 
     return (
         <div className={classes.root}>
@@ -91,17 +97,24 @@ const XLSXStandardBankStatementToXLSXBudget = () => {
                             <React.Fragment>
                                 {budgets.length
                                     ? (
-                                        <AppBar position={'static'}>
-                                            <Tabs value={0}>
-                                                {budgets.map((b, idx) => (
-                                                    <Tab
-                                                        key={idx}
-                                                        label={b.month}
-                                                        value={idx}
-                                                    />
-                                                ))}
-                                            </Tabs>
-                                        </AppBar>
+                                        <React.Fragment>
+                                            <AppBar position={'static'}>
+                                                <Tabs
+                                                    scrollButtons={'on'}
+                                                    value={selectedBudgetTab}
+                                                    variant={'scrollable'}
+                                                    onChange={handleBudgetTabChange}
+                                                >
+                                                    {budgets.map((b, idx) => (
+                                                        <Tab
+                                                            key={idx}
+                                                            label={`${b.year} - ${b.month}`}
+                                                            value={idx}
+                                                        />
+                                                    ))}
+                                                </Tabs>
+                                            </AppBar>
+                                        </React.Fragment>
                                     )
                                     : (
                                         <Typography>
