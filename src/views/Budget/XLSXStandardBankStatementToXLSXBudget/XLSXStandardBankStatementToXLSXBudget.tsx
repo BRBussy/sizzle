@@ -39,7 +39,8 @@ const XLSXStandardBankStatementToXLSXBudget = () => {
     const classes = useStyles();
     const [budgets, setBudgets] = useState<Budget[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
-    const [selectedBudgetTab, setSelectedBudgetTab] = useState<number>(0);
+    const [selectedBudgetTabIndex, setSelectedBudgetTabIndex] = useState<number>(0);
+    const [selectedBudgetTabCategory, setSelectedBudgetTabCategory] = useState<string>('Summary');
     const onDrop = useCallback((acceptedFiles) => {
         acceptedFiles.forEach((file: Blob) => {
             const reader = new FileReader();
@@ -50,6 +51,7 @@ const XLSXStandardBankStatementToXLSXBudget = () => {
                 setLoading(true);
                 const fileData: string = reader.result as string;
                 try {
+                    setSelectedBudgetTabIndex(0);
                     setBudgets((await BudgetAdmin.XLSXStandardBankStatementToBudgets({
                         xlsxStatement: fileData.slice(fileData.indexOf(',') + 1)
                     })).budgets);
@@ -63,8 +65,12 @@ const XLSXStandardBankStatementToXLSXBudget = () => {
     }, []);
     const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop});
 
-    const handleBudgetTabChange = (e: any, newTabValue: number) => {
-        setSelectedBudgetTab(newTabValue);
+    const handleBudgetTabIndexChange = (e: any, newTabValue: number) => {
+        setSelectedBudgetTabIndex(newTabValue);
+    };
+
+    const handleBudgetCategoryTabChange = (e: any, newTabValue: string) => {
+        setSelectedBudgetTabCategory(newTabValue);
     };
 
     return (
@@ -101,9 +107,9 @@ const XLSXStandardBankStatementToXLSXBudget = () => {
                                             <AppBar position={'static'}>
                                                 <Tabs
                                                     scrollButtons={'on'}
-                                                    value={selectedBudgetTab}
+                                                    value={selectedBudgetTabIndex}
                                                     variant={'scrollable'}
-                                                    onChange={handleBudgetTabChange}
+                                                    onChange={handleBudgetTabIndexChange}
                                                 >
                                                     {budgets.map((b, idx) => (
                                                         <Tab
@@ -114,6 +120,30 @@ const XLSXStandardBankStatementToXLSXBudget = () => {
                                                     ))}
                                                 </Tabs>
                                             </AppBar>
+                                            <Card>
+                                                <CardContent>
+                                                    <AppBar position={'static'}>
+                                                        <Tabs
+                                                            scrollButtons={'on'}
+                                                            value={selectedBudgetTabCategory}
+                                                            variant={'scrollable'}
+                                                            onChange={handleBudgetCategoryTabChange}
+                                                        >
+                                                            <Tab
+                                                                label={'Summary'}
+                                                                value={'Summary'}
+                                                            />
+                                                            {Object.keys(budgets[selectedBudgetTabIndex].entries).map((category, idx) => (
+                                                                <Tab
+                                                                    key={idx}
+                                                                    label={category}
+                                                                    value={category}
+                                                                />
+                                                            ))}
+                                                        </Tabs>
+                                                    </AppBar>
+                                                </CardContent>
+                                            </Card>
                                         </React.Fragment>
                                     )
                                     : (
