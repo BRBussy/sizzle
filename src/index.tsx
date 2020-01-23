@@ -30,7 +30,7 @@ if (subdomain === 'localhost') {
         userURL: 'https://user-ylnmede6pq-uc.a.run.app/api',
         roleURL: 'https://role-ylnmede6pq-uc.a.run.app/api',
         exerciseURL: 'https://exercise-ylnmede6pq-uc.a.run.app/api',
-        budgetURL: 'https://exercise-ylnmede6pq-uc.a.run.app/api',
+        budgetURL: 'https://budget-ylnmede6pq-uc.a.run.app/api',
     });
 }
 
