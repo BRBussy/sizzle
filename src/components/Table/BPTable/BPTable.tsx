@@ -12,7 +12,7 @@ import useStyles, {tableFilterPanelHeight, tableTitleRowHeight} from './style';
 
 interface BPTableProps {
     columns: Column[];
-    data: Array<{ [key: string]: any }>;
+    data: { [key: string]: any }[];
     initialQuery?: Query;
     height?: number;
     title: string;
