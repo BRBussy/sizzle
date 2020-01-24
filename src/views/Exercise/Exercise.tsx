@@ -1,6 +1,6 @@
 import {TextField} from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import {ExerciseStore} from 'bizzle/exercise';
+import {ExerciseStore, MuscleGroup} from 'bizzle/exercise';
 import {AllMuscleGroups} from 'bizzle/exercise';
 import {FindManyResponse as ExerciseFindManyResponse} from 'bizzle/exercise/Store';
 import TextSubstringCriterionType from 'bizzle/search/criterion/text/Substring';
@@ -95,7 +95,7 @@ const Exercise = () => {
                         filterSelectedOptions
                         id={'tags-standard'}
                         options={AllMuscleGroups}
-                        getOptionLabel={(option) => option}
+                        getOptionLabel={(option: MuscleGroup) => (option)}
                         renderInput={(params) => (
                             <TextField
                                 {...params}
