@@ -15,6 +15,7 @@ import {Budget, BudgetAdmin} from 'bizzle/budget';
 import cx from 'classnames';
 import React, {useCallback, useState} from 'react';
 import {useDropzone} from 'react-dropzone';
+import {FETable} from 'components/Table';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
@@ -148,7 +149,12 @@ const XLSXStandardBankStatementToXLSXBudget = () => {
                                     )
                                     : (
                                         <Typography>
-                                            No Budgets
+                                            <FETable
+                                                data={[]}
+                                                columns={[]}
+                                                height={400}
+                                                title={'Budget'}
+                                            />
                                         </Typography>
                                     )
                                 }

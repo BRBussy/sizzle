@@ -10,6 +10,22 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     container: {
         maxHeight: 440
+    },
+    tableTitleLayout: {
+        height: tableTitleRowHeight,
+        display: 'grid',
+        gridTemplateColumns: '1fr auto',
+        padding: theme.spacing(1),
+        alignItems: 'center'
+    },
+    tableTitle: {},
+    tableTitleControlLayout: {
+        display: 'flex',
+        flexDirection: 'row'
+    },
+    tableWrapper: {
+        transition: 'height 0.3s ease-out',
+        overflow: 'auto'
     }
 }));
 

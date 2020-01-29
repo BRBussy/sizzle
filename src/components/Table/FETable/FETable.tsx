@@ -1,11 +1,14 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
+    IconButton,
     makeStyles, Paper, Table,
-    TableBody, TableCell, TableContainer,
+    TableBody, TableCell,
     TableHead, TablePagination, TableRow
 } from '@material-ui/core';
+import {FilterList as FilterIcon} from '@material-ui/icons';
+import useStyles, {tableTitleRowHeight} from './style';
 
-interface Column {
+interface OldColumn {
     id: 'name' | 'code' | 'population' | 'size' | 'density';
     label: string;
     minWidth?: number;
@@ -13,7 +16,7 @@ interface Column {
     format?: (value: number) => string;
 }
 
-const columns: Column[] = [
+const columns: OldColumn[] = [
     {id: 'name', label: 'Name', minWidth: 170},
     {id: 'code', label: 'ISO\u00a0Code', minWidth: 100},
     {
@@ -70,19 +73,31 @@ const rows = [
     createData('Brazil', 'BR', 210147125, 8515767)
 ];
 
-const useStyles = makeStyles({
-    root: {
-        width: '100%'
-    },
-    container: {
-        maxHeight: 440
-    }
-});
+interface FETableProps {
+    columns: Column[];
+    data: { [key: string]: any }[];
+    title: string;
+    height?: number;
+}
 
-export default function FETable() {
+interface Column {
+    field?: string;
+    label: string;
+    minWidth?: number;
+    align?: 'right';
+    accessor?: (data: any) => string | number;
+    addStyle?: { [key: string]: any };
+}
+
+export default function FETable(props: FETableProps) {
     const classes = useStyles();
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [paginationComponentHeight, setPaginationComponentHeight] = useState(56);
+    const [tableHeadHeight, setTableHeadHeight] = useState(53);
+    const tableHeight = props.height ? props.height : 600;
+
+    const tableWrapperHeight = tableHeight - tableTitleRowHeight - paginationComponentHeight;
 
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage);
@@ -95,9 +110,29 @@ export default function FETable() {
 
     return (
         <Paper className={classes.root}>
-            <TableContainer className={classes.container}>
-                <Table stickyHeader aria-label='sticky table'>
-                    <TableHead>
+            <div className={classes.tableTitleLayout}>
+                <div className={classes.tableTitle}>{props.title}</div>
+                <div className={classes.tableTitleControlLayout}>
+                    <IconButton size={'small'}>
+                        <FilterIcon/>
+                    </IconButton>
+                </div>
+            </div>
+            <div
+                className={classes.tableWrapper}
+                style={{height: tableWrapperHeight}}
+            >
+                <Table stickyHeader>
+                    <TableHead
+                        ref={(tableHeadRef: HTMLDivElement) => {
+                            if (!tableHeadRef) {
+                                return;
+                            }
+                            if (tableHeadRef.clientHeight && tableHeadRef.clientHeight !== tableHeadHeight) {
+                                setTableHeadHeight(tableHeadRef.clientHeight);
+                            }
+                        }}
+                    >
                         <TableRow>
                             {columns.map(column => (
                                 <TableCell
@@ -127,8 +162,16 @@ export default function FETable() {
                         })}
                     </TableBody>
                 </Table>
-            </TableContainer>
+            </div>
             <TablePagination
+                ref={(paginationRef: HTMLDivElement) => {
+                    if (!paginationRef) {
+                        return;
+                    }
+                    if (paginationRef.clientHeight && paginationComponentHeight !== paginationRef.clientHeight) {
+                        setPaginationComponentHeight(paginationRef.clientHeight);
+                    }
+                }}
                 rowsPerPageOptions={[10, 25, 100]}
                 component='div'
                 count={rows.length}
