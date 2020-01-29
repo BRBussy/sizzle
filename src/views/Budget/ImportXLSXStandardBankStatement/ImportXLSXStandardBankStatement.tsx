@@ -9,7 +9,10 @@ import {
     Tab,
     Tabs,
     Theme,
-    Typography
+    Typography,
+    Stepper,
+    Step,
+    StepLabel,
 } from '@material-ui/core';
 import {BudgetEntry, BudgetEntryAdmin} from 'bizzle/budget/entry';
 import cx from 'classnames';
@@ -36,10 +39,18 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     }
 }));
 
+enum AppState {
+    selectFile,
+    parseFile,
+    performDuplicateCheck,
+    prepareImport
+}
+
 const ImportXLSXStandardBankStatement = () => {
     const classes = useStyles();
     const [budgetEntries, setBudgetEntries] = useState<BudgetEntry[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
+    const [appState, setAppState] = useState<AppState>(AppState.selectFile);
     const onDrop = useCallback((acceptedFiles) => {
         acceptedFiles.forEach((file: Blob) => {
             const reader = new FileReader();
@@ -66,7 +77,16 @@ const ImportXLSXStandardBankStatement = () => {
     return (
         <div className={classes.root}>
             <Card>
-                <CardHeader title={'Upload XLSX File'}/>
+                <CardHeader
+                    title={<Stepper activeStep={appState} alternativeLabel>
+                        <Step key={AppState.selectFile}>
+                            <StepLabel>Select File</StepLabel>
+                        </Step>
+                        <Step key={AppState.selectFile}>
+                            <StepLabel>Prepare Import</StepLabel>
+                        </Step>
+                    </Stepper>}
+                />
                 <CardContent {...getRootProps()}>
                     <input {...getInputProps()} />
                     {isDragActive
@@ -89,11 +109,13 @@ const ImportXLSXStandardBankStatement = () => {
                         ? (
                             <CircularProgress/>
                         )
-                        : (
-                            <React.Fragment>
-                                parsed!!
-                            </React.Fragment>
-                        )
+                        : ((() => {
+                            switch (appState) {
+                                case AppState.selectFile:
+                                    return;
+                            }
+                            return null;
+                        })())
                     }
                 </CardContent>
             </Card>
@@ -102,3 +124,9 @@ const ImportXLSXStandardBankStatement = () => {
 };
 
 export default ImportXLSXStandardBankStatement;
+
+const SelectFileStep = () => {
+    return (
+        <div></div>
+    )
+};
