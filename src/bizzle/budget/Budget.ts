@@ -1,4 +1,4 @@
-import Entry from './Entry';
+import Entry from './entry/Entry';
 
 export default class Budget {
     public month: string = '';

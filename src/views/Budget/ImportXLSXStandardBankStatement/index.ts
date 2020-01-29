@@ -1,0 +1,3 @@
+import ImportXLSXStandardBankStatement from './ImportXLSXStandardBankStatement';
+
+export default ImportXLSXStandardBankStatement;

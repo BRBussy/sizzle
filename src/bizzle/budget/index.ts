@@ -1,6 +1,6 @@
 import BudgetAdmin from './Admin';
 import Budget from './Budget';
-import BudgetEntry from './Entry';
+import BudgetEntry from './entry/Entry';
 
 export {
     Budget,

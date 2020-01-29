@@ -4,7 +4,7 @@ import {
     Pages as BudgetIcon
 } from '@material-ui/icons';
 import {RouteType} from 'routes/Route';
-import XLSXStandardBankStatementToXLSXBudgetView from 'views/Budget/XLSXStandardBankStatementToXLSXBudget';
+import ImportXLSXStandardBankStatementView from 'views/Budget/ImportXLSXStandardBankStatement';
 import ExerciseView from 'views/Exercise';
 import {Party1HomeView} from 'views/Home';
 import ProfileView from 'views/Profile';
@@ -43,9 +43,9 @@ export const routes: RouteType[] = [
         views: [
             {
                 name: 'Process Bank Statement',
-                path: '/app/budget/xlsxStandardBankStatementToXLSXBudgetView',
+                path: '/app/budget/importXLSXStandardBankStatement',
                 icon: MapIcon,
-                component: XLSXStandardBankStatementToXLSXBudgetView
+                component: ImportXLSXStandardBankStatementView
             }
         ]
     }
