@@ -150,8 +150,20 @@ const XLSXStandardBankStatementToXLSXBudget = () => {
                                     : (
                                         <Typography>
                                             <FETable
-                                                data={[]}
-                                                columns={[]}
+                                                data={[
+                                                    {
+                                                        name: 'bob'
+                                                    },
+                                                    {
+                                                        name: 'sarah'
+                                                    }
+                                                ]}
+                                                columns={[
+                                                    {
+                                                        field: 'name',
+                                                        label: 'Name'
+                                                    }
+                                                ]}
                                                 height={400}
                                                 title={'Budget'}
                                             />

@@ -1,5 +1,4 @@
 import {createStyles, makeStyles, Theme} from '@material-ui/core';
-import {HexToRGBA} from 'utilities/color';
 
 const tableTitleRowHeight: number = 60;
 const tableFilterPanelHeight: number = 80;

@@ -146,9 +146,7 @@ const BPTable = (props: BPTableProps) => {
                     <TableBody>
                         {props.data.map((data, rowIdx) => {
                             return (
-                                <TableRow
-                                    key={rowIdx}
-                                >
+                                <TableRow key={rowIdx}>
                                     {props.columns.map((col, colIdx) => {
                                         let addStyle: { [key: string]: any } = {};
                                         if (col.addStyle) {
