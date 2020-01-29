@@ -143,30 +143,41 @@ const XLSXStandardBankStatementToXLSXBudget = () => {
                                                             ))}
                                                         </Tabs>
                                                     </AppBar>
+                                                    {(()=>{
+                                                        if (selectedBudgetTabCategory === 'Summary') {
+                                                            return (
+                                                              <div>Summary</div>
+                                                            );
+                                                        }
+                                                        return (
+                                                            <FETable
+                                                                data={budgets[selectedBudgetTabIndex].entries[selectedBudgetTabCategory]}
+                                                                columns={[
+                                                                    {
+                                                                        field: 'date',
+                                                                        label: 'Date'
+                                                                    },
+                                                                    {
+                                                                        field: 'description',
+                                                                        label: 'Description'
+                                                                    },
+                                                                    {
+                                                                        field: 'amount',
+                                                                        label: 'Amount'
+                                                                    }
+                                                                ]}
+                                                                height={400}
+                                                                title={selectedBudgetTabCategory}
+                                                            />
+                                                        )
+                                                    })()}
                                                 </CardContent>
                                             </Card>
                                         </React.Fragment>
                                     )
                                     : (
                                         <Typography>
-                                            <FETable
-                                                data={[
-                                                    {
-                                                        name: 'bob'
-                                                    },
-                                                    {
-                                                        name: 'sarah'
-                                                    }
-                                                ]}
-                                                columns={[
-                                                    {
-                                                        field: 'name',
-                                                        label: 'Name'
-                                                    }
-                                                ]}
-                                                height={400}
-                                                title={'Budget'}
-                                            />
+                                            No Budget
                                         </Typography>
                                     )
                                 }
