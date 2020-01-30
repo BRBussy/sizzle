@@ -198,13 +198,17 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
     const classes = usePrepareImportStepStyles();
     const [selectedTab, setSelectedTab] = useState(PrepareImportTab.uniques);
 
+    const handleTabChange = (event: React.ChangeEvent<{}>, newValue: PrepareImportTab) => {
+        setSelectedTab(newValue);
+    };
+
     return (
         <Card>
             <CardHeader title={
                 <AppBar position='static'>
                     <Tabs
                         value={selectedTab}
-                        // onChange={handleChange}
+                        onChange={handleTabChange}
                         variant={'scrollable'}
                         scrollButtons={'auto'}
                     >
@@ -215,6 +219,93 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                 </AppBar>
             }/>
             <CardContent>
+                {(() => {
+                    switch (selectedTab) {
+                        case PrepareImportTab.uniques:
+                            return (
+                                <FETable
+                                    height={435}
+                                    columns={[
+                                        {
+                                            label: 'Date',
+                                            field: 'date'
+                                        },
+                                        {
+                                            label: 'Description',
+                                            field: 'description'
+                                        },
+                                        {
+                                            label: 'Amount',
+                                            field: 'amount'
+                                        },
+                                        {
+                                            label: 'Category',
+                                            field: 'category'
+                                        }
+                                    ]}
+                                    data={props.duplicateCheckResponse.uniques}
+                                    title={'Unique'}
+                                />
+                            );
+
+                        case PrepareImportTab.duplicates:
+                            return (
+                                <FETable
+                                    height={435}
+                                    columns={[
+                                        {
+                                            label: 'Date',
+                                            field: 'date'
+                                        },
+                                        {
+                                            label: 'Description',
+                                            field: 'description'
+                                        },
+                                        {
+                                            label: 'Amount',
+                                            field: 'amount'
+                                        },
+                                        {
+                                            label: 'Category',
+                                            field: 'category'
+                                        }
+                                    ]}
+                                    data={props.duplicateCheckResponse.exactDuplicates}
+                                    title={'Unique'}
+                                />
+                            );
+
+                        case PrepareImportTab.suspectDuplicates:
+                            return (
+                                <FETable
+                                    height={435}
+                                    columns={[
+                                        {
+                                            label: 'Date',
+                                            field: 'date'
+                                        },
+                                        {
+                                            label: 'Description',
+                                            field: 'description'
+                                        },
+                                        {
+                                            label: 'Amount',
+                                            field: 'amount'
+                                        },
+                                        {
+                                            label: 'Category',
+                                            field: 'category'
+                                        }
+                                    ]}
+                                    data={props.duplicateCheckResponse.suspectedDuplicates}
+                                    title={'Unique'}
+                                />
+                            );
+
+                        default:
+                            return null;
+                    }
+                })()}
             </CardContent>
         </Card>
     )
