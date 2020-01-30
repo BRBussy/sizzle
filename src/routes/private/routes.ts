@@ -5,6 +5,7 @@ import {
 } from '@material-ui/icons';
 import {RouteType} from 'routes/Route';
 import ImportXLSXStandardBankStatementView from 'views/Budget/ImportXLSXStandardBankStatement';
+import ViewBudgetsView from 'views/Budget/ViewBudgets';
 import ExerciseView from 'views/Exercise';
 import {Party1HomeView} from 'views/Home';
 import ProfileView from 'views/Profile';
@@ -42,7 +43,13 @@ export const routes: RouteType[] = [
         collapse: true,
         views: [
             {
-                name: 'Process Bank Statement',
+                name: 'View',
+                path: '/app/budget/view',
+                icon: MapIcon,
+                component: ViewBudgetsView
+            },
+            {
+                name: 'Import Bank Statement',
                 path: '/app/budget/importXLSXStandardBankStatement',
                 icon: MapIcon,
                 component: ImportXLSXStandardBankStatementView
