@@ -43,7 +43,8 @@ enum AppStep {
     selectFile,
     parseFile,
     performDuplicateCheck,
-    prepareImport
+    prepareImport,
+    performImport
 }
 
 const ImportXLSXStandardBankStatement = () => {
@@ -71,6 +72,9 @@ const ImportXLSXStandardBankStatement = () => {
                     </Step>
                     <Step key={AppStep.selectFile}>
                         <StepLabel>Prepare Import</StepLabel>
+                    </Step>
+                    <Step key={AppStep.selectFile}>
+                        <StepLabel>Perform Import</StepLabel>
                     </Step>
                 </Stepper>}
             />
