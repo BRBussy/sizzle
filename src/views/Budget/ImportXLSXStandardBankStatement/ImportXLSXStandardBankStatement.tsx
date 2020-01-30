@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     }
 }));
 
-enum AppState {
+enum AppStep {
     selectFile,
     parseFile,
     performDuplicateCheck,
@@ -49,8 +49,52 @@ enum AppState {
 const ImportXLSXStandardBankStatement = () => {
     const classes = useStyles();
     const [budgetEntries, setBudgetEntries] = useState<BudgetEntry[]>([]);
+    const [activeAppStep, setActiveAppStep] = useState<AppStep>(AppStep.selectFile);
+
+    return (
+        <Card>
+            <CardHeader
+                title={<Stepper activeStep={activeAppStep} alternativeLabel>
+                    <Step key={AppStep.selectFile}>
+                        <StepLabel>Select File</StepLabel>
+                    </Step>
+                    <Step key={AppStep.selectFile}>
+                        <StepLabel>Prepare Import</StepLabel>
+                    </Step>
+                </Stepper>}
+            />
+            <CardContent>
+                {(() => {
+                    switch (activeAppStep) {
+                        case AppStep.selectFile:
+                            return (
+                                <SelectFileStep
+                                    onBudgetEntryParse={(budgetEntries: BudgetEntry[]) => {
+                                        console.log('budget entries!', budgetEntries);
+                                    }}
+                                />
+                            );
+                        default:
+                            return null;
+                    }
+                })()}
+            </CardContent>
+        </Card>
+    );
+};
+
+export default ImportXLSXStandardBankStatement;
+
+interface SelectFileStepProps {
+    onBudgetEntryParse: (parsedBudgetEntries: BudgetEntry[]) => void;
+}
+
+
+const useSelectFileStepStyles = makeStyles((theme: Theme) => createStyles({}));
+
+const SelectFileStep = (props: SelectFileStepProps) => {
+    const classes = useSelectFileStepStyles();
     const [loading, setLoading] = useState<boolean>(false);
-    const [appState, setAppState] = useState<AppState>(AppState.selectFile);
     const onDrop = useCallback((acceptedFiles) => {
         acceptedFiles.forEach((file: Blob) => {
             const reader = new FileReader();
@@ -61,7 +105,7 @@ const ImportXLSXStandardBankStatement = () => {
                 setLoading(true);
                 const fileData: string = reader.result as string;
                 try {
-                    setBudgetEntries((await BudgetEntryAdmin.XLSXStandardBankStatementToBudgetEntries({
+                    props.onBudgetEntryParse((await BudgetEntryAdmin.XLSXStandardBankStatementToBudgetEntries({
                         xlsxStatement: fileData.slice(fileData.indexOf(',') + 1)
                     })).budgetEntries);
                 } catch (e) {
@@ -75,58 +119,15 @@ const ImportXLSXStandardBankStatement = () => {
     const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop});
 
     return (
-        <div className={classes.root}>
-            <Card>
-                <CardHeader
-                    title={<Stepper activeStep={appState} alternativeLabel>
-                        <Step key={AppState.selectFile}>
-                            <StepLabel>Select File</StepLabel>
-                        </Step>
-                        <Step key={AppState.selectFile}>
-                            <StepLabel>Prepare Import</StepLabel>
-                        </Step>
-                    </Stepper>}
-                />
-                <CardContent {...getRootProps()}>
-                    <input {...getInputProps()} />
-                    {isDragActive
-                        ? <p>Drop file here</p>
-                        : <p>Drag & drop file here, or click to select</p>
-                    }
-                </CardContent>
-            </Card>
-            <Card>
-                <CardHeader title={'Budgets'}/>
-                <CardContent
-                    classes={{
-                        root: cx({
-                            [classes.budgetsLoadingLayout]: loading,
-                            [classes.budgetsLayout]: !loading
-                        })
-                    }}
-                >
-                    {loading
-                        ? (
-                            <CircularProgress/>
-                        )
-                        : ((() => {
-                            switch (appState) {
-                                case AppState.selectFile:
-                                    return;
-                            }
-                            return null;
-                        })())
-                    }
-                </CardContent>
-            </Card>
-        </div>
-    );
-};
-
-export default ImportXLSXStandardBankStatement;
-
-const SelectFileStep = () => {
-    return (
-        <div></div>
+        <Card>
+            <CardHeader title={'Select File'}/>
+            <CardContent {...getRootProps()}>
+                <input {...getInputProps()} />
+                {isDragActive
+                    ? <p>Drop file here</p>
+                    : <p>Drag & drop file here, or click to select</p>
+                }
+            </CardContent>
+        </Card>
     )
 };
