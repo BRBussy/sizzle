@@ -20,6 +20,14 @@ export interface DuplicateCheckResponse {
     suspectedDuplicates: BudgetEntry[];
 }
 
+export interface CreateManyRequest {
+    budgetEntries: BudgetEntry[];
+}
+
+// tslint:disable-next-line:no-empty-interface
+export interface CreateManyResponse {
+}
+
 const Admin = {
     serviceProvider: 'BudgetEntry-Admin',
     async XLSXStandardBankStatementToBudgetEntries(request: XLSXStandardBankStatementToBudgetEntriesRequest): Promise<XLSXStandardBankStatementToBudgetEntriesResponse> {
@@ -41,6 +49,13 @@ const Admin = {
             exactDuplicates: response.exactDuplicates.map((be: BudgetEntry) => (new BudgetEntry(be))),
             suspectedDuplicates: response.suspectedDuplicates.map((be: BudgetEntry) => (new BudgetEntry(be)))
         };
+    },
+    async CreateMany(request: CreateManyRequest): Promise<CreateManyResponse> {
+        return await jsonRPCRequest({
+            url: config.get('budgetURL'),
+            method: `${Admin.serviceProvider}.CreateMany`,
+            request
+        });
     }
 };
 

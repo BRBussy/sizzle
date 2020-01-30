@@ -1,56 +1,25 @@
 import {
-    AppBar,
-    Card,
-    CardContent,
-    CardHeader,
-    CircularProgress,
-    createStyles,
-    makeStyles,
-    Tab,
-    Tabs,
-    Theme,
-    Typography,
-    Stepper,
-    Step,
-    StepLabel
+    AppBar, Button, Card, CardContent, CardHeader,
+    CircularProgress, Tab, Tabs, Stepper,
+    Step, StepLabel
 } from '@material-ui/core';
 import {BudgetEntry, BudgetEntryAdmin} from 'bizzle/budget/entry';
-import cx from 'classnames';
 import React, {useCallback, useState} from 'react';
 import {useDropzone} from 'react-dropzone';
 import {FETable} from 'components/Table';
-import {DuplicateCheckResponse} from '../../../bizzle/budget/entry/Admin';
-
-const useStyles = makeStyles((theme: Theme) => createStyles({
-    root: {
-        display: 'grid',
-        gridTemplateRows: 'auto 1fr',
-        gridRowGap: theme.spacing(1)
-    },
-    budgetsLoadingLayout: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyItems: 'center',
-        justifyContent: 'center'
-    },
-    budgetsLayout: {
-        // display: 'grid',
-        // gridTemplateRows: 'auto 1fr',
-        // gridTemplateColumns: '1fr'
-    }
-}));
+import {DuplicateCheckResponse} from 'bizzle/budget/entry/Admin';
 
 enum AppStep {
     selectFile,
     parseFile,
     performDuplicateCheck,
     prepareImport,
-    performImport
+    performImport,
+    done
 }
 
 const ImportXLSXStandardBankStatement = () => {
-    const classes = useStyles();
-    const [budgetEntries, setBudgetEntries] = useState<BudgetEntry[]>([]);
+    const [, setBudgetEntries] = useState<BudgetEntry[]>([]);
     const [activeAppStep, setActiveAppStep] = useState<AppStep>(AppStep.selectFile);
     const [error, setError] = useState<string | undefined>(undefined);
     const [duplicateCheckResponse, setDuplicateCheckResponse] = useState<DuplicateCheckResponse>({
@@ -72,6 +41,20 @@ const ImportXLSXStandardBankStatement = () => {
             return;
         }
         setActiveAppStep(AppStep.prepareImport);
+    };
+
+    const handleImport = async (entriesToCreate: BudgetEntry[], entriesToUpdate: BudgetEntry[]) => {
+        setActiveAppStep(AppStep.performImport);
+        try {
+            await BudgetEntryAdmin.CreateMany({
+                budgetEntries: entriesToCreate
+            })
+        } catch (e) {
+            console.error('error performing import', e.message ? e.message : e.toString);
+            setError(e.message ? e.message : e.toString);
+            return;
+        }
+        setActiveAppStep(AppStep.done);
     };
 
     if (error) {
@@ -122,8 +105,15 @@ const ImportXLSXStandardBankStatement = () => {
                             return (
                                 <PrepareImportStep
                                     duplicateCheckResponse={duplicateCheckResponse}
+                                    onImport={handleImport}
                                 />
                             );
+
+                        case AppStep.performImport:
+                            return (<CircularProgress/>);
+
+                        case AppStep.done:
+                            return (<div>Done!</div>);
 
                         default:
                             return null;
@@ -142,10 +132,9 @@ interface SelectFileStepProps {
 }
 
 
-const useSelectFileStepStyles = makeStyles((theme: Theme) => createStyles({}));
+// const useSelectFileStepStyles = makeStyles((theme: Theme) => createStyles({}));
 
 const SelectFileStep = (props: SelectFileStepProps) => {
-    const classes = useSelectFileStepStyles();
     const onDrop = useCallback((acceptedFiles) => {
         acceptedFiles.forEach((file: Blob) => {
             const reader = new FileReader();
@@ -165,7 +154,7 @@ const SelectFileStep = (props: SelectFileStepProps) => {
             };
             reader.readAsDataURL(file);
         });
-    }, []);
+    }, [props]);
     const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop});
 
     return (
@@ -184,9 +173,10 @@ const SelectFileStep = (props: SelectFileStepProps) => {
 
 interface PrepareImportStepProps {
     duplicateCheckResponse: DuplicateCheckResponse;
+    onImport: (entriesToCreate: BudgetEntry[], entriesToUpdate: BudgetEntry[]) => void
 }
 
-const usePrepareImportStepStyles = makeStyles((theme: Theme) => createStyles({}));
+// const usePrepareImportStepStyles = makeStyles((theme: Theme) => createStyles({}));
 
 enum PrepareImportTab {
     uniques = 'Uniques',
@@ -195,7 +185,6 @@ enum PrepareImportTab {
 }
 
 const PrepareImportStep = (props: PrepareImportStepProps) => {
-    const classes = usePrepareImportStepStyles();
     const [selectedTab, setSelectedTab] = useState(PrepareImportTab.uniques);
 
     const handleTabChange = (event: React.ChangeEvent<{}>, newValue: PrepareImportTab) => {
@@ -204,21 +193,28 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
 
     return (
         <Card>
-            <CardHeader title={
-                <AppBar position='static'>
-                    <Tabs
-                        value={selectedTab}
-                        onChange={handleTabChange}
-                        variant={'scrollable'}
-                        scrollButtons={'auto'}
-                    >
-                        <Tab label={PrepareImportTab.uniques} value={PrepareImportTab.uniques}/>
-                        <Tab label={PrepareImportTab.duplicates} value={PrepareImportTab.duplicates}/>
-                        <Tab label={PrepareImportTab.suspectDuplicates} value={PrepareImportTab.suspectDuplicates}/>
-                    </Tabs>
-                </AppBar>
-            }/>
+            <CardHeader
+                title={
+                    <AppBar position='static'>
+                        <Tabs
+                            value={selectedTab}
+                            onChange={handleTabChange}
+                            variant={'scrollable'}
+                            scrollButtons={'auto'}
+                        >
+                            <Tab label={PrepareImportTab.uniques} value={PrepareImportTab.uniques}/>
+                            <Tab label={PrepareImportTab.duplicates} value={PrepareImportTab.duplicates}/>
+                            <Tab label={PrepareImportTab.suspectDuplicates} value={PrepareImportTab.suspectDuplicates}/>
+                        </Tabs>
+                    </AppBar>
+                }
+            />
             <CardContent>
+                <Button
+                    onClick={() => props.onImport(props.duplicateCheckResponse.uniques, [])}
+                >
+                    Perform Import
+                </Button>
                 {(() => {
                     switch (selectedTab) {
                         case PrepareImportTab.uniques:
@@ -244,7 +240,7 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                         }
                                     ]}
                                     data={props.duplicateCheckResponse.uniques}
-                                    title={'Unique'}
+                                    title={'These will be created'}
                                 />
                             );
 
@@ -271,7 +267,7 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                         }
                                     ]}
                                     data={props.duplicateCheckResponse.exactDuplicates}
-                                    title={'Unique'}
+                                    title={'These will be ignored'}
                                 />
                             );
 
@@ -298,7 +294,7 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                         }
                                     ]}
                                     data={props.duplicateCheckResponse.suspectedDuplicates}
-                                    title={'Unique'}
+                                    title={'Those that are selected will be updated'}
                                 />
                             );
 
