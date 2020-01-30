@@ -8,10 +8,17 @@ interface JSONRPCRequestProps {
     verbose?: boolean;
 }
 
-export default async function jsonRPCRequest({url, method, request, verbose}: JSONRPCRequestProps) {
+async function jsonRPCRequest({url, method, request, verbose}: JSONRPCRequestProps) {
     const header = new Headers({
         'Content-Type': 'application/json'
     });
+    if (method !== 'Authenticator.Login') {
+        const jwt = localStorage.getItem('jwt');
+        if (!jwt || jwt === 'null' || jwt === '') {
+            throw new Error('jwt not set');
+        }
+        header.append('Authorization', jwt);
+    }
 
     const body = {
         jsonrpc: '2.0',
@@ -54,3 +61,5 @@ export default async function jsonRPCRequest({url, method, request, verbose}: JS
         throw new MethodFailedError(responseObjectJson.error, body.method);
     }
 }
+
+export default jsonRPCRequest;

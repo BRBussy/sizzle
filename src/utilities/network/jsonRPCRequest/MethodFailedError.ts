@@ -19,7 +19,7 @@ export default class MethodFailedError extends Error {
     this.method = method;
   }
 
-  public toString() {
+  public toString = () => {
     return `method ${this.method} failed with error ${this.error}`;
   }
 }
