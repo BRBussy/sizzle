@@ -19,6 +19,7 @@ import cx from 'classnames';
 import React, {useCallback, useState} from 'react';
 import {useDropzone} from 'react-dropzone';
 import {FETable} from 'components/Table';
+import {DuplicateCheckResponse} from "../../../bizzle/budget/entry/Admin";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
@@ -51,11 +52,35 @@ const ImportXLSXStandardBankStatement = () => {
     const classes = useStyles();
     const [budgetEntries, setBudgetEntries] = useState<BudgetEntry[]>([]);
     const [activeAppStep, setActiveAppStep] = useState<AppStep>(AppStep.selectFile);
+    const [error, setError] = useState<string | undefined>(undefined);
+    const [duplicateCheckResponse, setDuplicateCheckResponse] = useState<DuplicateCheckResponse>({
+        uniques: [],
+        exactDuplicates: [],
+        suspectedDuplicates: []
+    });
 
     const handleFinishBudgetEntryParse = async (parsedBudgetEntries: BudgetEntry[]) => {
         setActiveAppStep(AppStep.performDuplicateCheck);
-        setActiveAppStep(AppStep.performDuplicateCheck);
+        setBudgetEntries(parsedBudgetEntries);
+        try {
+            setDuplicateCheckResponse(await BudgetEntryAdmin.DuplicateCheck({
+                budgetEntries: parsedBudgetEntries
+            }));
+        } catch (e) {
+            console.error('error performing duplicate check', e.message ? e.message : e.toString);
+            setError(e.message ? e.message : e.toString);
+            return;
+        }
+        setActiveAppStep(AppStep.prepareImport);
     };
+
+    if (error) {
+        return (
+            <div>
+                {error}
+            </div>
+        )
+    }
 
     return (
         <Card>
@@ -91,7 +116,15 @@ const ImportXLSXStandardBankStatement = () => {
 
                         case AppStep.parseFile:
                         case AppStep.performDuplicateCheck:
-                            return (<CircularProgress/>)
+                            return (<CircularProgress/>);
+
+                        case AppStep.prepareImport:
+                            return (
+                                <PrepareImportStep
+                                    duplicateCheckResponse={duplicateCheckResponse}
+                                />
+                            );
+
                         default:
                             return null;
                     }
@@ -144,6 +177,24 @@ const SelectFileStep = (props: SelectFileStepProps) => {
                     ? <p>Drop file here</p>
                     : <p>Drag & drop file here, or click to select</p>
                 }
+            </CardContent>
+        </Card>
+    )
+};
+
+interface PrepareImportStepProps {
+    duplicateCheckResponse: DuplicateCheckResponse;
+}
+
+const usePrepareImportStepStyles = makeStyles((theme: Theme) => createStyles({}));
+
+const PrepareImportStep = (props: PrepareImportStepProps) => {
+    const classes = usePrepareImportStepStyles();
+
+    return (
+        <Card>
+            <CardHeader title={'Prepare Import'}/>
+            <CardContent>
             </CardContent>
         </Card>
     )
