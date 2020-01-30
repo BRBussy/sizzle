@@ -12,14 +12,14 @@ import {
     Typography,
     Stepper,
     Step,
-    StepLabel,
+    StepLabel
 } from '@material-ui/core';
 import {BudgetEntry, BudgetEntryAdmin} from 'bizzle/budget/entry';
 import cx from 'classnames';
 import React, {useCallback, useState} from 'react';
 import {useDropzone} from 'react-dropzone';
 import {FETable} from 'components/Table';
-import {DuplicateCheckResponse} from "../../../bizzle/budget/entry/Admin";
+import {DuplicateCheckResponse} from '../../../bizzle/budget/entry/Admin';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
@@ -188,12 +188,32 @@ interface PrepareImportStepProps {
 
 const usePrepareImportStepStyles = makeStyles((theme: Theme) => createStyles({}));
 
+enum PrepareImportTab {
+    uniques = 'Uniques',
+    duplicates = 'Duplicates',
+    suspectDuplicates = 'Suspect Duplicates'
+}
+
 const PrepareImportStep = (props: PrepareImportStepProps) => {
     const classes = usePrepareImportStepStyles();
+    const [selectedTab, setSelectedTab] = useState(PrepareImportTab.uniques);
 
     return (
         <Card>
-            <CardHeader title={'Prepare Import'}/>
+            <CardHeader title={
+                <AppBar position='static'>
+                    <Tabs
+                        value={selectedTab}
+                        // onChange={handleChange}
+                        variant={'scrollable'}
+                        scrollButtons={'auto'}
+                    >
+                        <Tab label={PrepareImportTab.uniques} value={PrepareImportTab.uniques}/>
+                        <Tab label={PrepareImportTab.duplicates} value={PrepareImportTab.duplicates}/>
+                        <Tab label={PrepareImportTab.suspectDuplicates} value={PrepareImportTab.suspectDuplicates}/>
+                    </Tabs>
+                </AppBar>
+            }/>
             <CardContent>
             </CardContent>
         </Card>
