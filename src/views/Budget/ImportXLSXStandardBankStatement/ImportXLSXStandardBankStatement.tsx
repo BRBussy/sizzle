@@ -3,7 +3,7 @@ import {
     CircularProgress, Tab, Tabs, Stepper,
     Step, StepLabel
 } from '@material-ui/core';
-import {BudgetEntry, BudgetEntryAdmin} from 'bizzle/budget/entry';
+import {BudgetEntry, BudgetEntryAdmin, BudgetCompositeEntry} from 'bizzle/budget/entry';
 import React, {useCallback, useState} from 'react';
 import {useDropzone} from 'react-dropzone';
 import {FETable} from 'components/Table';
@@ -128,7 +128,7 @@ export default ImportXLSXStandardBankStatement;
 
 interface SelectFileStepProps {
     onStartStatementParse: () => void;
-    onFinishStatementParse: (parsedBudgetEntries: BudgetEntry[]) => void;
+    onFinishStatementParse: (parsedBudgetEntries: BudgetCompositeEntry[]) => void;
 }
 
 
@@ -145,9 +145,9 @@ const SelectFileStep = (props: SelectFileStepProps) => {
                 const fileData: string = reader.result as string;
                 try {
                     props.onStartStatementParse();
-                    props.onFinishStatementParse((await BudgetEntryAdmin.XLSXStandardBankStatementToBudgetEntries({
+                    props.onFinishStatementParse((await BudgetEntryAdmin.XLSXStandardBankStatementToBudgetCompositeEntries({
                         xlsxStatement: fileData.slice(fileData.indexOf(',') + 1)
-                    })).budgetEntries);
+                    })).budgetCompositeEntries);
                 } catch (e) {
                     console.error('error processing file', e);
                 }

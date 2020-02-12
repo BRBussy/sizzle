@@ -1,13 +1,13 @@
 import config from 'react-global-configuration';
 import jsonRPCRequest from 'utilities/network/jsonRPCRequest';
-import {BudgetEntry} from '.';
+import {BudgetEntry, BudgetCompositeEntry} from '.';
 
-export interface XLSXStandardBankStatementToBudgetEntriesRequest {
+export interface XLSXStandardBankStatementToBudgetCompositeEntriesRequest {
     xlsxStatement: string;
 }
 
-export interface XLSXStandardBankStatementToBudgetEntriesResponse {
-    budgetEntries: BudgetEntry[];
+export interface XLSXStandardBankStatementToBudgetCompositeEntriesResponse {
+    budgetCompositeEntries: BudgetCompositeEntry[];
 }
 
 export interface DuplicateCheckRequest {
@@ -30,13 +30,13 @@ export interface CreateManyResponse {
 
 const Admin = {
     serviceProvider: 'BudgetEntry-Admin',
-    async XLSXStandardBankStatementToBudgetEntries(request: XLSXStandardBankStatementToBudgetEntriesRequest): Promise<XLSXStandardBankStatementToBudgetEntriesResponse> {
+    async XLSXStandardBankStatementToBudgetCompositeEntries(request: XLSXStandardBankStatementToBudgetCompositeEntriesRequest): Promise<XLSXStandardBankStatementToBudgetCompositeEntriesResponse> {
         const response = await jsonRPCRequest({
             url: config.get('budgetURL'),
-            method: `${Admin.serviceProvider}.XLSXStandardBankStatementToBudgetEntries`,
+            method: `${Admin.serviceProvider}.XLSXStandardBankStatementToBudgetCompositeEntries`,
             request
         });
-        return {budgetEntries: response.budgetEntries.map((be: BudgetEntry) => (new BudgetEntry(be)))};
+        return {budgetCompositeEntries: response.budgetCompositeEntries.map((bce: BudgetCompositeEntry) => (new BudgetCompositeEntry(bce)))};
     },
     async DuplicateCheck(request: DuplicateCheckRequest): Promise<DuplicateCheckResponse> {
         const response = await jsonRPCRequest({
