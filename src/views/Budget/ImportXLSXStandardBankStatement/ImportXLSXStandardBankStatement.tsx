@@ -233,10 +233,6 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                         {
                                             label: 'Amount',
                                             field: 'amount'
-                                        },
-                                        {
-                                            label: 'Category',
-                                            field: 'category'
                                         }
                                     ]}
                                     data={props.duplicateCheckResponse.uniques}
@@ -260,10 +256,6 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                         {
                                             label: 'Amount',
                                             field: 'amount'
-                                        },
-                                        {
-                                            label: 'Category',
-                                            field: 'category'
                                         }
                                     ]}
                                     data={props.duplicateCheckResponse.exactDuplicates}
@@ -287,10 +279,6 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                         {
                                             label: 'Amount',
                                             field: 'amount'
-                                        },
-                                        {
-                                            label: 'Category',
-                                            field: 'category'
                                         }
                                     ]}
                                     data={props.duplicateCheckResponse.suspectedDuplicates}

@@ -1,18 +1,20 @@
 export default class Entry {
+    public id: string = '';
+    public ownerID: string = '';
     public date: number = 0;
     public description: string = '';
     public amount: number = 0;
-    public category: string = '';
-    public identifier: string = '';
+    public categoryRuleID: string = '';
 
     constructor(entry?: Entry) {
         if (!entry) {
             return;
         }
+        this.id = entry.id;
+        this.ownerID = entry.ownerID;
         this.date = entry.date;
         this.description = entry.description;
         this.amount = entry.amount;
-        this.category = entry.category;
-        this.identifier = entry.identifier;
+        this.categoryRuleID = entry.categoryRuleID;
     }
 }
