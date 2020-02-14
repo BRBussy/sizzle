@@ -17,14 +17,14 @@ const ViewBudgets = () => {
 
     useEffect(() => {
         const getBudgetForDateRange = async () => {
-            if (!(startDate || endDate)) {
+            if (!(startDate && endDate)) {
                 return;
             }
             try {
                 await BudgetAdmin.GetBudgetForDateRange({
-                    startDate,
-                    endDate
-                })
+                    startDate: `${startDate}T00:00:00Z`,
+                    endDate: `${endDate}T00:00:00Z`
+                });
             } catch (e) {
                 console.error(`error getting budget for date range: ${e.message ? e.message : e.toString()}`)
             }

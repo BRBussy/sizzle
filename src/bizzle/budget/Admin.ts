@@ -32,7 +32,7 @@ const Admin = {
     async GetBudgetForDateRange(request: GetBudgetForDateRangeRequest): Promise<GetBudgetForDateRangeResponse> {
         const response = await jsonRPCRequest({
             url: config.get('budgetURL'),
-            method: `${Admin.serviceProvider}.GetBudgetForMonthInYear`,
+            method: `${Admin.serviceProvider}.GetBudgetForDateRange`,
             request
         });
         return {budget: new Budget(response.budget)}
