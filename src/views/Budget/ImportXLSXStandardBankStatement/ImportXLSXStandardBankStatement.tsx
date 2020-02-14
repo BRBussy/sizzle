@@ -159,7 +159,6 @@ interface SelectFileStepProps {
     onFinishStatementParse: (parsedBudgetEntries: BudgetEntry[]) => void;
 }
 
-
 // const useSelectFileStepStyles = makeStyles((theme: Theme) => createStyles({}));
 
 const SelectFileStep = (props: SelectFileStepProps) => {

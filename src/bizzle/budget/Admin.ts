@@ -2,38 +2,40 @@ import config from 'react-global-configuration';
 import jsonRPCRequest from 'utilities/network/jsonRPCRequest';
 import Budget from './Budget';
 
-interface XLSXStandardBankStatementToXLSXBudgetRequest {
-    xlsxStatement: string;
+interface GetBudgetForMonthInYearRequest {
+    month: number;
 }
 
-export interface XLSXStandardBankStatementToXLSXBudgetResponse {
-    xlsxBudgets: { [key: string]: { [key: string]: Uint8Array } };
+interface GetBudgetForMonthInYearResponse {
+    budget: Budget;
 }
 
-export interface XLSXStandardBankStatementToBudgetsRequest {
-    xlsxStatement: string;
+interface GetBudgetForDateRangeRequest {
+    startDate: string;
+    endDate: string;
 }
 
-export interface XLSXStandardBankStatementToBudgetsResponse {
-    budgets: Budget[];
+interface GetBudgetForDateRangeResponse {
+    budget: Budget;
 }
 
 const Admin = {
     serviceProvider: 'Budget-Admin',
-    async XLSXStandardBankStatementToXLSXBudget(request: XLSXStandardBankStatementToXLSXBudgetRequest): Promise<XLSXStandardBankStatementToXLSXBudgetResponse> {
-        return await jsonRPCRequest({
-            url: config.get('budgetURL'),
-            method: `${Admin.serviceProvider}.XLSXStandardBankStatementToXLSXBudget`,
-            request
-        });
-    },
-    async XLSXStandardBankStatementToBudgets(request: XLSXStandardBankStatementToBudgetsRequest): Promise<XLSXStandardBankStatementToBudgetsResponse> {
+    async GetBudgetForMonthInYear(request: GetBudgetForMonthInYearRequest): Promise<GetBudgetForMonthInYearResponse> {
         const response = await jsonRPCRequest({
             url: config.get('budgetURL'),
-            method: `${Admin.serviceProvider}.XLSXStandardBankStatementToBudgets`,
+            method: `${Admin.serviceProvider}.GetBudgetForMonthInYear`,
             request
         });
-        return {budgets: response.budgets.map((b: Budget) => (new Budget(b)))};
+        return {budget: new Budget(response.budget)}
+    },
+    async GetBudgetForDateRange(request: GetBudgetForDateRangeRequest): Promise<GetBudgetForDateRangeResponse> {
+        const response = await jsonRPCRequest({
+            url: config.get('budgetURL'),
+            method: `${Admin.serviceProvider}.GetBudgetForMonthInYear`,
+            request
+        });
+        return {budget: new Budget(response.budget)}
     }
 };
 
