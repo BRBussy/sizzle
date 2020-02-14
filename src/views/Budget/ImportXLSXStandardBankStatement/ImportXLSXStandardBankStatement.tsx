@@ -32,7 +32,7 @@ const ImportXLSXStandardBankStatement = () => {
     useEffect(() => {
         const fetchBudgetEntryCategoryRules = async () => {
 
-        }
+        };
     }, []);
 
     const handleFinishBudgetEntryParse = async (parsedBudgetEntries: BudgetEntry[]) => {
