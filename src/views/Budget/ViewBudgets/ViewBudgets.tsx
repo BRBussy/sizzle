@@ -17,6 +17,9 @@ const ViewBudgets = () => {
 
     useEffect(() => {
         const getBudgetForDateRange = async () => {
+            if (!(startDate || endDate)) {
+                return;
+            }
             try {
                 await BudgetAdmin.GetBudgetForDateRange({
                     startDate,
