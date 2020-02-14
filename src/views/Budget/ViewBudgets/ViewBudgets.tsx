@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {
     makeStyles, Theme, createStyles, Grid, TextField
 } from '@material-ui/core';
+import {BudgetAdmin} from 'bizzle/budget';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {}
@@ -17,7 +18,10 @@ const ViewBudgets = () => {
     useEffect(() => {
         const getBudgetForDateRange = async () => {
             try {
-
+                await BudgetAdmin.GetBudgetForDateRange({
+                    startDate,
+                    endDate
+                })
             } catch (e) {
                 console.error(`error getting budget for date range: ${e.message ? e.message : e.toString()}`)
             }
