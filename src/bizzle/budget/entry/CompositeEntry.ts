@@ -1,8 +1,8 @@
 import Entry from './Entry';
-import {BudgetCategoryRule} from 'bizzle/budget/entry/categoryRule';
+import {BudgetEntryCategoryRule} from 'bizzle/budget/entry/categoryRule';
 
 export default class CompositeEntry extends Entry {
-    categoryRule: BudgetCategoryRule = new BudgetCategoryRule();
+    categoryRule: BudgetEntryCategoryRule = new BudgetEntryCategoryRule();
     constructor(entry?: Entry) {
         super(entry);
         if (!entry) {

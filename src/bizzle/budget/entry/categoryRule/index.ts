@@ -1,7 +1,7 @@
-import BudgetCategoryRule from './CategoryRule';
+import BudgetEntryCategoryRule from './CategoryRule';
 import BudgetEntryCategoryRuleStore from './Store';
 
 export {
-    BudgetCategoryRule,
+    BudgetEntryCategoryRule,
     BudgetEntryCategoryRuleStore
 }

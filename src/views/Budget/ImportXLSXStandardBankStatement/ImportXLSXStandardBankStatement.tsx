@@ -4,13 +4,14 @@ import {
     Step, StepLabel
 } from '@material-ui/core';
 import {BudgetEntry, BudgetEntryAdmin} from 'bizzle/budget/entry';
-import {BudgetEntryCategoryRuleStore} from 'bizzle/budget/entry/categoryRule';
+import {BudgetEntryCategoryRule, BudgetEntryCategoryRuleStore} from 'bizzle/budget/entry/categoryRule';
 import React, {useCallback, useState, useEffect} from 'react';
 import {useDropzone} from 'react-dropzone';
 import {FETable} from 'components/Table';
 import {DuplicateCheckResponse} from 'bizzle/budget/entry/Admin';
 
 enum AppStep {
+    preparation,
     selectFile,
     parseFile,
     performDuplicateCheck,
@@ -21,18 +22,31 @@ enum AppStep {
 
 const ImportXLSXStandardBankStatement = () => {
     const [, setBudgetEntries] = useState<BudgetEntry[]>([]);
-    const [activeAppStep, setActiveAppStep] = useState<AppStep>(AppStep.selectFile);
+    const [activeAppStep, setActiveAppStep] = useState<AppStep>(AppStep.preparation);
     const [error, setError] = useState<string | undefined>(undefined);
     const [duplicateCheckResponse, setDuplicateCheckResponse] = useState<DuplicateCheckResponse>({
         uniques: [],
         exactDuplicates: [],
         suspectedDuplicates: []
     });
+    const [budgetEntryCategoryRuleIndex, setBudgetEntryCategoryRuleIndex] = useState<{[key: string]: BudgetEntryCategoryRule}>({});
 
     useEffect(() => {
         const fetchBudgetEntryCategoryRules = async () => {
-
+            try {
+                const newBudgetEntryCategoryRuleIndex:{[key: string]: BudgetEntryCategoryRule} = {};
+                (await BudgetEntryCategoryRuleStore.FindMany({
+                    criteria: {}
+                })).records.forEach((beCategoryRule) => {
+                    newBudgetEntryCategoryRuleIndex[beCategoryRule.id] = beCategoryRule;
+                });
+                setBudgetEntryCategoryRuleIndex(newBudgetEntryCategoryRuleIndex);
+                setActiveAppStep(AppStep.selectFile);
+            } catch (e) {
+                console.error(`error fetching budget entry category rules: ${e.message ? e.message : e.toString()}`)
+            }
         };
+        fetchBudgetEntryCategoryRules().finally();
     }, []);
 
     const handleFinishBudgetEntryParse = async (parsedBudgetEntries: BudgetEntry[]) => {
@@ -76,6 +90,9 @@ const ImportXLSXStandardBankStatement = () => {
         <Card>
             <CardHeader
                 title={<Stepper activeStep={activeAppStep} alternativeLabel>
+                    <Step key={AppStep.preparation}>
+                        <StepLabel>Preparation</StepLabel>
+                    </Step>
                     <Step key={AppStep.selectFile}>
                         <StepLabel>Select File</StepLabel>
                     </Step>
@@ -96,6 +113,9 @@ const ImportXLSXStandardBankStatement = () => {
             <CardContent>
                 {(() => {
                     switch (activeAppStep) {
+                        case AppStep.preparation:
+                            return (<CircularProgress/>);
+
                         case AppStep.selectFile:
                             return (
                                 <SelectFileStep
@@ -111,6 +131,7 @@ const ImportXLSXStandardBankStatement = () => {
                         case AppStep.prepareImport:
                             return (
                                 <PrepareImportStep
+                                    budgetEntryCategoryRuleIdx={budgetEntryCategoryRuleIndex}
                                     duplicateCheckResponse={duplicateCheckResponse}
                                     onImport={handleImport}
                                 />
@@ -179,6 +200,7 @@ const SelectFileStep = (props: SelectFileStepProps) => {
 };
 
 interface PrepareImportStepProps {
+    budgetEntryCategoryRuleIdx: {[key: string]: BudgetEntryCategoryRule};
     duplicateCheckResponse: DuplicateCheckResponse;
     onImport: (entriesToCreate: BudgetEntry[], entriesToUpdate: BudgetEntry[]) => void
 }
@@ -240,6 +262,16 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                         {
                                             label: 'Amount',
                                             field: 'amount'
+                                        },
+                                        {
+                                            label: 'Category',
+                                            field: 'category',
+                                            accessor: (data: any) => {
+                                                const be = data as BudgetEntry;
+                                                return props.budgetEntryCategoryRuleIdx[be.categoryRuleID]
+                                                    ? props.budgetEntryCategoryRuleIdx[be.categoryRuleID].name
+                                                    : 'Other';
+                                            }
                                         }
                                     ]}
                                     data={props.duplicateCheckResponse.uniques}
@@ -263,6 +295,16 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                         {
                                             label: 'Amount',
                                             field: 'amount'
+                                        },
+                                        {
+                                            label: 'Category',
+                                            field: 'category',
+                                            accessor: (data: any) => {
+                                                const be = data as BudgetEntry;
+                                                return props.budgetEntryCategoryRuleIdx[be.categoryRuleID]
+                                                    ? props.budgetEntryCategoryRuleIdx[be.categoryRuleID].name
+                                                    : 'Other';
+                                            }
                                         }
                                     ]}
                                     data={props.duplicateCheckResponse.exactDuplicates}
@@ -286,6 +328,16 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                         {
                                             label: 'Amount',
                                             field: 'amount'
+                                        },
+                                        {
+                                            label: 'Category',
+                                            field: 'category',
+                                            accessor: (data: any) => {
+                                                const be = data as BudgetEntry;
+                                                return props.budgetEntryCategoryRuleIdx[be.categoryRuleID]
+                                                    ? props.budgetEntryCategoryRuleIdx[be.categoryRuleID].name
+                                                    : 'Other';
+                                            }
                                         }
                                     ]}
                                     data={props.duplicateCheckResponse.suspectedDuplicates}
