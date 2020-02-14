@@ -4,7 +4,8 @@ import {
     Step, StepLabel
 } from '@material-ui/core';
 import {BudgetEntry, BudgetEntryAdmin} from 'bizzle/budget/entry';
-import React, {useCallback, useState} from 'react';
+import {BudgetEntryCategoryRuleStore} from 'bizzle/budget/entry/categoryRule';
+import React, {useCallback, useState, useEffect} from 'react';
 import {useDropzone} from 'react-dropzone';
 import {FETable} from 'components/Table';
 import {DuplicateCheckResponse} from 'bizzle/budget/entry/Admin';
@@ -27,6 +28,12 @@ const ImportXLSXStandardBankStatement = () => {
         exactDuplicates: [],
         suspectedDuplicates: []
     });
+
+    useEffect(() => {
+        const fetchBudgetEntryCategoryRules = async () => {
+
+        }
+    }, []);
 
     const handleFinishBudgetEntryParse = async (parsedBudgetEntries: BudgetEntry[]) => {
         setActiveAppStep(AppStep.performDuplicateCheck);
