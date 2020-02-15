@@ -1,11 +1,12 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     makeStyles, Theme, createStyles, Grid, TextField,
     Card, CardContent, AppBar, Tabs, Tab, CardHeader
 } from '@material-ui/core';
-import {Budget, BudgetAdmin} from 'bizzle/budget';
-import {BudgetEntry} from 'bizzle/budget/entry';
-import {FETable} from 'components/Table';
+import { Budget, BudgetAdmin } from 'bizzle/budget';
+import { BudgetEntry} from 'bizzle/budget/entry';
+import { FETable } from 'components/Table';
+import moment from 'moment';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
@@ -55,7 +56,7 @@ const ViewBudgets = () => {
                             <TextField
                                 label={'Start Date'}
                                 type={'date'}
-                                InputLabelProps={{shrink: true}}
+                                InputLabelProps={{ shrink: true }}
                                 onChange={(e) => {
                                     if (!e.target.value || e.target.value === '') {
                                         setStartDate(undefined);
@@ -69,7 +70,7 @@ const ViewBudgets = () => {
                             <TextField
                                 label={'End Date'}
                                 type={'date'}
-                                InputLabelProps={{shrink: true}}
+                                InputLabelProps={{ shrink: true }}
                                 onChange={(e) => {
                                     if (!e.target.value || e.target.value === '') {
                                         setEndDate(undefined);
@@ -83,73 +84,86 @@ const ViewBudgets = () => {
                 </CardContent>
             </Card>
             {budget &&
-            <Card>
-              <CardHeader
-                title={
-                    <AppBar position='static'>
-                        <Tabs
-                            value={selectedBudgetTab}
-                            onChange={handleSelectedBudgetTabChange}
-                            variant={'scrollable'}
-                            scrollButtons={'auto'}
-                        >
-                            <Tab label={'Summary'} value={'Summary'}/>
-                            {Object.keys(budget.entries).map((budgetEntryCategory, idx) => (
-                                <Tab key={idx} label={budgetEntryCategory} value={budgetEntryCategory}/>
-                            ))}
-                        </Tabs>
-                    </AppBar>
-                }
-              />
-              <CardContent>
-                  {(() => {
-                      if (selectedBudgetTab === 'Summary') {
-                          return (
-                              <FETable
-                                  height={435}
-                                  columns={[
-                                      {
-                                          label: 'Item',
-                                          field: 'summaryLabel'
-                                      },
-                                      {
-                                          label: 'Amount',
-                                          field: 'amount'
-                                      }
-                                  ]}
-                                  data={Object.keys(budget.summary).map((summaryLabel) => ({
-                                      summaryLabel,
-                                      amount: budget.summary[summaryLabel]
-                                  }))}
-                                  title={''}
-                              />
-                          );
-                      } else {
-                          return (
-                              <FETable
-                                  height={435}
-                                  columns={[
-                                      {
-                                          label: 'Date',
-                                          field: 'date'
-                                      },
-                                      {
-                                          label: 'Description',
-                                          field: 'description'
-                                      },
-                                      {
-                                          label: 'Amount',
-                                          field: 'amount'
-                                      }
-                                  ]}
-                                  data={budget.entries[selectedBudgetTab]}
-                                  title={''}
-                              />
-                          );
-                      }
-                  })()}
-              </CardContent>
-            </Card>}
+                <Card>
+                    <CardHeader
+                        title={
+                            <AppBar position='static'>
+                                <Tabs
+                                    value={selectedBudgetTab}
+                                    onChange={handleSelectedBudgetTabChange}
+                                    variant={'scrollable'}
+                                    scrollButtons={'auto'}
+                                >
+                                    <Tab label={'Summary'} value={'Summary'} />
+                                    {Object.keys(budget.entries).map((budgetEntryCategory, idx) => (
+                                        <Tab key={idx} label={budgetEntryCategory} value={budgetEntryCategory} />
+                                    ))}
+                                </Tabs>
+                            </AppBar>
+                        }
+                    />
+                    <CardContent>
+                        {(() => {
+                            if (selectedBudgetTab === 'Summary') {
+                                return (
+                                    <FETable
+                                        height={435}
+                                        columns={[
+                                            {
+                                                label: 'Item',
+                                                field: 'summaryLabel'
+                                            },
+                                            {
+                                                label: 'Amount',
+                                                field: 'amount'
+                                            }
+                                        ]}
+                                        data={Object.keys(budget.summary).map((summaryLabel) => ({
+                                            summaryLabel,
+                                            amount: budget.summary[summaryLabel]
+                                        }))}
+                                        title={''}
+                                    />
+                                );
+                            } else {
+                                return (
+                                    <FETable
+                                        height={435}
+                                        columns={[
+                                            {
+                                                label: 'Date',
+                                                field: 'date'
+                                            },
+                                            {
+                                                label: 'Date',
+                                                field: 'date',
+                                                accessor: (data: any) => {
+                                                    const be = data as BudgetEntry;
+                                                    try {
+                                                        return moment(be.date).format('YY-MM-DD');
+                                                    } catch (e) {
+                                                        console.error('error formatting date:', e);
+                                                        return '-';
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                label: 'Description',
+                                                field: 'description'
+                                            },
+                                            {
+                                                label: 'Amount',
+                                                field: 'amount'
+                                            }
+                                        ]}
+                                        data={budget.entries[selectedBudgetTab]}
+                                        title={''}
+                                    />
+                                );
+                            }
+                        })()}
+                    </CardContent>
+                </Card>}
         </div>
     )
 };
