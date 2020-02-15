@@ -32,6 +32,7 @@ const ViewBudgets = () => {
                 return;
             }
             try {
+                setSelectedBudgetTab('Summary');
                 setBudget((await BudgetAdmin.GetBudgetForDateRange({
                     startDate: `${startDate}T00:00:00Z`,
                     endDate: `${endDate}T00:00:00Z`
