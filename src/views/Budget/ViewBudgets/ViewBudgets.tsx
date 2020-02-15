@@ -4,7 +4,7 @@ import {
     Card, CardContent, AppBar, Tabs, Tab, CardHeader
 } from '@material-ui/core';
 import { Budget, BudgetAdmin } from 'bizzle/budget';
-import { BudgetEntry} from 'bizzle/budget/entry';
+import { BudgetEntry } from 'bizzle/budget/entry';
 import { FETable } from 'components/Table';
 import moment from 'moment';
 
@@ -20,10 +20,11 @@ let getBudgetForDateRangeTimeout: any;
 
 const ViewBudgets = () => {
     const classes = useStyles();
-    const [startDate, setStartDate] = useState<string | undefined>(undefined);
-    const [endDate, setEndDate] = useState<string | undefined>(undefined);
+    const [startDate, setStartDate] = useState<string | undefined>(moment().subtract(2, 'month').format('YYYY-MM-DD'));
+    const [endDate, setEndDate] = useState<string | undefined>(moment().format('YYYY-MM-DD'));
     const [budget, setBudget] = useState<Budget | undefined>(undefined);
     const [selectedBudgetTab, setSelectedBudgetTab] = useState('Summary');
+    const [appBarWidth, setAppBarWidth]  = useState(0);
 
     useEffect(() => {
         const getBudgetForDateRange = async () => {
@@ -54,6 +55,7 @@ const ViewBudgets = () => {
                     <Grid container direction={'row'} spacing={1}>
                         <Grid item>
                             <TextField
+                                value={startDate}
                                 label={'Start Date'}
                                 type={'date'}
                                 InputLabelProps={{ shrink: true }}
@@ -68,6 +70,7 @@ const ViewBudgets = () => {
                         </Grid>
                         <Grid item>
                             <TextField
+                                value={endDate}
                                 label={'End Date'}
                                 type={'date'}
                                 InputLabelProps={{ shrink: true }}
@@ -86,13 +89,21 @@ const ViewBudgets = () => {
             {budget &&
                 <Card>
                     <CardHeader
+                        ref={(cardHeaderRef: HTMLDivElement) => {
+                            if (!cardHeaderRef) {
+                                return;
+                            }
+                            if (cardHeaderRef.clientWidth - 32 !== appBarWidth) {
+                                setAppBarWidth(cardHeaderRef.clientWidth - 32);
+                            }
+                        }}
                         title={
-                            <AppBar position='static'>
+                            <AppBar position='static' style={{width: appBarWidth}}>
                                 <Tabs
                                     value={selectedBudgetTab}
                                     onChange={handleSelectedBudgetTabChange}
                                     variant={'scrollable'}
-                                    scrollButtons={'auto'}
+                                    scrollButtons={'on'}
                                 >
                                     <Tab label={'Summary'} value={'Summary'} />
                                     {Object.keys(budget.entries).map((budgetEntryCategory, idx) => (
@@ -137,6 +148,7 @@ const ViewBudgets = () => {
                                             {
                                                 label: 'Date',
                                                 field: 'date',
+                                                minWidth: 100,
                                                 accessor: (data: any) => {
                                                     const be = data as BudgetEntry;
                                                     try {
