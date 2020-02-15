@@ -145,7 +145,7 @@ const ViewBudgets = () => {
                                             {
                                                 label: 'Date',
                                                 field: 'date',
-                                                minWidth: 100,
+                                                minWidth: 90,
                                                 accessor: (data: any) => {
                                                     const be = data as BudgetEntry;
                                                     try {
