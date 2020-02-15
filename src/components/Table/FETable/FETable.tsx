@@ -140,7 +140,7 @@ export default function FETable(props: FETableProps) {
                         setPaginationComponentHeight(paginationRef.clientHeight);
                     }
                 }}
-                rowsPerPageOptions={[10, 25, 100]}
+                rowsPerPageOptions={[10, 25, 100, 150, 200, 250, 300, 350, 400]}
                 component='div'
                 count={props.data.length}
                 rowsPerPage={rowsPerPage}

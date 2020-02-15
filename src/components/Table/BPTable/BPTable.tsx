@@ -187,7 +187,7 @@ const BPTable = (props: BPTableProps) => {
                         setPaginationComponentHeight(paginationRef.clientHeight);
                     }
                 }}
-                rowsPerPageOptions={[10, 15, 20, 25, 100]}
+                rowsPerPageOptions={[10, 25, 100, 150, 200, 250, 300, 350, 400]}
                 component='div'
                 count={props.totalNoRecords}
                 rowsPerPage={query.limit}
