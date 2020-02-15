@@ -24,7 +24,7 @@ const ViewBudgets = () => {
     const [endDate, setEndDate] = useState<string | undefined>(moment().format('YYYY-MM-DD'));
     const [budget, setBudget] = useState<Budget | undefined>(undefined);
     const [selectedBudgetTab, setSelectedBudgetTab] = useState('Summary');
-    const [appBarWidth, setAppBarWidth]  = useState(0);
+    const [appBarWidth, setAppBarWidth] = useState(0);
 
     useEffect(() => {
         const getBudgetForDateRange = async () => {
@@ -98,7 +98,7 @@ const ViewBudgets = () => {
                             }
                         }}
                         title={
-                            <AppBar position='static' style={{width: appBarWidth}}>
+                            <AppBar position='static' style={{ width: appBarWidth }}>
                                 <Tabs
                                     value={selectedBudgetTab}
                                     onChange={handleSelectedBudgetTabChange}
@@ -141,10 +141,6 @@ const ViewBudgets = () => {
                                     <FETable
                                         height={435}
                                         columns={[
-                                            {
-                                                label: 'Date',
-                                                field: 'date'
-                                            },
                                             {
                                                 label: 'Date',
                                                 field: 'date',
