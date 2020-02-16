@@ -14,10 +14,15 @@ export interface DuplicateCheckRequest {
     budgetEntries: BudgetEntry[];
 }
 
+export interface DuplicateEntries {
+    existing: BudgetEntry;
+    new: BudgetEntry;
+}
+
 export interface DuplicateCheckResponse {
     uniques: BudgetEntry[];
-    exactDuplicates: BudgetEntry[];
-    suspectedDuplicates: BudgetEntry[];
+    exactDuplicates: DuplicateEntries[];
+    suspectedDuplicates: DuplicateEntries[];
 }
 
 export interface CreateManyRequest {
@@ -46,8 +51,14 @@ const Admin = {
         });
         return {
             uniques: response.uniques.map((be: BudgetEntry) => (new BudgetEntry(be))),
-            exactDuplicates: response.exactDuplicates.map((be: BudgetEntry) => (new BudgetEntry(be))),
-            suspectedDuplicates: response.suspectedDuplicates.map((be: BudgetEntry) => (new BudgetEntry(be)))
+            exactDuplicates: response.exactDuplicates.map((ed: DuplicateEntries) => ({
+                existing: new BudgetEntry(ed.existing),
+                new: new BudgetEntry(ed.new),
+            })),
+            suspectedDuplicates: response.suspectedDuplicates.map((sd: DuplicateEntries) => ({
+                existing: new BudgetEntry(sd.existing),
+                new: new BudgetEntry(sd.new),
+            }))
         };
     },
     async CreateMany(request: CreateManyRequest): Promise<CreateManyResponse> {
