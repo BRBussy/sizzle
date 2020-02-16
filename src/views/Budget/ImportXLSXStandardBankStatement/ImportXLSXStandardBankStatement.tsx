@@ -1,7 +1,8 @@
 import {
     AppBar, Button, Card, CardContent, CardHeader,
     CircularProgress, Tab, Tabs, Stepper,
-    Step, StepLabel, TextField, MenuItem
+    Step, StepLabel, TextField, MenuItem, makeStyles,
+    createStyles, Theme
 } from '@material-ui/core';
 import { BudgetEntry, BudgetEntryAdmin } from 'bizzle/budget/entry';
 import { BudgetEntryCategoryRule, BudgetEntryCategoryRuleStore } from 'bizzle/budget/entry/categoryRule';
@@ -201,7 +202,18 @@ interface PrepareImportStepProps {
     onImport: (entriesToCreate: BudgetEntry[], entriesToUpdate: BudgetEntry[]) => void
 }
 
-// const usePrepareImportStepStyles = makeStyles((theme: Theme) => createStyles({}));
+const usePrepareImportStepStyles = makeStyles((theme: Theme) => createStyles({
+    duplicateRowCell: {
+        display: 'grid',
+        gridTemplateRows: 'auto auto',
+        gridRowGap: theme.spacing(1),
+        gridTemplateColumns: 'auto'
+    },
+    duplicateRowExistingCell: {
+        borderBottom: `2px solid ${theme.palette.divider}`,
+        paddingBottom: 6
+    }
+}));
 
 enum PrepareImportTab {
     uniques = 'Uniques',
@@ -212,6 +224,7 @@ enum PrepareImportTab {
 const PrepareImportStep = (props: PrepareImportStepProps) => {
     const [selectedTab, setSelectedTab] = useState(PrepareImportTab.uniques);
     const [uniquesToImport, setUniquesToImport] = useState(props.duplicateCheckResponse.uniques);
+    const classes = usePrepareImportStepStyles();
 
     const handleTabChange = (event: React.ChangeEvent<{}>, newValue: PrepareImportTab) => {
         setSelectedTab(newValue);
@@ -273,6 +286,7 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                         {
                                             label: 'Category',
                                             field: 'category',
+                                            minWidth: 180,                                            
                                             accessor: (data: any, dataIdx: number) => {
                                                 const be = data as BudgetEntry;
                                                 return (
@@ -293,7 +307,7 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                     ]}
                                     data={uniquesToImport}
                                     title={'These will be created'}
-                                />
+                                />  
                             );
 
                         case PrepareImportTab.duplicates:
@@ -302,12 +316,28 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                     height={435}
                                     columns={[
                                         {
+                                            label: 'Action',
+                                            field: '-',
+                                            accessor: (data: any, rowIdx: number) => {
+                                                return 'action!'
+                                            }
+                                        },
+                                        {
                                             label: 'Date',
                                             field: 'date',
-                                            minWidth: 90,                                            
+                                            minWidth: 90,
                                             accessor: (data: any) => {
                                                 const de = data as DuplicateEntries;
-                                                return moment(de.existing.date).format('YY-MM-DD');
+                                                return (
+                                                    <div className={classes.duplicateRowCell}>
+                                                        <div className={classes.duplicateRowExistingCell}>
+                                                            {moment(de.existing.date).format('YY-MM-DD')}
+                                                        </div>
+                                                        <div>
+                                                            {moment(de.new.date).format('YY-MM-DD')}
+                                                        </div>
+                                                    </div>
+                                                )
                                             }
                                         },
                                         {
@@ -315,7 +345,16 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                             field: 'description',
                                             accessor: (data: any) => {
                                                 const de = data as DuplicateEntries;
-                                                return de.existing.description
+                                                return (
+                                                    <div className={classes.duplicateRowCell}>
+                                                        <div className={classes.duplicateRowExistingCell}>
+                                                            {de.existing.description}
+                                                        </div>
+                                                        <div>
+                                                            {de.new.description}
+                                                        </div>
+                                                    </div>
+                                                )
                                             }
                                         },
                                         {
@@ -323,27 +362,50 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                             field: 'amount',
                                             accessor: (data: any) => {
                                                 const de = data as DuplicateEntries;
-                                                return de.existing.amount
+                                                return (
+                                                    <div className={classes.duplicateRowCell}>
+                                                        <div className={classes.duplicateRowExistingCell}>
+                                                            {de.existing.amount}
+                                                        </div>
+                                                        <div>
+                                                            {de.new.amount}
+                                                        </div>
+                                                    </div>
+                                                )
                                             }
                                         },
                                         {
                                             label: 'Category',
                                             field: 'category',
+                                            minWidth: 180,
                                             accessor: (data: any) => {
                                                 const de = data as DuplicateEntries;
                                                 return (
-                                                    <TextField
-                                                        select
-                                                        value={de.existing.categoryRuleID}
-                                                    >
-                                                        <MenuItem value={''}>Other</MenuItem>
-                                                        {props.budgetEntryCategoryRules.map((bcr) => (
-                                                            <MenuItem key={bcr.id} value={bcr.id}>
-                                                                {bcr.name}
-                                                            </MenuItem>
-                                                        ))}
-                                                    </TextField>
-                                                );                                                
+                                                    <div className={classes.duplicateRowCell}>
+                                                        <TextField
+                                                            select
+                                                            value={de.existing.categoryRuleID}
+                                                        >
+                                                            <MenuItem value={''}>Other</MenuItem>
+                                                            {props.budgetEntryCategoryRules.map((bcr) => (
+                                                                <MenuItem key={bcr.id} value={bcr.id}>
+                                                                    {bcr.name}
+                                                                </MenuItem>
+                                                            ))}
+                                                        </TextField>
+                                                        <TextField
+                                                            select
+                                                            value={de.new.categoryRuleID}
+                                                        >
+                                                            <MenuItem value={''}>Other</MenuItem>
+                                                            {props.budgetEntryCategoryRules.map((bcr) => (
+                                                                <MenuItem key={bcr.id} value={bcr.id}>
+                                                                    {bcr.name}
+                                                                </MenuItem>
+                                                            ))}
+                                                        </TextField>
+                                                    </div>
+                                                )
                                             }
                                         }
                                     ]}
@@ -358,40 +420,101 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                     height={435}
                                     columns={[
                                         {
+                                            label: 'Action',
+                                            field: '-',
+                                            accessor: (data: any, rowIdx: number) => {
+                                                return 'action!'
+                                            }
+                                        },
+                                        {
                                             label: 'Date',
-                                            field: 'date'
+                                            field: 'date',
+                                            minWidth: 90,
+                                            accessor: (data: any) => {
+                                                const de = data as DuplicateEntries;
+                                                return (
+                                                    <div className={classes.duplicateRowCell}>
+                                                        <div className={classes.duplicateRowExistingCell}>
+                                                            {moment(de.existing.date).format('YY-MM-DD')}
+                                                        </div>
+                                                        <div>
+                                                            {moment(de.new.date).format('YY-MM-DD')}
+                                                        </div>
+                                                    </div>
+                                                )
+                                            }
                                         },
                                         {
                                             label: 'Description',
-                                            field: 'description'
+                                            field: 'description',
+                                            accessor: (data: any) => {
+                                                const de = data as DuplicateEntries;
+                                                return (
+                                                    <div className={classes.duplicateRowCell}>
+                                                        <div className={classes.duplicateRowExistingCell}>
+                                                            {de.existing.description}
+                                                        </div>
+                                                        <div>
+                                                            {de.new.description}
+                                                        </div>
+                                                    </div>
+                                                )
+                                            }
                                         },
                                         {
                                             label: 'Amount',
-                                            field: 'amount'
+                                            field: 'amount',
+                                            accessor: (data: any) => {
+                                                const de = data as DuplicateEntries;
+                                                return (
+                                                    <div className={classes.duplicateRowCell}>
+                                                        <div className={classes.duplicateRowExistingCell}>
+                                                            {de.existing.amount}
+                                                        </div>
+                                                        <div>
+                                                            {de.new.amount}
+                                                        </div>
+                                                    </div>
+                                                )
+                                            }
                                         },
                                         {
                                             label: 'Category',
                                             field: 'category',
+                                            minWidth: 180,
                                             accessor: (data: any) => {
-                                                const be = data as BudgetEntry;
+                                                const de = data as DuplicateEntries;
                                                 return (
-                                                    <TextField
-                                                        select
-                                                        value={be.categoryRuleID}
-                                                    >
-                                                        {props.budgetEntryCategoryRules.map((bcr) => (
-                                                            <MenuItem key={bcr.id} value={bcr.id}>
-                                                                {bcr.name}
-                                                            </MenuItem>
-                                                        ))}
-                                                    </TextField>
-                                                );
+                                                    <div className={classes.duplicateRowCell}>
+                                                        <TextField
+                                                            select
+                                                            value={de.existing.categoryRuleID}
+                                                        >
+                                                            <MenuItem value={''}>Other</MenuItem>
+                                                            {props.budgetEntryCategoryRules.map((bcr) => (
+                                                                <MenuItem key={bcr.id} value={bcr.id}>
+                                                                    {bcr.name}
+                                                                </MenuItem>
+                                                            ))}
+                                                        </TextField>
+                                                        <TextField
+                                                            select
+                                                            value={de.new.categoryRuleID}
+                                                        >
+                                                            <MenuItem value={''}>Other</MenuItem>
+                                                            {props.budgetEntryCategoryRules.map((bcr) => (
+                                                                <MenuItem key={bcr.id} value={bcr.id}>
+                                                                    {bcr.name}
+                                                                </MenuItem>
+                                                            ))}
+                                                        </TextField>
+                                                    </div>
+                                                )
                                             }
                                         }
                                     ]}
-                                    //data={props.duplicateCheckResponse.suspectedDuplicates}
-                                    data={[]}
-                                    title={'Those that are selected will be updated'}
+                                    data={props.duplicateCheckResponse.suspectedDuplicates}
+                                    title={'These will be ignored'}
                                 />
                             );
 
