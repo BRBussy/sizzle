@@ -2,7 +2,8 @@ import {
     AppBar, Button, Card, CardContent, CardHeader,
     CircularProgress, Tab, Tabs, Stepper,
     Step, StepLabel, TextField, MenuItem, makeStyles,
-    createStyles, Theme
+    createStyles, Theme, Checkbox, FormControl, FormControlLabel,
+    Typography
 } from '@material-ui/core';
 import { BudgetEntry, BudgetEntryAdmin } from 'bizzle/budget/entry';
 import { BudgetEntryCategoryRule, BudgetEntryCategoryRuleStore } from 'bizzle/budget/entry/categoryRule';
@@ -212,6 +213,17 @@ const usePrepareImportStepStyles = makeStyles((theme: Theme) => createStyles({
     duplicateRowExistingCell: {
         borderBottom: `2px solid ${theme.palette.divider}`,
         paddingBottom: 6
+    },
+    duplicateRowActionCell: {
+        display: 'grid',
+        gridTemplateRows: 'auto auto',
+        gridRowGap: theme.spacing(1),
+        gridTemplateColumns: 'auto'
+    },
+    duplicateRowActionCellButtonLayout: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
     }
 }));
 
@@ -286,7 +298,7 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                         {
                                             label: 'Category',
                                             field: 'category',
-                                            minWidth: 180,                                            
+                                            minWidth: 180,
                                             accessor: (data: any, dataIdx: number) => {
                                                 const be = data as BudgetEntry;
                                                 return (
@@ -307,7 +319,7 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                     ]}
                                     data={uniquesToImport}
                                     title={'These will be created'}
-                                />  
+                                />
                             );
 
                         case PrepareImportTab.duplicates:
@@ -319,7 +331,30 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                             label: 'Action',
                                             field: '-',
                                             accessor: (data: any, rowIdx: number) => {
-                                                return 'action!'
+                                                return (
+                                                    <div className={classes.duplicateRowActionCell}>
+                                                        <FormControl>
+                                                            <FormControlLabel
+                                                                control={<Checkbox
+                                                                    inputProps={{ 'aria-label': 'primary checkbox' }}
+                                                                />}
+                                                                label={<Typography variant={'caption'}>
+                                                                    Update Existing
+                                                                    </Typography>}
+                                                            />
+                                                        </FormControl>
+                                                        <FormControl>
+                                                            <FormControlLabel
+                                                                control={<Checkbox
+                                                                    inputProps={{ 'aria-label': 'primary checkbox' }}
+                                                                />}
+                                                                label={<Typography variant={'caption'}>
+                                                                    Create New
+                                                                    </Typography>}
+                                                            />
+                                                        </FormControl>
+                                                    </div>
+                                                )
                                             }
                                         },
                                         {
@@ -423,7 +458,30 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                             label: 'Action',
                                             field: '-',
                                             accessor: (data: any, rowIdx: number) => {
-                                                return 'action!'
+                                                return (
+                                                    <div className={classes.duplicateRowActionCell}>
+                                                        <FormControl>
+                                                            <FormControlLabel
+                                                                control={<Checkbox
+                                                                    inputProps={{ 'aria-label': 'primary checkbox' }}
+                                                                />}
+                                                                label={<Typography variant={'caption'}>
+                                                                    Update Existing
+                                                                    </Typography>}
+                                                            />
+                                                        </FormControl>
+                                                        <FormControl>
+                                                            <FormControlLabel
+                                                                control={<Checkbox
+                                                                    inputProps={{ 'aria-label': 'primary checkbox' }}
+                                                                />}
+                                                                label={<Typography variant={'caption'}>
+                                                                    Create New
+                                                                    </Typography>}
+                                                            />
+                                                        </FormControl>
+                                                    </div>
+                                                )
                                             }
                                         },
                                         {
