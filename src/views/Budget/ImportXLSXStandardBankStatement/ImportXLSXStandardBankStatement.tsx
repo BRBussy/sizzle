@@ -9,6 +9,7 @@ import React, {useCallback, useState, useEffect} from 'react';
 import {useDropzone} from 'react-dropzone';
 import {FETable} from 'components/Table';
 import {DuplicateCheckResponse} from 'bizzle/budget/entry/Admin';
+import moment from 'moment';
 
 enum AppStep {
     preparation,
@@ -252,7 +253,17 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                     columns={[
                                         {
                                             label: 'Date',
-                                            field: 'date'
+                                            field: 'date',
+                                            minWidth: 90,
+                                            accessor: (data: any) => {
+                                                const be = data as BudgetEntry;
+                                                try {
+                                                    return moment(be.date).format('YY-MM-DD');
+                                                } catch (e) {
+                                                    console.error('error formatting date:', e);
+                                                    return '-';
+                                                }
+                                            }
                                         },
                                         {
                                             label: 'Description',

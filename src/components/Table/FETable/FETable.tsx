@@ -19,18 +19,18 @@ interface Column {
     label: string;
     minWidth?: number;
     align?: 'right';
-    accessor?: (data: any) => string | number;
+    accessor?: (data: {[key: string]: any}) => string | number | React.ReactNode;
     addStyle?: { [key: string]: any };
 }
 
 const renderCellData = (
     data: { [key: string]: any },
     field?: string,
-    accessor?: (data: any) => string | number
-): string | number => {
+    accessor?: (data: {[key: string]: any}) => string | number | React.ReactNode
+): string | number | React.ReactNode => {
     try {
         // if an accessor function was provided, call it with the data
-        let accessedData: string | number = '';
+        let accessedData: string | number | React.ReactNode = '';
         if (accessor) {
             accessedData = accessor(data);
         } else if (field) {
