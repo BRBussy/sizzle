@@ -8,7 +8,7 @@ import { BudgetEntryCategoryRule, BudgetEntryCategoryRuleStore } from 'bizzle/bu
 import React, { useCallback, useState, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FETable } from 'components/Table';
-import { DuplicateCheckResponse } from 'bizzle/budget/entry/Admin';
+import { DuplicateCheckResponse, DuplicateEntries } from 'bizzle/budget/entry/Admin';
 import moment from 'moment';
 
 enum AppStep {
@@ -259,12 +259,7 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                             minWidth: 90,
                                             accessor: (data: any) => {
                                                 const be = data as BudgetEntry;
-                                                try {
-                                                    return moment(be.date).format('YY-MM-DD');
-                                                } catch (e) {
-                                                    console.error('error formatting date:', e);
-                                                    return '-';
-                                                }
+                                                return moment(be.date).format('YY-MM-DD')
                                             }
                                         },
                                         {
@@ -308,25 +303,38 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                     columns={[
                                         {
                                             label: 'Date',
-                                            field: 'date'
+                                            field: 'date',
+                                            minWidth: 90,                                            
+                                            accessor: (data: any) => {
+                                                const de = data as DuplicateEntries;
+                                                return moment(de.existing.date).format('YY-MM-DD');
+                                            }
                                         },
                                         {
                                             label: 'Description',
-                                            field: 'description'
+                                            field: 'description',
+                                            accessor: (data: any) => {
+                                                const de = data as DuplicateEntries;
+                                                return de.existing.description
+                                            }
                                         },
                                         {
                                             label: 'Amount',
-                                            field: 'amount'
+                                            field: 'amount',
+                                            accessor: (data: any) => {
+                                                const de = data as DuplicateEntries;
+                                                return de.existing.amount
+                                            }
                                         },
                                         {
                                             label: 'Category',
                                             field: 'category',
                                             accessor: (data: any) => {
-                                                const be = data as BudgetEntry;
+                                                const de = data as DuplicateEntries;
                                                 return (
                                                     <TextField
                                                         select
-                                                        value={be.categoryRuleID}
+                                                        value={de.existing.categoryRuleID}
                                                     >
                                                         <MenuItem value={''}>Other</MenuItem>
                                                         {props.budgetEntryCategoryRules.map((bcr) => (
@@ -335,7 +343,7 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                                             </MenuItem>
                                                         ))}
                                                     </TextField>
-                                                );
+                                                );                                                
                                             }
                                         }
                                     ]}
@@ -381,7 +389,8 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                             }
                                         }
                                     ]}
-                                    data={props.duplicateCheckResponse.suspectedDuplicates}
+                                    //data={props.duplicateCheckResponse.suspectedDuplicates}
+                                    data={[]}
                                     title={'Those that are selected will be updated'}
                                 />
                             );
