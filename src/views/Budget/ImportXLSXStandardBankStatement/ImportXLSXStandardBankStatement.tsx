@@ -1,14 +1,14 @@
 import {
     AppBar, Button, Card, CardContent, CardHeader,
     CircularProgress, Tab, Tabs, Stepper,
-    Step, StepLabel
+    Step, StepLabel, TextField, MenuItem
 } from '@material-ui/core';
-import {BudgetEntry, BudgetEntryAdmin} from 'bizzle/budget/entry';
-import {BudgetEntryCategoryRule, BudgetEntryCategoryRuleStore} from 'bizzle/budget/entry/categoryRule';
-import React, {useCallback, useState, useEffect} from 'react';
-import {useDropzone} from 'react-dropzone';
-import {FETable} from 'components/Table';
-import {DuplicateCheckResponse} from 'bizzle/budget/entry/Admin';
+import { BudgetEntry, BudgetEntryAdmin } from 'bizzle/budget/entry';
+import { BudgetEntryCategoryRule, BudgetEntryCategoryRuleStore } from 'bizzle/budget/entry/categoryRule';
+import React, { useCallback, useState, useEffect } from 'react';
+import { useDropzone } from 'react-dropzone';
+import { FETable } from 'components/Table';
+import { DuplicateCheckResponse } from 'bizzle/budget/entry/Admin';
 import moment from 'moment';
 
 enum AppStep {
@@ -30,18 +30,14 @@ const ImportXLSXStandardBankStatement = () => {
         exactDuplicates: [],
         suspectedDuplicates: []
     });
-    const [budgetEntryCategoryRuleIndex, setBudgetEntryCategoryRuleIndex] = useState<{[key: string]: BudgetEntryCategoryRule}>({});
+    const [budgetEntryCategoryRules, setBudgetEntryCategoryRules] = useState<BudgetEntryCategoryRule[]>([]);
 
     useEffect(() => {
         const fetchBudgetEntryCategoryRules = async () => {
             try {
-                const newBudgetEntryCategoryRuleIndex:{[key: string]: BudgetEntryCategoryRule} = {};
-                (await BudgetEntryCategoryRuleStore.FindMany({
+                setBudgetEntryCategoryRules((await BudgetEntryCategoryRuleStore.FindMany({
                     criteria: {}
-                })).records.forEach((beCategoryRule) => {
-                    newBudgetEntryCategoryRuleIndex[beCategoryRule.id] = beCategoryRule;
-                });
-                setBudgetEntryCategoryRuleIndex(newBudgetEntryCategoryRuleIndex);
+                })).records);
                 setActiveAppStep(AppStep.selectFile);
             } catch (e) {
                 console.error(`error fetching budget entry category rules: ${e.message ? e.message : e.toString()}`)
@@ -115,7 +111,7 @@ const ImportXLSXStandardBankStatement = () => {
                 {(() => {
                     switch (activeAppStep) {
                         case AppStep.preparation:
-                            return (<CircularProgress/>);
+                            return (<CircularProgress />);
 
                         case AppStep.selectFile:
                             return (
@@ -127,19 +123,19 @@ const ImportXLSXStandardBankStatement = () => {
 
                         case AppStep.parseFile:
                         case AppStep.performDuplicateCheck:
-                            return (<CircularProgress/>);
+                            return (<CircularProgress />);
 
                         case AppStep.prepareImport:
                             return (
                                 <PrepareImportStep
-                                    budgetEntryCategoryRuleIdx={budgetEntryCategoryRuleIndex}
+                                    budgetEntryCategoryRules={budgetEntryCategoryRules}
                                     duplicateCheckResponse={duplicateCheckResponse}
                                     onImport={handleImport}
                                 />
                             );
 
                         case AppStep.performImport:
-                            return (<CircularProgress/>);
+                            return (<CircularProgress />);
 
                         case AppStep.done:
                             return (<div>Done!</div>);
@@ -183,11 +179,11 @@ const SelectFileStep = (props: SelectFileStepProps) => {
             reader.readAsDataURL(file);
         });
     }, [props]);
-    const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop});
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
     return (
         <Card>
-            <CardHeader title={'Select File'}/>
+            <CardHeader title={'Select File'} />
             <CardContent {...getRootProps()}>
                 <input {...getInputProps()} />
                 {isDragActive
@@ -200,7 +196,7 @@ const SelectFileStep = (props: SelectFileStepProps) => {
 };
 
 interface PrepareImportStepProps {
-    budgetEntryCategoryRuleIdx: {[key: string]: BudgetEntryCategoryRule};
+    budgetEntryCategoryRules: BudgetEntryCategoryRule[];
     duplicateCheckResponse: DuplicateCheckResponse;
     onImport: (entriesToCreate: BudgetEntry[], entriesToUpdate: BudgetEntry[]) => void
 }
@@ -215,10 +211,16 @@ enum PrepareImportTab {
 
 const PrepareImportStep = (props: PrepareImportStepProps) => {
     const [selectedTab, setSelectedTab] = useState(PrepareImportTab.uniques);
+    const [uniquesToImport, setUniquesToImport] = useState(props.duplicateCheckResponse.uniques);
 
     const handleTabChange = (event: React.ChangeEvent<{}>, newValue: PrepareImportTab) => {
         setSelectedTab(newValue);
     };
+
+    const handleUniqueEntryCategoryChange = (uniqueEntryIdx: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        uniquesToImport[uniqueEntryIdx].categoryRuleID = e.target.value;
+        setUniquesToImport([...uniquesToImport]);
+    }
 
     return (
         <Card>
@@ -231,9 +233,9 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                             variant={'scrollable'}
                             scrollButtons={'auto'}
                         >
-                            <Tab label={PrepareImportTab.uniques} value={PrepareImportTab.uniques}/>
-                            <Tab label={PrepareImportTab.duplicates} value={PrepareImportTab.duplicates}/>
-                            <Tab label={PrepareImportTab.suspectDuplicates} value={PrepareImportTab.suspectDuplicates}/>
+                            <Tab label={PrepareImportTab.uniques} value={PrepareImportTab.uniques} />
+                            <Tab label={PrepareImportTab.duplicates} value={PrepareImportTab.duplicates} />
+                            <Tab label={PrepareImportTab.suspectDuplicates} value={PrepareImportTab.suspectDuplicates} />
                         </Tabs>
                     </AppBar>
                 }
@@ -276,15 +278,25 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                         {
                                             label: 'Category',
                                             field: 'category',
-                                            accessor: (data: any) => {
+                                            accessor: (data: any, dataIdx: number) => {
                                                 const be = data as BudgetEntry;
-                                                return props.budgetEntryCategoryRuleIdx[be.categoryRuleID]
-                                                    ? props.budgetEntryCategoryRuleIdx[be.categoryRuleID].name
-                                                    : 'Other';
+                                                return (
+                                                    <TextField
+                                                        select
+                                                        value={be.categoryRuleID}
+                                                        onChange={handleUniqueEntryCategoryChange(dataIdx)}
+                                                    >
+                                                        {props.budgetEntryCategoryRules.map((bcr) => (
+                                                            <MenuItem key={bcr.id} value={bcr.id}>
+                                                                {bcr.name}
+                                                            </MenuItem>
+                                                        ))}
+                                                    </TextField>
+                                                );
                                             }
                                         }
                                     ]}
-                                    data={props.duplicateCheckResponse.uniques}
+                                    data={uniquesToImport}
                                     title={'These will be created'}
                                 />
                             );
@@ -311,9 +323,19 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                             field: 'category',
                                             accessor: (data: any) => {
                                                 const be = data as BudgetEntry;
-                                                return props.budgetEntryCategoryRuleIdx[be.categoryRuleID]
-                                                    ? props.budgetEntryCategoryRuleIdx[be.categoryRuleID].name
-                                                    : 'Other';
+                                                return (
+                                                    <TextField
+                                                        select
+                                                        value={be.categoryRuleID}
+                                                    >
+                                                        <MenuItem value={''}>Other</MenuItem>
+                                                        {props.budgetEntryCategoryRules.map((bcr) => (
+                                                            <MenuItem key={bcr.id} value={bcr.id}>
+                                                                {bcr.name}
+                                                            </MenuItem>
+                                                        ))}
+                                                    </TextField>
+                                                );
                                             }
                                         }
                                     ]}
@@ -344,9 +366,18 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                             field: 'category',
                                             accessor: (data: any) => {
                                                 const be = data as BudgetEntry;
-                                                return props.budgetEntryCategoryRuleIdx[be.categoryRuleID]
-                                                    ? props.budgetEntryCategoryRuleIdx[be.categoryRuleID].name
-                                                    : 'Other';
+                                                return (
+                                                    <TextField
+                                                        select
+                                                        value={be.categoryRuleID}
+                                                    >
+                                                        {props.budgetEntryCategoryRules.map((bcr) => (
+                                                            <MenuItem key={bcr.id} value={bcr.id}>
+                                                                {bcr.name}
+                                                            </MenuItem>
+                                                        ))}
+                                                    </TextField>
+                                                );
                                             }
                                         }
                                     ]}

@@ -19,20 +19,21 @@ interface Column {
     label: string;
     minWidth?: number;
     align?: 'right';
-    accessor?: (data: {[key: string]: any}) => string | number | React.ReactNode;
+    accessor?: (data: {[key: string]: any}, dataIdx: number) => string | number | React.ReactNode;
     addStyle?: { [key: string]: any };
 }
 
 const renderCellData = (
     data: { [key: string]: any },
+    dataIdx: number,
     field?: string,
-    accessor?: (data: {[key: string]: any}) => string | number | React.ReactNode
+    accessor?: (data: {[key: string]: any}, dataIdx: number) => string | number | React.ReactNode
 ): string | number | React.ReactNode => {
     try {
         // if an accessor function was provided, call it with the data
         let accessedData: string | number | React.ReactNode = '';
         if (accessor) {
-            accessedData = accessor(data);
+            accessedData = accessor(data, dataIdx);
         } else if (field) {
             // otherwise use provided field to get data
             accessedData = data[field];
@@ -119,6 +120,7 @@ export default function FETable(props: FETableProps) {
                                             >
                                                 {renderCellData(
                                                     data,
+                                                    rowIdx,
                                                     col.field,
                                                     col.accessor
                                                 )}
