@@ -236,6 +236,9 @@ enum PrepareImportTab {
 const PrepareImportStep = (props: PrepareImportStepProps) => {
     const [selectedTab, setSelectedTab] = useState(PrepareImportTab.uniques);
     const [uniquesToImport, setUniquesToImport] = useState(props.duplicateCheckResponse.uniques);
+    const [exactDuplicateEntries, setExactDuplicateEntries] = useState(props.duplicateCheckResponse.exactDuplicates);
+    const [suspectedDuplicateEntries, setSuspectedDuplicateEntries] = useState(props.duplicateCheckResponse.suspectedDuplicates);
+    const [entriesToUpdate, setEntriesToUpdate] = useState<BudgetEntry[]>([]);
     const classes = usePrepareImportStepStyles();
 
     const handleTabChange = (event: React.ChangeEvent<{}>, newValue: PrepareImportTab) => {
@@ -245,7 +248,17 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
     const handleUniqueEntryCategoryChange = (uniqueEntryIdx: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
         uniquesToImport[uniqueEntryIdx].categoryRuleID = e.target.value;
         setUniquesToImport([...uniquesToImport]);
-    }
+    };
+
+    const handleExactDuplicateEntryCategoryChange = (exactDuplicateEntryIdx: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        exactDuplicateEntries[exactDuplicateEntryIdx].categoryRuleID = e.target.value;
+        setExactDuplicateEntries([...exactDuplicateEntries]);
+    };
+
+    const handleSuspectedDuplicateEntryCategoryChange = (suspectedDuplicateEntryIdx: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        suspectedDuplicateEntries[suspectedDuplicateEntryIdx].categoryRuleID = e.target.value;
+        setSuspectedDuplicateEntries([...suspectedDuplicateEntries]);
+    };
 
     return (
         <Card>
