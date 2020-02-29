@@ -238,7 +238,13 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
     const [uniquesToImport, setUniquesToImport] = useState(props.duplicateCheckResponse.uniques);
     const [exactDuplicateEntries, setExactDuplicateEntries] = useState(props.duplicateCheckResponse.exactDuplicates);
     const [suspectedDuplicateEntries, setSuspectedDuplicateEntries] = useState(props.duplicateCheckResponse.suspectedDuplicates);
-    const [entriesToUpdate, setEntriesToUpdate] = useState<BudgetEntry[]>([]);
+    const [exactDuplicatesCreateNewActions, setExactDuplicatesCreateNewActions] = useState<{ [key: string]: boolean }>({})
+    const [suspectedDuplicatesActions, setSuspectedDuplicatesActions] = useState<{
+        [key: string]: {
+            createNew: boolean,
+            updateExisting: boolean,
+        },
+    }>({})
     const classes = usePrepareImportStepStyles();
 
     const handleTabChange = (event: React.ChangeEvent<{}>, newValue: PrepareImportTab) => {
@@ -267,6 +273,63 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
         }
         setSuspectedDuplicateEntries([...suspectedDuplicateEntries]);
     };
+
+    const handleExactDuplicateCreateNewCheck = (duplicateEntries: DuplicateEntries) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        setExactDuplicatesCreateNewActions({
+            ...exactDuplicatesCreateNewActions,
+            [duplicateEntries.existing.id]: e.target.checked
+        })
+    };
+
+    const handleSuspectedDuplicateCreateNewCheck = (duplicateEntries: DuplicateEntries) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.checked) {
+            // indicate that a new entry should be created
+            // clear updating existing flag
+            setSuspectedDuplicatesActions({
+                ...suspectedDuplicatesActions,
+                [duplicateEntries.existing.id]: {
+                    createNew: true,
+                    updateExisting: false,
+                }
+            });
+        } else {
+            // indicate that new entry should not be created
+            // clear updating existing flag
+            setSuspectedDuplicatesActions({
+                ...suspectedDuplicatesActions,
+                [duplicateEntries.existing.id]: {
+                    createNew: false,
+                    updateExisting: false,
+                }
+            });
+        }
+    };
+
+    const handleSuspectedDuplicateUpdateExistingCheck = (duplicateEntries: DuplicateEntries) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.checked) {
+            // indicate that existing entry should be updated
+            // clear create new flag
+            setSuspectedDuplicatesActions({
+                ...suspectedDuplicatesActions,
+                [duplicateEntries.existing.id]: {
+                    createNew: false,
+                    updateExisting: true,
+                }
+            });
+        } else {
+            // indicate that existing existing entry should not be updated
+            // clear create new flag
+            setSuspectedDuplicatesActions({
+                ...suspectedDuplicatesActions,
+                [duplicateEntries.existing.id]: {
+                    createNew: false,
+                    updateExisting: false,
+                }
+            });
+        }
+    };
+
+    console.log(exactDuplicatesCreateNewActions);
 
     return (
         <Card>
@@ -352,21 +415,17 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                             label: 'Action',
                                             field: '-',
                                             accessor: (data: any, rowIdx: number) => {
+                                                const duplicateEntries = data as DuplicateEntries;
                                                 return (
                                                     <div className={classes.duplicateRowActionCell}>
+                                                        <Typography variant={'caption'}>
+                                                            Existing
+                                                        </Typography>
                                                         <FormControl>
                                                             <FormControlLabel
                                                                 control={<Checkbox
-                                                                    inputProps={{ 'aria-label': 'primary checkbox' }}
-                                                                />}
-                                                                label={<Typography variant={'caption'}>
-                                                                    Update Existing
-                                                                    </Typography>}
-                                                            />
-                                                        </FormControl>
-                                                        <FormControl>
-                                                            <FormControlLabel
-                                                                control={<Checkbox
+                                                                    onChange={handleExactDuplicateCreateNewCheck(duplicateEntries)}
+                                                                    checked={!!exactDuplicatesCreateNewActions[duplicateEntries.existing.id]}
                                                                     inputProps={{ 'aria-label': 'primary checkbox' }}
                                                                 />}
                                                                 label={<Typography variant={'caption'}>
@@ -481,11 +540,18 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                             label: 'Action',
                                             field: '-',
                                             accessor: (data: any, rowIdx: number) => {
+                                                const duplicateEntries = data as DuplicateEntries;
                                                 return (
                                                     <div className={classes.duplicateRowActionCell}>
                                                         <FormControl>
                                                             <FormControlLabel
                                                                 control={<Checkbox
+                                                                    checked={
+                                                                        suspectedDuplicatesActions[duplicateEntries.existing.id]
+                                                                            ? suspectedDuplicatesActions[duplicateEntries.existing.id].updateExisting
+                                                                            : false
+                                                                    }
+                                                                    onChange={handleSuspectedDuplicateUpdateExistingCheck(duplicateEntries)}
                                                                     inputProps={{ 'aria-label': 'primary checkbox' }}
                                                                 />}
                                                                 label={<Typography variant={'caption'}>
@@ -496,6 +562,12 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                                         <FormControl>
                                                             <FormControlLabel
                                                                 control={<Checkbox
+                                                                    checked={
+                                                                        suspectedDuplicatesActions[duplicateEntries.existing.id]
+                                                                            ? suspectedDuplicatesActions[duplicateEntries.existing.id].createNew
+                                                                            : false
+                                                                    }
+                                                                    onChange={handleSuspectedDuplicateCreateNewCheck(duplicateEntries)}
                                                                     inputProps={{ 'aria-label': 'primary checkbox' }}
                                                                 />}
                                                                 label={<Typography variant={'caption'}>
