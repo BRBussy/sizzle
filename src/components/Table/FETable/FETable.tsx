@@ -12,6 +12,8 @@ interface FETableProps {
     data: { [key: string]: any }[];
     title: string;
     height?: number;
+    initialRowsPerPage?: number;
+    tableSize?: 'medium' | 'small';
 }
 
 interface Column {
@@ -51,7 +53,7 @@ const renderCellData = (
 export default function FETable(props: FETableProps) {
     const classes = useStyles();
     const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [rowsPerPage, setRowsPerPage] = React.useState(props.initialRowsPerPage ? props.initialRowsPerPage : 10);
     const [paginationComponentHeight, setPaginationComponentHeight] = useState(56);
     const [tableHeadHeight, setTableHeadHeight] = useState(53);
     const tableHeight = props.height ? props.height : 600;
@@ -69,6 +71,7 @@ export default function FETable(props: FETableProps) {
 
     return (
         <Paper className={classes.root}>
+            {props.title &&
             <div className={classes.tableTitleLayout}>
                 <div className={classes.tableTitle}>{props.title}</div>
                 <div className={classes.tableTitleControlLayout}>
@@ -76,12 +79,12 @@ export default function FETable(props: FETableProps) {
                         <FilterIcon/>
                     </IconButton>
                 </div>
-            </div>
+            </div>}
             <div
                 className={classes.tableWrapper}
                 style={{height: tableWrapperHeight}}
             >
-                <Table stickyHeader>
+                <Table stickyHeader size={props.tableSize ? props.tableSize : 'small'}>
                     <TableHead
                         ref={(tableHeadRef: HTMLDivElement) => {
                             if (!tableHeadRef) {

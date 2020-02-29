@@ -13,6 +13,17 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         display: 'grid',
         gridTemplateRows: 'auto 1fr',
         gridRowGap: theme.spacing(1)
+    },
+    dateField: {
+        width: 130,
+    },
+    dateSelectCardRootOverride: {
+        paddingTop: theme.spacing(0.5),
+        paddingBottom: `${theme.spacing(0.5)}px !important`,
+    },
+    tableCardRootOverride: {
+        padding: 0,
+        paddingBottom: '0 !important',
     }
 }));
 
@@ -51,11 +62,12 @@ const ViewBudgets = () => {
 
     return (
         <div className={classes.root}>
-            <Card>
-                <CardContent>
+            <Card classes={{root: classes.dateSelectCardRootOverride}}>
+                <CardContent classes={{root: classes.dateSelectCardRootOverride}}>
                     <Grid container direction={'row'} spacing={1}>
                         <Grid item>
                             <TextField
+                                className={classes.dateField}
                                 value={startDate}
                                 label={'Start Date'}
                                 type={'date'}
@@ -71,6 +83,7 @@ const ViewBudgets = () => {
                         </Grid>
                         <Grid item>
                             <TextField
+                                className={classes.dateField}
                                 value={endDate}
                                 label={'End Date'}
                                 type={'date'}
@@ -88,14 +101,15 @@ const ViewBudgets = () => {
                 </CardContent>
             </Card>
             {budget &&
-                <Card>
+                <Card  classes={{root: classes.tableCardRootOverride}}>
                     <CardHeader
+                        classes={{root: classes.tableCardRootOverride}}
                         ref={(cardHeaderRef: HTMLDivElement) => {
                             if (!cardHeaderRef) {
                                 return;
                             }
-                            if (cardHeaderRef.clientWidth - 32 !== appBarWidth) {
-                                setAppBarWidth(cardHeaderRef.clientWidth - 32);
+                            if (cardHeaderRef.clientWidth !== appBarWidth) {
+                                setAppBarWidth(cardHeaderRef.clientWidth);
                             }
                         }}
                         title={
@@ -114,12 +128,13 @@ const ViewBudgets = () => {
                             </AppBar>
                         }
                     />
-                    <CardContent>
+                    <CardContent classes={{root: classes.tableCardRootOverride}}>
                         {(() => {
                             if (selectedBudgetTab === 'Summary') {
                                 return (
                                     <FETable
-                                        height={435}
+                                        height={520}
+                                        initialRowsPerPage={20}
                                         columns={[
                                             {
                                                 label: 'Item',
@@ -140,7 +155,8 @@ const ViewBudgets = () => {
                             } else {
                                 return (
                                     <FETable
-                                        height={435}
+                                        height={520}
+                                        initialRowsPerPage={20}
                                         columns={[
                                             {
                                                 label: 'Date',
