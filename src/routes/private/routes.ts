@@ -43,8 +43,8 @@ export const routes: RouteType[] = [
         collapse: true,
         views: [
             {
-                name: 'Summary',
-                path: '/app/budget/Summary',
+                name: 'Budget',
+                path: '/app/budget/budget',
                 icon: MapIcon,
                 component: ViewBudgetsView
             },
