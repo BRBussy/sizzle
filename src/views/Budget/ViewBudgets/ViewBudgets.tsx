@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         gridRowGap: theme.spacing(1)
     },
     dateField: {
-        width: 130,
+        width: 135,
     },
     dateSelectCardRootOverride: {
         paddingTop: theme.spacing(0.5),
@@ -31,8 +31,8 @@ let getBudgetForDateRangeTimeout: any;
 
 const ViewBudgets = () => {
     const classes = useStyles();
-    const [startDate, setStartDate] = useState<string | undefined>(moment().subtract(2, 'month').format('YYYY-MM-DD'));
-    const [endDate, setEndDate] = useState<string | undefined>(moment().format('YYYY-MM-DD'));
+    const [startDate, setStartDate] = useState<string | undefined>(moment().subtract(1, 'month').format('YYYY-MM-DD'));
+    const [endDate, setEndDate] = useState<string | undefined>(moment().add(1, 'day').format('YYYY-MM-DD'));
     const [budget, setBudget] = useState<Budget | undefined>(undefined);
     const [selectedBudgetTab, setSelectedBudgetTab] = useState('Summary');
     const [appBarWidth, setAppBarWidth] = useState(0);

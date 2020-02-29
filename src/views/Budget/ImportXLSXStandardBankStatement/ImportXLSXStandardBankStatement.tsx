@@ -415,7 +415,7 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                         case PrepareImportTab.uniques:
                             return (
                                 <FETable
-                                    height={435}
+                                    height={700}
                                     columns={[
                                         {
                                             label: 'Date',
@@ -464,7 +464,7 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                         case PrepareImportTab.duplicates:
                             return (
                                 <FETable
-                                    height={435}
+                                    height={700}
                                     columns={[
                                         {
                                             label: 'Action',
@@ -589,7 +589,7 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                         case PrepareImportTab.suspectDuplicates:
                             return (
                                 <FETable
-                                    height={435}
+                                    height={700}
                                     columns={[
                                         {
                                             label: 'Action',
