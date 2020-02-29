@@ -329,6 +329,53 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
         }
     };
 
+    const handleImportSelect = () => {
+        // to gather entries that should be created
+        const entriesToCreate = props.duplicateCheckResponse.uniques;
+        // to gather entries that should be updated
+        const entriesToUpdate: BudgetEntry[] = [];
+
+        //gather those flagged for creation from exact duplicates
+        for ( let existingEntryID in exactDuplicatesCreateNewActions) {
+            if (exactDuplicatesCreateNewActions[existingEntryID]) {
+                // if marked for create new
+                const duplicateEntries = props.duplicateCheckResponse.exactDuplicates.find((de) => (de.existing.id === existingEntryID));
+                if (!duplicateEntries) {
+                    console.error('duplicate entries for flagged existing entry not found');
+                    continue;
+                }
+                entriesToCreate.push(duplicateEntries.new);
+            }
+        }
+
+        // gather those flagged for either creation or updating from suspected duplicates
+        for (let existingEntryID in suspectedDuplicatesActions) {
+            if (!(suspectedDuplicatesActions[existingEntryID].createNew || suspectedDuplicatesActions[existingEntryID].updateExisting)) {
+                // if flagged for neither, do nothing
+                continue;
+            }
+            // otherwise find the duplicate entries
+            const duplicateEntries = props.duplicateCheckResponse.suspectedDuplicates.find((de) => (de.existing.id === existingEntryID));
+            if (!duplicateEntries) {
+                console.error('duplicate entries for flagged existing entry not found');
+                continue;
+            }
+            if (suspectedDuplicatesActions[existingEntryID].createNew) {
+                entriesToCreate.push(duplicateEntries.new);
+            } else {
+                entriesToUpdate.push(new BudgetEntry({
+                    ...duplicateEntries.existing,
+                    date: duplicateEntries.new.date,
+                    amount: duplicateEntries.new.amount,
+                    description: duplicateEntries.new.description,                    
+                    categoryRuleID: duplicateEntries.new.categoryRuleID,
+                }))
+            }      
+        }
+
+        props.onImport(entriesToCreate, entriesToUpdate);
+    };
+
     return (
         <Card>
             <CardHeader
@@ -348,9 +395,7 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                 }
             />
             <CardContent>
-                <Button
-                    onClick={() => props.onImport(props.duplicateCheckResponse.uniques, [])}
-                >
+                <Button onClick={handleImportSelect}>
                     Perform Import
                 </Button>
                 {(() => {
@@ -525,7 +570,7 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                         }
                                     ]}
                                     data={props.duplicateCheckResponse.exactDuplicates}
-                                    title={'These will be ignored'}
+                                    title={'Select Entries To Create Anew'}
                                 />
                             );
 
@@ -667,7 +712,7 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                         }
                                     ]}
                                     data={props.duplicateCheckResponse.suspectedDuplicates}
-                                    title={'These will be ignored'}
+                                    title={'Update Existing or Create New'}
                                 />
                             );
 
