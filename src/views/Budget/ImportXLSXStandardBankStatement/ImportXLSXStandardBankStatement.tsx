@@ -329,8 +329,6 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
         }
     };
 
-    console.log(exactDuplicatesCreateNewActions);
-
     return (
         <Card>
             <CardHeader
