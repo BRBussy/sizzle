@@ -19,7 +19,7 @@ export default class ContactFailed extends Error {
     this.error = error;
   }
 
-  public toString() {
+  public toString = () => {
     return `server contact failed for method ${this.method} with error ${this.error}`;
   }
 }

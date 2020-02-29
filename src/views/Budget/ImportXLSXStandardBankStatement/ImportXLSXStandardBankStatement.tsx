@@ -66,9 +66,22 @@ const ImportXLSXStandardBankStatement = () => {
     const handleImport = async (entriesToCreate: BudgetEntry[], entriesToUpdate: BudgetEntry[]) => {
         setActiveAppStep(AppStep.performImport);
         try {
-            await BudgetEntryAdmin.CreateMany({
-                budgetEntries: entriesToCreate
-            })
+            await Promise.all([
+                (async () => {
+                    if (entriesToUpdate.length) {
+                        await BudgetEntryAdmin.UpdateMany({
+                            budgetEntries: entriesToUpdate
+                        })
+                    }
+                })(),
+                (async () => {
+                    if (entriesToCreate.length) {
+                        await BudgetEntryAdmin.CreateMany({
+                            budgetEntries: entriesToCreate
+                        })
+                    }
+                })()
+            ])
         } catch (e) {
             console.error('error performing import', e.message ? e.message : e.toString);
             setError(e.message ? e.message : e.toString);
