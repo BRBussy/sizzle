@@ -250,13 +250,21 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
         setUniquesToImport([...uniquesToImport]);
     };
 
-    const handleExactDuplicateEntryCategoryChange = (exactDuplicateEntryIdx: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
-        exactDuplicateEntries[exactDuplicateEntryIdx].categoryRuleID = e.target.value;
+    const handleExactDuplicateEntryCategoryChange = (exactDuplicateEntryIdx: number, existing: boolean) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (existing) {
+            exactDuplicateEntries[exactDuplicateEntryIdx].existing.categoryRuleID = e.target.value;
+        } else {
+            exactDuplicateEntries[exactDuplicateEntryIdx].new.categoryRuleID = e.target.value;
+        }
         setExactDuplicateEntries([...exactDuplicateEntries]);
     };
 
-    const handleSuspectedDuplicateEntryCategoryChange = (suspectedDuplicateEntryIdx: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
-        suspectedDuplicateEntries[suspectedDuplicateEntryIdx].categoryRuleID = e.target.value;
+    const handleSuspectedDuplicateEntryCategoryChange = (suspectedDuplicateEntryIdx: number, existing: boolean) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (existing) {
+            suspectedDuplicateEntries[suspectedDuplicateEntryIdx].existing.categoryRuleID = e.target.value;
+        } else {
+            suspectedDuplicateEntries[suspectedDuplicateEntryIdx].new.categoryRuleID = e.target.value;
+        }
         setSuspectedDuplicateEntries([...suspectedDuplicateEntries]);
     };
 
@@ -426,13 +434,14 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                             label: 'Category',
                                             field: 'category',
                                             minWidth: 180,
-                                            accessor: (data: any) => {
+                                            accessor: (data: any, dataIdx: number) => {
                                                 const de = data as DuplicateEntries;
                                                 return (
                                                     <div className={classes.duplicateRowCell}>
                                                         <TextField
                                                             select
                                                             value={de.existing.categoryRuleID}
+                                                            onChange={handleExactDuplicateEntryCategoryChange(dataIdx, true)}
                                                         >
                                                             <MenuItem value={''}>Other</MenuItem>
                                                             {props.budgetEntryCategoryRules.map((bcr) => (
@@ -444,6 +453,7 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                                         <TextField
                                                             select
                                                             value={de.new.categoryRuleID}
+                                                            onChange={handleExactDuplicateEntryCategoryChange(dataIdx, false)}
                                                         >
                                                             <MenuItem value={''}>Other</MenuItem>
                                                             {props.budgetEntryCategoryRules.map((bcr) => (
@@ -553,13 +563,14 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                             label: 'Category',
                                             field: 'category',
                                             minWidth: 180,
-                                            accessor: (data: any) => {
+                                            accessor: (data: any, dataIdx: number) => {
                                                 const de = data as DuplicateEntries;
                                                 return (
                                                     <div className={classes.duplicateRowCell}>
                                                         <TextField
                                                             select
                                                             value={de.existing.categoryRuleID}
+                                                            onChange={handleSuspectedDuplicateEntryCategoryChange(dataIdx, true)}
                                                         >
                                                             <MenuItem value={''}>Other</MenuItem>
                                                             {props.budgetEntryCategoryRules.map((bcr) => (
@@ -571,6 +582,7 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                                         <TextField
                                                             select
                                                             value={de.new.categoryRuleID}
+                                                            onChange={handleSuspectedDuplicateEntryCategoryChange(dataIdx, false)}
                                                         >
                                                             <MenuItem value={''}>Other</MenuItem>
                                                             {props.budgetEntryCategoryRules.map((bcr) => (
