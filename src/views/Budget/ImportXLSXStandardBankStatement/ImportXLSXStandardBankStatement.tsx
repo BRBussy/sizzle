@@ -372,7 +372,6 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                 }))
             }      
         }
-
         props.onImport(entriesToCreate, entriesToUpdate);
     };
 
