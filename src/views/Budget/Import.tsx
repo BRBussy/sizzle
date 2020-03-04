@@ -5,12 +5,12 @@ import {
     createStyles, Theme, Checkbox, FormControl, FormControlLabel,
     Typography
 } from '@material-ui/core';
-import { BudgetEntry, BudgetEntryAdmin } from 'bizzle/budget/entry';
-import { BudgetEntryCategoryRule, BudgetEntryCategoryRuleStore } from 'bizzle/budget/entry/categoryRule';
-import React, { useCallback, useState, useEffect } from 'react';
-import { useDropzone } from 'react-dropzone';
-import { FETable } from 'components/Table';
-import { DuplicateCheckResponse, DuplicateEntries } from 'bizzle/budget/entry/Admin';
+import {BudgetEntry, BudgetEntryAdmin} from 'bizzle/budget/entry';
+import {BudgetEntryCategoryRule, BudgetEntryCategoryRuleStore} from 'bizzle/budget/entry/categoryRule';
+import React, {useCallback, useState, useEffect} from 'react';
+import {useDropzone} from 'react-dropzone';
+import {FETable} from 'components/Table';
+import {DuplicateCheckResponse, DuplicateEntries} from 'bizzle/budget/entry/Admin';
 import moment from 'moment';
 
 enum AppStep {
@@ -126,7 +126,7 @@ const Import = () => {
                 {(() => {
                     switch (activeAppStep) {
                         case AppStep.preparation:
-                            return (<CircularProgress />);
+                            return (<CircularProgress/>);
 
                         case AppStep.selectFile:
                             return (
@@ -138,7 +138,7 @@ const Import = () => {
 
                         case AppStep.parseFile:
                         case AppStep.performDuplicateCheck:
-                            return (<CircularProgress />);
+                            return (<CircularProgress/>);
 
                         case AppStep.prepareImport:
                             return (
@@ -150,7 +150,7 @@ const Import = () => {
                             );
 
                         case AppStep.performImport:
-                            return (<CircularProgress />);
+                            return (<CircularProgress/>);
 
                         case AppStep.done:
                             return (<div>Done!</div>);
@@ -194,11 +194,11 @@ const SelectFileStep = (props: SelectFileStepProps) => {
             reader.readAsDataURL(file);
         });
     }, [props]);
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+    const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop});
 
     return (
         <Card>
-            <CardHeader title={'Select File'} />
+            <CardHeader title={'Select File'}/>
             <CardContent {...getRootProps()}>
                 <input {...getInputProps()} />
                 {isDragActive
@@ -349,7 +349,7 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
         const entriesToUpdate: BudgetEntry[] = [];
 
         // gather those flagged for creation from exact duplicates
-        for ( const existingEntryID in exactDuplicatesCreateNewActions) {
+        for (const existingEntryID in exactDuplicatesCreateNewActions) {
             if (exactDuplicatesCreateNewActions[existingEntryID]) {
                 // if marked for create new
                 const duplicateEntries = props.duplicateCheckResponse.exactDuplicates.find((de) => (de.existing.id === existingEntryID));
@@ -399,9 +399,9 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                             variant={'scrollable'}
                             scrollButtons={'auto'}
                         >
-                            <Tab label={PrepareImportTab.uniques} value={PrepareImportTab.uniques} />
-                            <Tab label={PrepareImportTab.duplicates} value={PrepareImportTab.duplicates} />
-                            <Tab label={PrepareImportTab.suspectDuplicates} value={PrepareImportTab.suspectDuplicates} />
+                            <Tab label={PrepareImportTab.uniques} value={PrepareImportTab.uniques}/>
+                            <Tab label={PrepareImportTab.duplicates} value={PrepareImportTab.duplicates}/>
+                            <Tab label={PrepareImportTab.suspectDuplicates} value={PrepareImportTab.suspectDuplicates}/>
                         </Tabs>
                     </AppBar>
                 }
@@ -481,11 +481,11 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                                                 control={<Checkbox
                                                                     onChange={handleExactDuplicateCreateNewCheck(duplicateEntries)}
                                                                     checked={!!exactDuplicatesCreateNewActions[duplicateEntries.existing.id]}
-                                                                    inputProps={{ 'aria-label': 'primary checkbox' }}
+                                                                    inputProps={{'aria-label': 'primary checkbox'}}
                                                                 />}
                                                                 label={<Typography variant={'caption'}>
                                                                     Create New
-                                                                    </Typography>}
+                                                                </Typography>}
                                                             />
                                                         </FormControl>
                                                     </div>
@@ -607,11 +607,11 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                                                             : false
                                                                     }
                                                                     onChange={handleSuspectedDuplicateUpdateExistingCheck(duplicateEntries)}
-                                                                    inputProps={{ 'aria-label': 'primary checkbox' }}
+                                                                    inputProps={{'aria-label': 'primary checkbox'}}
                                                                 />}
                                                                 label={<Typography variant={'caption'}>
                                                                     Update Existing
-                                                                    </Typography>}
+                                                                </Typography>}
                                                             />
                                                         </FormControl>
                                                         <FormControl>
@@ -623,11 +623,11 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                                                             : false
                                                                     }
                                                                     onChange={handleSuspectedDuplicateCreateNewCheck(duplicateEntries)}
-                                                                    inputProps={{ 'aria-label': 'primary checkbox' }}
+                                                                    inputProps={{'aria-label': 'primary checkbox'}}
                                                                 />}
                                                                 label={<Typography variant={'caption'}>
                                                                     Create New
-                                                                    </Typography>}
+                                                                </Typography>}
                                                             />
                                                         </FormControl>
                                                     </div>

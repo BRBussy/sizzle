@@ -93,7 +93,7 @@ const EntryList = () => {
                 {
                     label: 'Date',
                     field: 'date',
-                    minWidth: 90,
+                    minWidth: 100,
                     accessor: (data: any) => {
                         const be = data as BudgetEntry;
                         return moment(be.date).format('YY-MM-DD')
@@ -102,7 +102,7 @@ const EntryList = () => {
                 {
                     label: 'Category',
                     field: 'categoryRuleID',
-                    minWidth: 90,
+                    minWidth: 150,
                     accessor: (data: any) => {
                         const be = data as BudgetEntry;
                         return budgetEntryCategoryRuleIdx[be.categoryRuleID]
@@ -112,7 +112,8 @@ const EntryList = () => {
                 },
                 {
                     label: 'Description',
-                    field: 'description'
+                    field: 'description',
+                    minWidth: 200
                 },
                 {
                     field: 'amount',
