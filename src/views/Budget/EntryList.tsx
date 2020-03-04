@@ -159,6 +159,7 @@ const EntryList = () => {
               budgetEntry={selectedBudgetEntries.length ? selectedBudgetEntries[0] : new BudgetEntry()}
               closeDialog={() => setBudgetEntryDialogOpen(false)}
               onBudgetEntryUpdate={() => setRefreshDataToggle(!refreshDataToggle)}
+              onBudgetEntryCreate={() => setRefreshDataToggle(!refreshDataToggle)}
               budgetEntryCategoryRules={Object.values(budgetEntryCategoryRuleIdx)}
             />}
         </React.Fragment>

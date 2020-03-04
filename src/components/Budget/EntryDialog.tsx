@@ -17,6 +17,7 @@ interface EntryDialogProps {
     budgetEntryCategoryRules?: BudgetEntryCategoryRule[];
     budgetEntry: BudgetEntry;
     onBudgetEntryUpdate?: (updatedBudgetEntry: BudgetEntry) => void;
+    onBudgetEntryCreate?: (newBudgetEntry: BudgetEntry) => void;
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -93,11 +94,12 @@ export default function EntryDialog(props: EntryDialogProps) {
     const handleCreate = async () => {
         setLoading(true);
         try {
-            await BudgetEntryAdmin.CreateOne({budgetEntry});
-            if (props.onBudgetEntryUpdate) {
-                props.onBudgetEntryUpdate(new BudgetEntry(budgetEntry));
+            const createOneResponse = await BudgetEntryAdmin.CreateOne({budgetEntry});
+            if (props.onBudgetEntryCreate) {
+                props.onBudgetEntryCreate(new BudgetEntry(createOneResponse.budgetEntry));
             }
-            setDuplicateBudgetEntry(new BudgetEntry(budgetEntry));
+            setBudgetEntry(new BudgetEntry(createOneResponse.budgetEntry));
+            setDuplicateBudgetEntry(new BudgetEntry(createOneResponse.budgetEntry));
         } catch (e) {
             console.error('unable to create entry', e);
         }
