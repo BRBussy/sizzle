@@ -185,6 +185,9 @@ export default function EntryDialog(props: EntryDialogProps) {
                             label={'Category'}
                             onChange={(e) => handleFieldChange('categoryRuleID')(e.target.value)}
                         >
+                            <MenuItem value={''}>
+                                Other
+                            </MenuItem>
                             {budgetEntryCategoryRules.map((bcr) => (
                                 <MenuItem key={bcr.id} value={bcr.id}>
                                     {bcr.name}
