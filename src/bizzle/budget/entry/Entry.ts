@@ -1,7 +1,9 @@
+import moment from 'moment';
+
 export default class Entry {
     public id: string = '';
     public ownerID: string = '';
-    public date: number = 0;
+    public date: string = moment().format();
     public description: string = '';
     public amount: number = 0;
     public categoryRuleID: string = '';

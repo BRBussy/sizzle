@@ -11,6 +11,7 @@ import {
     Save as SaveIcon
 } from '@material-ui/icons';
 import {isEqual as _isEqual} from 'lodash';
+import moment from 'moment';
 
 interface EntryDialogProps {
     closeDialog: () => void;
@@ -159,6 +160,20 @@ export default function EntryDialog(props: EntryDialogProps) {
             </DialogTitle>
             <DialogContent>
                 <Grid container direction={'column'} spacing={1}>
+                    <Grid item>
+                        <TextField
+                            fullWidth
+                            variant={'outlined'}
+                            disabled={loading}
+                            value={moment(budgetEntry.date).format('YYYY-MM-DD')}
+                            label={'Start Date'}
+                            type={'date'}
+                            InputLabelProps={{ shrink: true }}
+                            onChange={(e) => {
+                                handleFieldChange('date')(`${e.target.value}T00:00:00Z`)
+                            }}
+                        />
+                    </Grid>
                     <Grid item>
                         <TextField
                             select
