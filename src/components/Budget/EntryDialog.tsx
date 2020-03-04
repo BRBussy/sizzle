@@ -5,8 +5,12 @@ import {
     IconButton, MenuItem
 } from '@material-ui/core';
 import {BudgetEntryCategoryRule, BudgetEntryCategoryRuleStore} from 'bizzle/budget/entry/categoryRule';
-import {BudgetEntry} from 'bizzle/budget/entry';
-import {Close as CloseIcon} from '@material-ui/icons';
+import {BudgetEntry, BudgetEntryAdmin} from 'bizzle/budget/entry';
+import {
+    Close as CloseIcon,
+    Save as SaveIcon
+} from '@material-ui/icons';
+import {isEqual as _isEqual} from 'lodash';
 
 interface EntryDialogProps {
     closeDialog: () => void;
@@ -30,7 +34,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         alignItems: 'center'
     },
     closeIcon: {
-        // 'marginRight': `-${theme.spacing(3)}px`,
         'color': theme.palette.action.disabled,
         '&:hover': {
             color: theme.palette.action.active
@@ -38,24 +41,16 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
-export enum EntryDialogAppState {
-    view,
-    edit
-}
-
 export default function EntryDialog(props: EntryDialogProps) {
     const classes = useStyles();
     const [loading, setLoading] = useState(false);
-    const [appState, setAppState] = useState(props.initialAppState
-        ? props.initialAppState
-        : EntryDialogAppState.view
-    );
     const [budgetEntryCategoryRules, setBudgetEntryCategoryRules] = useState<BudgetEntryCategoryRule[]>(
         props.budgetEntryCategoryRules
             ? props.budgetEntryCategoryRules
             : []
     );
-    const [budgetEntry, setBudgetEntry] = useState(props.budgetEntry);
+    const [budgetEntry, setBudgetEntry] = useState(new BudgetEntry(props.budgetEntry));
+    const [duplicateBudgetEntry, setDuplicateBudgetEntry] = useState(new BudgetEntry(props.budgetEntry));
 
     useEffect(() => {
         const fetchBudgetEntryCategoryRules = async () => {
@@ -81,6 +76,19 @@ export default function EntryDialog(props: EntryDialogProps) {
         } as BudgetEntry));
     };
 
+    const handleUpdate = async () => {
+        setLoading(true);
+        try {
+            await BudgetEntryAdmin.UpdateOne({ budgetEntry });
+            setDuplicateBudgetEntry(new BudgetEntry(budgetEntry));
+        } catch (e) {
+            console.error('unable to update entry', e);
+        }
+        setLoading(false);
+    };
+
+    const entryChanged = _isEqual(budgetEntry, duplicateBudgetEntry);
+
     return (
         <Dialog
             open={true}
@@ -101,6 +109,17 @@ export default function EntryDialog(props: EntryDialogProps) {
                     </Grid>}
                 </Grid>
                 <Grid container direction={'row-reverse'} alignItems={'center'} spacing={1}>
+                    {entryChanged &&
+                    <Grid item>
+                        <IconButton
+                            size={'small'}
+                            onClick={handleUpdate}
+                            className={classes.closeIcon}
+                            disabled={loading}
+                        >
+                            <SaveIcon/>
+                        </IconButton>
+                    </Grid>}
                     <Grid item>
                         <IconButton
                             size={'small'}
