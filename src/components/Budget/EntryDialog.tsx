@@ -16,6 +16,7 @@ interface EntryDialogProps {
     closeDialog: () => void;
     budgetEntryCategoryRules?: BudgetEntryCategoryRule[];
     budgetEntry: BudgetEntry;
+    onBudgetEntryUpdate?: (updatedBudgetEntry: BudgetEntry) => void;
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -79,6 +80,9 @@ export default function EntryDialog(props: EntryDialogProps) {
         setLoading(true);
         try {
             await BudgetEntryAdmin.UpdateOne({ budgetEntry });
+            if (props.onBudgetEntryUpdate) {
+                props.onBudgetEntryUpdate(new BudgetEntry(budgetEntry));
+            }
             setDuplicateBudgetEntry(new BudgetEntry(budgetEntry));
         } catch (e) {
             console.error('unable to update entry', e);

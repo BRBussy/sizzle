@@ -36,6 +36,7 @@ const EntryList = () => {
     const [budgetEntryCategoryRuleIdx, setBudgetEntryCategoryRuleIdx] = useState<{ [key: string]: BudgetEntryCategoryRule }>({});
     const [budgetEntryDialogOpen, setBudgetEntryDialogOpen] = useState(false);
     const [selectedBudgetEntries, setSelectedBudgetEntries] = useState<BudgetEntry[]>([]);
+    const [refreshDataToggle, setRefreshDataToggle] = useState(false);
 
     useEffect(() => {
         const fetchBudgetEntryCategoryRules = async () => {
@@ -61,6 +62,7 @@ const EntryList = () => {
             setLoading(true);
             try {
                 setBudgetEntryFindManyResponse(await BudgetEntryStore.FindMany(budgetEntryFindManyRequest));
+                setSelectedBudgetEntries([]);
             } catch (e) {
                 console.error('error finding budgetEntries', e);
             }
@@ -68,7 +70,7 @@ const EntryList = () => {
         };
         clearTimeout(fetchDataTimeout);
         fetchDataTimeout = setTimeout(fetchData, 400);
-    }, [budgetEntryFindManyRequest]);
+    }, [budgetEntryFindManyRequest, refreshDataToggle]);
 
     return (
         <React.Fragment>
@@ -146,6 +148,7 @@ const EntryList = () => {
             <BudgetEntryDialog
               budgetEntry={selectedBudgetEntries[0]}
               closeDialog={() => setBudgetEntryDialogOpen(false)}
+              onBudgetEntryUpdate={() => setRefreshDataToggle(!refreshDataToggle)}
             />}
         </React.Fragment>
     );
