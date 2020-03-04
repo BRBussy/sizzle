@@ -14,7 +14,6 @@ import {isEqual as _isEqual} from 'lodash';
 
 interface EntryDialogProps {
     closeDialog: () => void;
-    initialAppState?: EntryDialogAppState;
     budgetEntryCategoryRules?: BudgetEntryCategoryRule[];
     budgetEntry: BudgetEntry;
 }
