@@ -17,8 +17,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     tableTitle: {},
     tableTitleControlLayout: {
-        display: 'flex',
-        flexDirection: 'row'
+        display: 'grid',
+        alignItems: 'center'
     },
     filterLayout: {
         height: tableFilterPanelHeight,
@@ -52,6 +52,15 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     tableCell: {
         backgroundColor: theme.palette.background.paper
+    },
+    filterIcon: {
+        'color': theme.palette.action.disabled,
+        '&:hover': {
+            color: theme.palette.action.active
+        }
+    },
+    filterIconPanelOpen: {
+        color: theme.palette.action.active
     }
 }));
 

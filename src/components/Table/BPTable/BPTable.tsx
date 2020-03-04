@@ -28,6 +28,7 @@ interface BPTableProps {
         clickedRowIdx: number
     }) => void;
     onSelectedDataChange?: (allSelectedData: { [key: string]: any }[]) => void;
+    toolBarControls?: React.ReactNode[];
 }
 
 interface Column {
@@ -172,12 +173,27 @@ const BPTable = (props: BPTableProps) => {
             <div className={classes.tableTitleLayout}>
                 <div className={classes.tableTitle}>{props.title}</div>
                 <div className={classes.tableTitleControlLayout}>
-                    <IconButton
-                        size={'small'}
-                        onClick={() => setFilterPanelOpen(!filterPanelOpen)}
-                    >
-                        <FilterIcon/>
-                    </IconButton>
+                    <Grid container spacing={1}>
+                        {props.toolBarControls
+                            ? props.toolBarControls.map((f, idx) => (
+                                <Grid item key={idx}>
+                                    {f}
+                                </Grid>))
+                            : null
+                        }
+                        <Grid item>
+                            <IconButton
+                                size={'small'}
+                                onClick={() => setFilterPanelOpen(!filterPanelOpen)}
+                                className={cx(
+                                    classes.filterIcon,
+                                    {[classes.filterIconPanelOpen]: filterPanelOpen || selectedRowIndices.length}
+                                )}
+                            >
+                                <FilterIcon/>
+                            </IconButton>
+                        </Grid>
+                    </Grid>
                 </div>
             </div>
             <Collapse in={filterPanelOpen}>
@@ -243,7 +259,7 @@ const BPTable = (props: BPTableProps) => {
                                     onClick={handleRowSelect(rowIdx, data)}
                                     className={cx(
                                         classes.tableRow,
-                                        { [classes.tableRowSelected]: rowIsSelected }
+                                        {[classes.tableRowSelected]: rowIsSelected}
                                     )}
                                 >
                                     <TableCell

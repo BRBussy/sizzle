@@ -9,6 +9,13 @@ import {SubstringFilter} from 'components/Table/BPTable/filters/text';
 import React, {useEffect, useState} from 'react';
 import moment from 'moment';
 import {BudgetEntryCategoryRule, BudgetEntryCategoryRuleStore} from 'bizzle/budget/entry/categoryRule';
+import {BudgetEntryDialog} from 'components/Budget';
+import {
+    EditOutlined as EditIcon
+} from '@material-ui/icons';
+import {
+    IconButton, Tooltip
+} from '@material-ui/core';
 
 let fetchDataTimeout: any;
 
@@ -26,13 +33,15 @@ const EntryList = () => {
             sorting: []
         })
     });
-    const [budgetEntryCategoryRuleIdx, setBudgetEntryCategoryRuleIdx] = useState<{[key: string]: BudgetEntryCategoryRule}>({});
+    const [budgetEntryCategoryRuleIdx, setBudgetEntryCategoryRuleIdx] = useState<{ [key: string]: BudgetEntryCategoryRule }>({});
+    const [budgetEntryDialogOpen, setBudgetEntryDialogOpen] = useState(false);
+    const [selectedBudgetEntries, setSelectedBudgetEntries] = useState<BudgetEntry[]>([]);
 
     useEffect(() => {
         const fetchBudgetEntryCategoryRules = async () => {
             setLoading(true);
             try {
-                const newBudgetEntryCategoryRuleIdx: {[key: string]: BudgetEntryCategoryRule} = {};
+                const newBudgetEntryCategoryRuleIdx: { [key: string]: BudgetEntryCategoryRule } = {};
                 (await BudgetEntryCategoryRuleStore.FindMany({
                     criteria: {}
                 })).records.forEach((bcr) => {
@@ -62,56 +71,82 @@ const EntryList = () => {
     }, [budgetEntryFindManyRequest]);
 
     return (
-        <BPTable
-            loading={loading}
-            title={'Budget Entries'}
-            onQueryChange={(updatedQuery) => setBudgetEntryFindManyRequest({
-                ...budgetEntryFindManyRequest,
-                query: updatedQuery
-            })}
-            initialQuery={budgetEntryFindManyRequest.query}
-            totalNoRecords={budgetEntryFindManyResponse.total}
-            filters={[
-                <SubstringFilter
-                    onChange={(updatedCriteria) => setBudgetEntryFindManyRequest({
-                        ...budgetEntryFindManyRequest,
-                        criteria: updatedCriteria ? {description: updatedCriteria} : {}
-                    })}
-                />
-            ]}
-            columns={[
-                {
-                    label: 'Date',
-                    field: 'date',
-                    minWidth: 100,
-                    accessor: (data: any) => {
-                        const be = data as BudgetEntry;
-                        return moment(be.date).format('YY-MM-DD')
+        <React.Fragment>
+            <BPTable
+                loading={loading}
+                title={'Budget Entries'}
+                onQueryChange={(updatedQuery) => setBudgetEntryFindManyRequest({
+                    ...budgetEntryFindManyRequest,
+                    query: updatedQuery
+                })}
+                initialQuery={budgetEntryFindManyRequest.query}
+                totalNoRecords={budgetEntryFindManyResponse.total}
+                filters={[
+                    <SubstringFilter
+                        onChange={(updatedCriteria) => setBudgetEntryFindManyRequest({
+                            ...budgetEntryFindManyRequest,
+                            criteria: updatedCriteria ? {description: updatedCriteria} : {}
+                        })}
+                    />
+                ]}
+                toolBarControls={(() => {
+                    if (selectedBudgetEntries.length === 1) {
+                        return [
+                            <Tooltip title='Edit'>
+                                <IconButton
+                                    size={'small'}
+                                    onClick={() => setBudgetEntryDialogOpen(true)}
+                                >
+                                    <EditIcon/>
+                                </IconButton>
+                            </Tooltip>
+                        ]
+                    } else if (selectedBudgetEntries.length > 1) {
+                        return []
                     }
-                },
-                {
-                    label: 'Category',
-                    field: 'categoryRuleID',
-                    minWidth: 150,
-                    accessor: (data: any) => {
-                        const be = data as BudgetEntry;
-                        return budgetEntryCategoryRuleIdx[be.categoryRuleID]
-                            ? budgetEntryCategoryRuleIdx[be.categoryRuleID].name
-                            : '-';
-                    }
-                },
-                {
-                    label: 'Description',
-                    field: 'description',
-                    minWidth: 200
-                },
-                {
-                    field: 'amount',
-                    label: 'Amount'
+                    return []
+                })()}
+                onSelectedDataChange={(allSelectedData: { [key: string]: any }[]) =>
+                    setSelectedBudgetEntries(allSelectedData as BudgetEntry[])
                 }
-            ]}
-            data={budgetEntryFindManyResponse.records}
-        />
+                columns={[
+                    {
+                        label: 'Date',
+                        field: 'date',
+                        minWidth: 100,
+                        accessor: (data: any) => {
+                            const be = data as BudgetEntry;
+                            return moment(be.date).format('YY-MM-DD')
+                        }
+                    },
+                    {
+                        label: 'Category',
+                        field: 'categoryRuleID',
+                        minWidth: 150,
+                        accessor: (data: any) => {
+                            const be = data as BudgetEntry;
+                            return budgetEntryCategoryRuleIdx[be.categoryRuleID]
+                                ? budgetEntryCategoryRuleIdx[be.categoryRuleID].name
+                                : '-';
+                        }
+                    },
+                    {
+                        label: 'Description',
+                        field: 'description',
+                        minWidth: 200
+                    },
+                    {
+                        field: 'amount',
+                        label: 'Amount'
+                    }
+                ]}
+                data={budgetEntryFindManyResponse.records}
+            />
+            {budgetEntryDialogOpen &&
+            <BudgetEntryDialog
+              closeDialog={() => setBudgetEntryDialogOpen(false)}
+            />}
+        </React.Fragment>
     );
 };
 
