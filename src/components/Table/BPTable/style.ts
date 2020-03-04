@@ -35,6 +35,23 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    tableHeaderCell: {
+        backgroundColor: theme.palette.background.paper,
+        borderBottom: `1px solid ${theme.palette.divider}`,
+        fontWeight: 'bold',
+        fontSize: 14
+    },
+    tableRow: {
+        '&:hover': {
+            backgroundColor: theme.palette.action.hover
+        }
+    },
+    tableRowSelected: {
+        backgroundColor: theme.palette.action.selected
+    },
+    tableCell: {
+        backgroundColor: theme.palette.background.paper
     }
 }));
 

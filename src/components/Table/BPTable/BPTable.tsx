@@ -1,14 +1,16 @@
 import {
     CircularProgress,
     Collapse, Grid, IconButton, Paper, Table, TableBody,
-    TableCell, TableHead, TablePagination, TableRow
+    TableCell, TableHead, TablePagination, TableRow, Checkbox
 } from '@material-ui/core';
 import {
     FilterList as FilterIcon
 } from '@material-ui/icons';
 import {Query} from 'bizzle/search/query';
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import useStyles, {tableFilterPanelHeight, tableTitleRowHeight} from './style';
+import cx from 'classnames';
+import {isEqual as _isEqual} from 'lodash';
 
 interface BPTableProps {
     columns: Column[];
@@ -21,6 +23,11 @@ interface BPTableProps {
     totalNoRecords: number;
     loading?: boolean;
     tableSize?: 'medium' | 'small';
+    onRowClick?: (rowClickProps: {
+        clickedRowData: { [key: string]: any },
+        clickedRowIdx: number
+    }) => void;
+    onSelectedDataChange?: (allSelectedData: { [key: string]: any }[]) => void;
 }
 
 interface Column {
@@ -42,12 +49,34 @@ const BPTable = (props: BPTableProps) => {
         offset: props.initialQuery ? props.initialQuery.offset : 0,
         sorting: []
     }));
+    const prevData = usePrevious(props.data);
     const tableHeight = props.height ? props.height : 600;
+    const [selectedRowIndices, setSelectedRowIndices] = useState<number[]>([]);
 
     const tableWrapperHeight = filterPanelOpen
         ? tableHeight - tableTitleRowHeight - tableFilterPanelHeight - paginationComponentHeight
         : tableHeight - tableTitleRowHeight - paginationComponentHeight;
     const loadingWrapperHeight = tableWrapperHeight - tableHeadHeight;
+
+    useEffect(() => {
+        // this checks for a change in data to remove row selection
+        if (!_isEqual(props.data, prevData)) {
+            if (props.onSelectedDataChange) {
+                props.onSelectedDataChange([]);
+            }
+            setSelectedRowIndices([]);
+            return;
+        }
+        // if the data itself has not changed (i.e. contents of objects)
+        // this checks to see if new objects have been constructed
+        if ((props.data.length > 0) && (prevData !== undefined)) {
+            const prevDataTyped: { [key: string]: any }[] = prevData as unknown as { [key: string]: any }[];
+            if (props.data[0] !== prevDataTyped[0]) {
+                setSelectedRowIndices([]);
+                return;
+            }
+        }
+    }, [props, props.data, prevData]);
 
     const handleChangePage = (event: unknown, newPage: number) => {
         if (props.loading) {
@@ -92,6 +121,52 @@ const BPTable = (props: BPTableProps) => {
         }
     };
 
+    const handleRowSelect = (
+        clickedRowIdx: number,
+        clickedRowData: { [key: string]: any }
+    ) => () => {
+        let updatedSelectedRowIndices: number[] = [];
+        // check if this row is already selected
+        if (selectedRowIndices.includes(clickedRowIdx)) {
+            // remove the selected row idx
+            updatedSelectedRowIndices = selectedRowIndices.filter((selectedRowIdx) =>
+                selectedRowIdx !== clickedRowIdx
+            );
+        } else {
+            // add it this row idx as a selected one
+            updatedSelectedRowIndices = [
+                ...selectedRowIndices,
+                clickedRowIdx
+            ];
+        }
+        setSelectedRowIndices(updatedSelectedRowIndices);
+        if (props.onRowClick) {
+            props.onRowClick({
+                clickedRowData,
+                clickedRowIdx
+            });
+        }
+        if (props.onSelectedDataChange) {
+            props.onSelectedDataChange(props.data.filter((data, idx) => updatedSelectedRowIndices.includes(idx)));
+        }
+    };
+
+    const handleSelectAll = () => {
+        if (selectedRowIndices.length === props.data.length) {
+            // all rows already selected, clear rows selection
+            setSelectedRowIndices([]);
+            if (props.onSelectedDataChange) {
+                props.onSelectedDataChange([]);
+            }
+        } else {
+            // not all rows are selected, set all rows to selected
+            setSelectedRowIndices(props.data.map((data, idx) => (idx)));
+            if (props.onSelectedDataChange) {
+                props.onSelectedDataChange(props.data);
+            }
+        }
+    };
+
     return (
         <Paper className={classes.root}>
             <div className={classes.tableTitleLayout}>
@@ -132,11 +207,26 @@ const BPTable = (props: BPTableProps) => {
                         }}
                     >
                         <TableRow>
+                            <TableCell
+                                align={'center'}
+                                className={classes.tableHeaderCell}
+                                padding={'checkbox'}
+                            >
+                                <Checkbox
+                                    color={'primary'}
+                                    indeterminate={!(
+                                        selectedRowIndices.length === props.data.length || selectedRowIndices.length === 0
+                                    )}
+                                    checked={selectedRowIndices.length !== 0 && props.data.length === selectedRowIndices.length}
+                                    onChange={handleSelectAll}
+                                />
+                            </TableCell>
                             {props.columns.map((col, idx) => (
                                 <TableCell
                                     key={idx}
                                     align={col.align}
                                     style={{minWidth: col.minWidth}}
+                                    className={classes.tableHeaderCell}
                                 >
                                     {col.label}
                                 </TableCell>
@@ -146,8 +236,26 @@ const BPTable = (props: BPTableProps) => {
                     {!props.loading &&
                     <TableBody>
                         {props.data.map((data, rowIdx) => {
+                            const rowIsSelected = selectedRowIndices.includes(rowIdx);
                             return (
-                                <TableRow key={rowIdx}>
+                                <TableRow
+                                    key={rowIdx}
+                                    onClick={handleRowSelect(rowIdx, data)}
+                                    className={cx(
+                                        classes.tableRow,
+                                        { [classes.tableRowSelected]: rowIsSelected }
+                                    )}
+                                >
+                                    <TableCell
+                                        align={'center'}
+                                        className={classes.tableCell}
+                                        padding={'checkbox'}
+                                    >
+                                        <Checkbox
+                                            color={'primary'}
+                                            checked={rowIsSelected}
+                                        />
+                                    </TableCell>
                                     {props.columns.map((col, colIdx) => {
                                         let addStyle: { [key: string]: any } = {};
                                         if (col.addStyle) {
@@ -201,5 +309,14 @@ const BPTable = (props: BPTableProps) => {
         </Paper>
     );
 };
+
+
+function usePrevious(value: any) {
+    const ref = useRef();
+    useEffect(() => {
+        ref.current = value;
+    });
+    return ref.current;
+}
 
 export default BPTable;
