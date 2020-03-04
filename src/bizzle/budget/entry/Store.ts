@@ -4,7 +4,7 @@ import {BudgetEntry} from '.';
 import {Query} from 'bizzle/search/query';
 
 
-interface FindManyRequest {
+export interface FindManyRequest {
     criteria: any;
     query?: Query;
 }

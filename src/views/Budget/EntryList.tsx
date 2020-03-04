@@ -1,5 +1,8 @@
 import {BudgetEntry, BudgetEntryStore} from 'bizzle/budget/entry';
-import {FindManyResponse as BudgetEntryFindManyResponse} from 'bizzle/budget/entry/Store';
+import {
+    FindManyResponse as BudgetEntryFindManyResponse,
+    FindManyRequest as BudgetEntryFindManyRequest
+} from 'bizzle/budget/entry/Store';
 import TextSubstringCriterionType from 'bizzle/search/criterion/text/Substring';
 import {Query} from 'bizzle/search/query';
 import {BPTable} from 'components/Table';
@@ -18,19 +21,19 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 let fetchDataTimeout: any;
 
 const EntryList = () => {
-    const [query, setQuery] = useState(new Query({
-        limit: 10,
-        offset: 0,
-        sorting: []
-    }));
-    const [criteria, setCriteria] = useState({});
     const [loading, setLoading] = useState(false);
     const [budgetEntryFindManyResponse, setBudgetEntryFindManyResponse] = useState<BudgetEntryFindManyResponse>({
         records: [],
         total: 0
     });
-    const classes = useStyles();
-    const [generalTextSubstringCriterion, setGeneralTextSubstringCriterion] = useState<TextSubstringCriterionType | null>(null);
+    const [budgetEntryFindManyRequest, setBudgetEntryFindManyRequest] = useState<BudgetEntryFindManyRequest>({
+        criteria: {},
+        query: new Query({
+            limit: 10,
+            offset: 0,
+            sorting: []
+        })
+    });
     const [budgetEntryCategoryRuleIdx, setBudgetEntryCategoryRuleIdx] = useState<{[key: string]: BudgetEntryCategoryRule}>({});
 
     useEffect(() => {
@@ -56,10 +59,7 @@ const EntryList = () => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                setBudgetEntryFindManyResponse(await BudgetEntryStore.FindMany({
-                    criteria,
-                    query
-                }));
+                setBudgetEntryFindManyResponse(await BudgetEntryStore.FindMany(budgetEntryFindManyRequest));
             } catch (e) {
                 console.error('error finding budgetEntries', e);
             }
@@ -67,26 +67,24 @@ const EntryList = () => {
         };
         clearTimeout(fetchDataTimeout);
         fetchDataTimeout = setTimeout(fetchData, 400);
-    }, [query, criteria]);
-
-    const handleCriteriaChange = (newCriteria: TextSubstringCriterionType | null) => {
-        setGeneralTextSubstringCriterion(newCriteria);
-    };
-
-    const handleQueryChange = (newQuery: Query) => {
-        setQuery(newQuery);
-    };
+    }, [budgetEntryFindManyRequest]);
 
     return (
         <BPTable
             loading={loading}
             title={'Budget Entries'}
-            onQueryChange={handleQueryChange}
-            initialQuery={query}
+            onQueryChange={(updatedQuery) => setBudgetEntryFindManyRequest({
+                ...budgetEntryFindManyRequest,
+                query: updatedQuery
+            })}
+            initialQuery={budgetEntryFindManyRequest.query}
             totalNoRecords={budgetEntryFindManyResponse.total}
             filters={[
                 <SubstringFilter
-                    onChange={handleCriteriaChange}
+                    onChange={(updatedCriteria) => setBudgetEntryFindManyRequest({
+                        ...budgetEntryFindManyRequest,
+                        criteria: updatedCriteria ? {description: updatedCriteria} : {}
+                    })}
                 />
             ]}
             columns={[
