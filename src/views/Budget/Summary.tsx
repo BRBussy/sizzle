@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import {
     makeStyles, Theme, createStyles, Grid, TextField,
-    Card, CardContent, AppBar, Tabs, Tab, CardHeader
+    Card, CardContent, AppBar, Tabs, Tab, CardHeader,
+    IconButton
 } from '@material-ui/core';
 import { Budget, BudgetAdmin } from 'bizzle/budget';
 import { BudgetEntry } from 'bizzle/budget/entry';
 import { FETable } from 'components/Table';
 import moment from 'moment';
+import { Edit as EditIcon } from '@material-ui/icons';
+import {BudgetEntryDialog} from 'components/Budget';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
@@ -37,6 +40,8 @@ const Summary = () => {
     const [selectedBudgetTab, setSelectedBudgetTab] = useState('Summary');
     const [appBarWidth, setAppBarWidth] = useState(0);
     const [tableHeight, setTableHeight] = useState(1);
+    const [selectedBudgetEntry, setSelectedBudgetEntry] = useState<BudgetEntry | undefined>(undefined);
+    const [refreshToggle, setRefreshToggle] = useState(false);
 
     useEffect(() => {
         const getBudgetForDateRange = async () => {
@@ -44,7 +49,6 @@ const Summary = () => {
                 return;
             }
             try {
-                setSelectedBudgetTab('Summary');
                 setBudget((await BudgetAdmin.GetBudgetForDateRange({
                     startDate: `${startDate}T00:00:00Z`,
                     endDate: `${endDate}T00:00:00Z`
@@ -55,7 +59,7 @@ const Summary = () => {
         };
         clearTimeout(getBudgetForDateRangeTimeout);
         getBudgetForDateRangeTimeout = setTimeout(getBudgetForDateRange, 400);
-    }, [startDate, endDate]);
+    }, [startDate, endDate, refreshToggle]);
 
     const handleSelectedBudgetTabChange = (event: React.ChangeEvent<{}>, newValue: string) => {
         setSelectedBudgetTab(newValue);
@@ -67,8 +71,8 @@ const Summary = () => {
 
     return (
         <div className={classes.root}>
-            <Card classes={{root: classes.dateSelectCardRootOverride}}>
-                <CardContent classes={{root: classes.dateSelectCardRootOverride}}>
+            <Card classes={{ root: classes.dateSelectCardRootOverride }}>
+                <CardContent classes={{ root: classes.dateSelectCardRootOverride }}>
                     <Grid container direction={'row'} spacing={1}>
                         <Grid item>
                             <TextField
@@ -106,9 +110,9 @@ const Summary = () => {
                 </CardContent>
             </Card>
             {budget &&
-                <Card  classes={{root: classes.tableCardRootOverride}}>
+                <Card classes={{ root: classes.tableCardRootOverride }}>
                     <CardHeader
-                        classes={{root: classes.tableCardRootOverride}}
+                        classes={{ root: classes.tableCardRootOverride }}
                         ref={(cardHeaderRef: HTMLDivElement) => {
                             if (!cardHeaderRef) {
                                 return;
@@ -133,7 +137,7 @@ const Summary = () => {
                             </AppBar>
                         }
                     />
-                    <CardContent classes={{root: classes.tableCardRootOverride}}>
+                    <CardContent classes={{ root: classes.tableCardRootOverride }}>
                         {(() => {
                             if (selectedBudgetTab === 'Summary') {
                                 return (
@@ -166,7 +170,7 @@ const Summary = () => {
                                             {
                                                 label: 'Date',
                                                 field: 'date',
-                                                minWidth: 90,
+                                                minWidth: 100,
                                                 accessor: (data: any) => {
                                                     const be = data as BudgetEntry;
                                                     try {
@@ -179,11 +183,25 @@ const Summary = () => {
                                             },
                                             {
                                                 label: 'Description',
-                                                field: 'description'
+                                                field: 'description',
+                                                minWidth: 200,
                                             },
                                             {
                                                 label: 'Amount',
                                                 field: 'amount'
+                                            },
+                                            {
+                                                label: '',
+                                                accessor: (data: any) => {
+                                                    return (
+                                                        <IconButton
+                                                            size={'small'}
+                                                            onClick={() => setSelectedBudgetEntry(data as BudgetEntry)}
+                                                        >
+                                                            <EditIcon />
+                                                        </IconButton>
+                                                    );
+                                                }
                                             }
                                         ]}
                                         data={budget.entries[selectedBudgetTab]}
@@ -194,6 +212,12 @@ const Summary = () => {
                         })()}
                     </CardContent>
                 </Card>}
+                {!!selectedBudgetEntry &&
+                <BudgetEntryDialog
+                    closeDialog={() => setSelectedBudgetEntry(undefined)}
+                    onBudgetEntryUpdate={() => setRefreshToggle(!refreshToggle)}
+                    budgetEntry={selectedBudgetEntry}
+                />}
         </div>
     )
 };
