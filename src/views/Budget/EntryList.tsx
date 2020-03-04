@@ -144,6 +144,7 @@ const EntryList = () => {
             />
             {budgetEntryDialogOpen &&
             <BudgetEntryDialog
+              budgetEntry={selectedBudgetEntries[0]}
               closeDialog={() => setBudgetEntryDialogOpen(false)}
             />}
         </React.Fragment>
