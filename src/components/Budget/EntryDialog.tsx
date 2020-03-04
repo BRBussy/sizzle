@@ -54,8 +54,6 @@ export default function EntryDialog(props: EntryDialogProps) {
     );
     const [budgetEntry, setBudgetEntry] = useState(new BudgetEntry(props.budgetEntry));
     const [duplicateBudgetEntry, setDuplicateBudgetEntry] = useState(new BudgetEntry(props.budgetEntry));
-    const {appContextLoginClaims} = useAppContext();
-    console.log('login!', appContextLoginClaims);
 
     useEffect(() => {
         const fetchBudgetEntryCategoryRules = async () => {

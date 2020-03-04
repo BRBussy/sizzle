@@ -17,10 +17,12 @@ import {
 import {
     IconButton, Tooltip
 } from '@material-ui/core';
+import {useAppContext} from 'context/App';
 
 let fetchDataTimeout: any;
 
 const EntryList = () => {
+    const {appContextLoginClaims} = useAppContext();
     const [loading, setLoading] = useState(false);
     const [budgetEntryFindManyResponse, setBudgetEntryFindManyResponse] = useState<BudgetEntryFindManyResponse>({
         records: [],
@@ -156,7 +158,10 @@ const EntryList = () => {
             />
             {budgetEntryDialogOpen &&
             <BudgetEntryDialog
-              budgetEntry={selectedBudgetEntries.length ? selectedBudgetEntries[0] : new BudgetEntry()}
+              budgetEntry={selectedBudgetEntries.length ? selectedBudgetEntries[0] : new BudgetEntry({
+                  ...new BudgetEntry(),
+                  ownerID: appContextLoginClaims.userID
+              })}
               closeDialog={() => setBudgetEntryDialogOpen(false)}
               onBudgetEntryUpdate={() => setRefreshDataToggle(!refreshDataToggle)}
               onBudgetEntryCreate={() => setRefreshDataToggle(!refreshDataToggle)}
