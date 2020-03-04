@@ -11,7 +11,8 @@ import moment from 'moment';
 import {BudgetEntryCategoryRule, BudgetEntryCategoryRuleStore} from 'bizzle/budget/entry/categoryRule';
 import {BudgetEntryDialog} from 'components/Budget';
 import {
-    EditOutlined as EditIcon
+    EditOutlined as EditIcon,
+    Add as CreateIcon
 } from '@material-ui/icons';
 import {
     IconButton, Tooltip
@@ -102,11 +103,20 @@ const EntryList = () => {
                                     <EditIcon/>
                                 </IconButton>
                             </Tooltip>
-                        ]
+                        ];
                     } else if (selectedBudgetEntries.length > 1) {
-                        return []
+                        return [];
                     }
-                    return []
+                    return [
+                        <Tooltip title='Create'>
+                            <IconButton
+                                size={'small'}
+                                onClick={() => setBudgetEntryDialogOpen(true)}
+                            >
+                                <CreateIcon/>
+                            </IconButton>
+                        </Tooltip>
+                    ]
                 })()}
                 onSelectedDataChange={(allSelectedData: { [key: string]: any }[]) =>
                     setSelectedBudgetEntries(allSelectedData as BudgetEntry[])
@@ -146,9 +156,10 @@ const EntryList = () => {
             />
             {budgetEntryDialogOpen &&
             <BudgetEntryDialog
-              budgetEntry={selectedBudgetEntries[0]}
+              budgetEntry={selectedBudgetEntries.length ? selectedBudgetEntries[0] : new BudgetEntry()}
               closeDialog={() => setBudgetEntryDialogOpen(false)}
               onBudgetEntryUpdate={() => setRefreshDataToggle(!refreshDataToggle)}
+              budgetEntryCategoryRules={Object.values(budgetEntryCategoryRuleIdx)}
             />}
         </React.Fragment>
     );

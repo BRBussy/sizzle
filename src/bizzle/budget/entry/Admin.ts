@@ -42,6 +42,14 @@ export interface UpdateOneResponse {
 
 }
 
+export interface CreateOneRequest {
+    budgetEntry: BudgetEntry;
+}
+
+export interface CreateOneResponse {
+    budgetEntry: BudgetEntry;
+}
+
 export interface UpdateManyRequest {
     budgetEntries: BudgetEntry[];
 }
@@ -92,6 +100,14 @@ const Admin = {
             method: `${Admin.serviceProvider}.UpdateOne`,
             request
         })
+    },
+    async CreateOne(request: CreateOneRequest): Promise<CreateOneResponse> {
+        const response = await jsonRPCRequest({
+            url: config.get('budgetURL'),
+            method: `${Admin.serviceProvider}.CreateOne`,
+            request
+        });
+        return {budgetEntry: new BudgetEntry(response.budgetEntry as BudgetEntry)}
     },
     async UpdateMany(request: UpdateManyRequest): Promise<UpdateManyResponse> {
         return await jsonRPCRequest({

@@ -79,13 +79,27 @@ export default function EntryDialog(props: EntryDialogProps) {
     const handleUpdate = async () => {
         setLoading(true);
         try {
-            await BudgetEntryAdmin.UpdateOne({ budgetEntry });
+            await BudgetEntryAdmin.UpdateOne({budgetEntry});
             if (props.onBudgetEntryUpdate) {
                 props.onBudgetEntryUpdate(new BudgetEntry(budgetEntry));
             }
             setDuplicateBudgetEntry(new BudgetEntry(budgetEntry));
         } catch (e) {
             console.error('unable to update entry', e);
+        }
+        setLoading(false);
+    };
+
+    const handleCreate = async () => {
+        setLoading(true);
+        try {
+            await BudgetEntryAdmin.CreateOne({budgetEntry});
+            if (props.onBudgetEntryUpdate) {
+                props.onBudgetEntryUpdate(new BudgetEntry(budgetEntry));
+            }
+            setDuplicateBudgetEntry(new BudgetEntry(budgetEntry));
+        } catch (e) {
+            console.error('unable to create entry', e);
         }
         setLoading(false);
     };
@@ -114,14 +128,20 @@ export default function EntryDialog(props: EntryDialogProps) {
                 <Grid container direction={'row-reverse'} alignItems={'center'} spacing={1}>
                     {entryChanged &&
                     <Grid item>
-                        <IconButton
-                            size={'small'}
-                            onClick={handleUpdate}
-                            className={classes.closeIcon}
-                            disabled={loading}
-                        >
-                            <SaveIcon/>
-                        </IconButton>
+                      <IconButton
+                        size={'small'}
+                        onClick={() => {
+                            if (budgetEntry.id === '') {
+                                handleCreate().finally();
+                            } else {
+                                handleUpdate().finally();
+                            }
+                        }}
+                        className={classes.closeIcon}
+                        disabled={loading}
+                      >
+                        <SaveIcon/>
+                      </IconButton>
                     </Grid>}
                     <Grid item>
                         <IconButton
