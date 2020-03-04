@@ -86,7 +86,7 @@ export default function EntryDialog(props: EntryDialogProps) {
         setLoading(false);
     };
 
-    const entryChanged = _isEqual(budgetEntry, duplicateBudgetEntry);
+    const entryChanged = !_isEqual(budgetEntry, duplicateBudgetEntry);
 
     return (
         <Dialog
