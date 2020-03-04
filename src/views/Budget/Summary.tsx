@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 let getBudgetForDateRangeTimeout: any;
 
-const ViewBudgets = () => {
+const Summary = () => {
     const classes = useStyles();
     const [startDate, setStartDate] = useState<string | undefined>(moment().subtract(1, 'month').format('YYYY-MM-DD'));
     const [endDate, setEndDate] = useState<string | undefined>(moment().add(1, 'day').format('YYYY-MM-DD'));
@@ -193,4 +193,4 @@ const ViewBudgets = () => {
     )
 };
 
-export default ViewBudgets;
+export default Summary;

@@ -23,7 +23,7 @@ enum AppStep {
     done
 }
 
-const ImportXLSXStandardBankStatement = () => {
+const Import = () => {
     const [, setBudgetEntries] = useState<BudgetEntry[]>([]);
     const [activeAppStep, setActiveAppStep] = useState<AppStep>(AppStep.preparation);
     const [error, setError] = useState<string | undefined>(undefined);
@@ -164,7 +164,7 @@ const ImportXLSXStandardBankStatement = () => {
     );
 };
 
-export default ImportXLSXStandardBankStatement;
+export default Import;
 
 interface SelectFileStepProps {
     onStartStatementParse: () => void;
