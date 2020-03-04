@@ -7,6 +7,7 @@ interface Context {
     appContextLoading: boolean;
     appContextLogin: (email: string, password: string) => Promise<void>;
     appContextLogout: () => void;
+    appContextLoginClaims: LoginClaims;
 }
 
 const Context = React.createContext({} as Context);
@@ -14,12 +15,13 @@ const Context = React.createContext({} as Context);
 const AppContext: React.FC = ({children}: { children?: React.ReactNode }) => {
     const [loggedIn, setLoggedIn] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [loginClaims, setLoginClaims] = useState(new LoginClaims());
 
     const processJWT = (jwt: string) => {
-        let loginClaims: LoginClaims;
+        let newLoginClaims: LoginClaims;
         try {
             // try and parse access token to login claims
-            loginClaims = LoginClaims.newFromJWT(jwt);
+            newLoginClaims = LoginClaims.newFromJWT(jwt);
         } catch (e) {
             console.error('error parsing jwt to login claims', e);
             // perform clean up and log out
@@ -28,7 +30,7 @@ const AppContext: React.FC = ({children}: { children?: React.ReactNode }) => {
         }
 
         // if claims expired
-        if (!loginClaims.notExpired) {
+        if (!newLoginClaims.notExpired) {
             // perform clean up and log out
             logout();
             return;
@@ -36,6 +38,7 @@ const AppContext: React.FC = ({children}: { children?: React.ReactNode }) => {
 
         localStorage.setItem('jwt', jwt);
         setLoggedIn(true);
+        setLoginClaims(newLoginClaims);
         setLoading(false);
     };
 
@@ -59,6 +62,7 @@ const AppContext: React.FC = ({children}: { children?: React.ReactNode }) => {
         localStorage.removeItem('jwt');
         setLoggedIn(false);
         setLoading(false);
+        setLoginClaims(new LoginClaims());
     };
 
     const login: (email: string, password: string) => Promise<void> = async (email: string, password: string) => {
@@ -77,7 +81,8 @@ const AppContext: React.FC = ({children}: { children?: React.ReactNode }) => {
                 appContextLoading: loading,
                 appContextLoggedIn: loggedIn,
                 appContextLogin: login,
-                appContextLogout: logout
+                appContextLogout: logout,
+                appContextLoginClaims: loginClaims
             }}
         >
             {children}

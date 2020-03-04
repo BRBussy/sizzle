@@ -12,6 +12,7 @@ import {
 } from '@material-ui/icons';
 import {isEqual as _isEqual} from 'lodash';
 import moment from 'moment';
+import {useAppContext} from 'context/App';
 
 interface EntryDialogProps {
     closeDialog: () => void;
@@ -53,6 +54,8 @@ export default function EntryDialog(props: EntryDialogProps) {
     );
     const [budgetEntry, setBudgetEntry] = useState(new BudgetEntry(props.budgetEntry));
     const [duplicateBudgetEntry, setDuplicateBudgetEntry] = useState(new BudgetEntry(props.budgetEntry));
+    const {appContextLoginClaims} = useAppContext();
+    console.log('login!', appContextLoginClaims);
 
     useEffect(() => {
         const fetchBudgetEntryCategoryRules = async () => {
