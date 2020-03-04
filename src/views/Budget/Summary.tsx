@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import {
     makeStyles, Theme, createStyles, Grid, TextField,
     Card, CardContent, AppBar, Tabs, Tab, CardHeader,
-    IconButton
+    IconButton,
+    CircularProgress
 } from '@material-ui/core';
 import { Budget, BudgetAdmin } from 'bizzle/budget';
 import { BudgetEntry } from 'bizzle/budget/entry';
@@ -18,7 +19,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         gridRowGap: theme.spacing(1)
     },
     dateField: {
-        width: 135,
+        width: 140,
     },
     dateSelectCardRootOverride: {
         paddingTop: theme.spacing(0.5),
@@ -42,12 +43,14 @@ const Summary = () => {
     const [tableHeight, setTableHeight] = useState(1);
     const [selectedBudgetEntry, setSelectedBudgetEntry] = useState<BudgetEntry | undefined>(undefined);
     const [refreshToggle, setRefreshToggle] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const getBudgetForDateRange = async () => {
             if (!(startDate && endDate)) {
                 return;
             }
+            setLoading(true);
             try {
                 setBudget((await BudgetAdmin.GetBudgetForDateRange({
                     startDate: `${startDate}T00:00:00Z`,
@@ -56,6 +59,7 @@ const Summary = () => {
             } catch (e) {
                 console.error(`error getting budget for date range: ${e.message ? e.message : e.toString()}`)
             }
+            setLoading(false);
         };
         clearTimeout(getBudgetForDateRangeTimeout);
         getBudgetForDateRangeTimeout = setTimeout(getBudgetForDateRange, 400);
@@ -73,7 +77,7 @@ const Summary = () => {
         <div className={classes.root}>
             <Card classes={{ root: classes.dateSelectCardRootOverride }}>
                 <CardContent classes={{ root: classes.dateSelectCardRootOverride }}>
-                    <Grid container direction={'row'} spacing={1}>
+                    <Grid container direction={'row'} spacing={1} alignItems={'center'} justify={'center'}>
                         <Grid item>
                             <TextField
                                 className={classes.dateField}
@@ -106,10 +110,14 @@ const Summary = () => {
                                 }}
                             />
                         </Grid>
+                        {loading &&
+                        <Grid item>
+                            <CircularProgress size={30}/>
+                        </Grid>}
                     </Grid>
                 </CardContent>
             </Card>
-            {budget &&
+            {!loading && budget &&
                 <Card classes={{ root: classes.tableCardRootOverride }}>
                     <CardHeader
                         classes={{ root: classes.tableCardRootOverride }}
