@@ -12,7 +12,6 @@ import {
 } from '@material-ui/icons';
 import {isEqual as _isEqual} from 'lodash';
 import moment from 'moment';
-import {useAppContext} from 'context/App';
 
 interface EntryDialogProps {
     closeDialog: () => void;
