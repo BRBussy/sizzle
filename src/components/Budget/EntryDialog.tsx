@@ -168,7 +168,7 @@ export default function EntryDialog(props: EntryDialogProps) {
                             value={moment(budgetEntry.date).format('YYYY-MM-DD')}
                             label={'Start Date'}
                             type={'date'}
-                            InputLabelProps={{ shrink: true }}
+                            InputLabelProps={{shrink: true}}
                             onChange={(e) => {
                                 handleFieldChange('date')(`${e.target.value}T00:00:00Z`)
                             }}
