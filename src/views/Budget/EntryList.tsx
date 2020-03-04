@@ -1,12 +1,13 @@
-import {BudgetEntryStore} from 'bizzle/budget/entry';
+import {BudgetEntry, BudgetEntryStore} from 'bizzle/budget/entry';
 import {FindManyResponse as BudgetEntryFindManyResponse} from 'bizzle/budget/entry/Store';
 import TextSubstringCriterionType from 'bizzle/search/criterion/text/Substring';
 import {Query} from 'bizzle/search/query';
 import {BPTable} from 'components/Table';
 import {SubstringFilter} from 'components/Table/BPTable/filters/text';
 import React, {useEffect, useState} from 'react';
-
 import {createStyles, makeStyles, Theme} from '@material-ui/core';
+import moment from 'moment';
+import {BudgetEntryCategoryRule, BudgetEntryCategoryRuleStore} from 'bizzle/budget/entry/categoryRule';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     muscleGroupFilterSelect: {
@@ -30,6 +31,26 @@ const EntryList = () => {
     });
     const classes = useStyles();
     const [generalTextSubstringCriterion, setGeneralTextSubstringCriterion] = useState<TextSubstringCriterionType | null>(null);
+    const [budgetEntryCategoryRuleIdx, setBudgetEntryCategoryRuleIdx] = useState<{[key: string]: BudgetEntryCategoryRule}>({});
+
+    useEffect(() => {
+        const fetchBudgetEntryCategoryRules = async () => {
+            setLoading(true);
+            try {
+                const newBudgetEntryCategoryRuleIdx: {[key: string]: BudgetEntryCategoryRule} = {};
+                (await BudgetEntryCategoryRuleStore.FindMany({
+                    criteria: {}
+                })).records.forEach((bcr) => {
+                    newBudgetEntryCategoryRuleIdx[bcr.id] = bcr;
+                });
+                setBudgetEntryCategoryRuleIdx(newBudgetEntryCategoryRuleIdx);
+            } catch (e) {
+                console.error(`error fetching budget entry category rules: ${e.message ? e.message : e.toString()}`)
+            }
+            setLoading(false);
+        };
+        fetchBudgetEntryCategoryRules().finally();
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -70,8 +91,28 @@ const EntryList = () => {
             ]}
             columns={[
                 {
+                    label: 'Date',
                     field: 'date',
-                    label: 'Date'
+                    minWidth: 90,
+                    accessor: (data: any) => {
+                        const be = data as BudgetEntry;
+                        return moment(be.date).format('YY-MM-DD')
+                    }
+                },
+                {
+                    label: 'Category',
+                    field: 'categoryRuleID',
+                    minWidth: 90,
+                    accessor: (data: any) => {
+                        const be = data as BudgetEntry;
+                        return budgetEntryCategoryRuleIdx[be.categoryRuleID]
+                            ? budgetEntryCategoryRuleIdx[be.categoryRuleID].name
+                            : '-';
+                    }
+                },
+                {
+                    label: 'Description',
+                    field: 'description'
                 },
                 {
                     field: 'amount',

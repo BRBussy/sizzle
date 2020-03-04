@@ -20,6 +20,7 @@ interface BPTableProps {
     onQueryChange: (newQuery: Query) => void;
     totalNoRecords: number;
     loading?: boolean;
+    tableSize?: 'medium' | 'small';
 }
 
 interface Column {
@@ -119,7 +120,7 @@ const BPTable = (props: BPTableProps) => {
                 className={classes.tableWrapper}
                 style={{height: tableWrapperHeight}}
             >
-                <Table stickyHeader>
+                <Table stickyHeader size={props.tableSize ? props.tableSize : 'small'}>
                     <TableHead
                         ref={(tableHeadRef: HTMLDivElement) => {
                             if (!tableHeadRef) {

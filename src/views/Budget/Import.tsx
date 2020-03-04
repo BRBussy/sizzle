@@ -255,8 +255,8 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
     const [suspectedDuplicatesActions, setSuspectedDuplicatesActions] = useState<{
         [key: string]: {
             createNew: boolean,
-            updateExisting: boolean,
-        },
+            updateExisting: boolean
+        }
     }>({})
     const classes = usePrepareImportStepStyles();
 
@@ -302,7 +302,7 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                 ...suspectedDuplicatesActions,
                 [duplicateEntries.existing.id]: {
                     createNew: true,
-                    updateExisting: false,
+                    updateExisting: false
                 }
             });
         } else {
@@ -312,7 +312,7 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                 ...suspectedDuplicatesActions,
                 [duplicateEntries.existing.id]: {
                     createNew: false,
-                    updateExisting: false,
+                    updateExisting: false
                 }
             });
         }
@@ -326,7 +326,7 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                 ...suspectedDuplicatesActions,
                 [duplicateEntries.existing.id]: {
                     createNew: false,
-                    updateExisting: true,
+                    updateExisting: true
                 }
             });
         } else {
@@ -336,7 +336,7 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                 ...suspectedDuplicatesActions,
                 [duplicateEntries.existing.id]: {
                     createNew: false,
-                    updateExisting: false,
+                    updateExisting: false
                 }
             });
         }
@@ -348,8 +348,8 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
         // to gather entries that should be updated
         const entriesToUpdate: BudgetEntry[] = [];
 
-        //gather those flagged for creation from exact duplicates
-        for ( let existingEntryID in exactDuplicatesCreateNewActions) {
+        // gather those flagged for creation from exact duplicates
+        for ( const existingEntryID in exactDuplicatesCreateNewActions) {
             if (exactDuplicatesCreateNewActions[existingEntryID]) {
                 // if marked for create new
                 const duplicateEntries = props.duplicateCheckResponse.exactDuplicates.find((de) => (de.existing.id === existingEntryID));
@@ -362,7 +362,7 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
         }
 
         // gather those flagged for either creation or updating from suspected duplicates
-        for (let existingEntryID in suspectedDuplicatesActions) {
+        for (const existingEntryID in suspectedDuplicatesActions) {
             if (!(suspectedDuplicatesActions[existingEntryID].createNew || suspectedDuplicatesActions[existingEntryID].updateExisting)) {
                 // if flagged for neither, do nothing
                 continue;
@@ -380,10 +380,10 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                     ...duplicateEntries.existing,
                     date: duplicateEntries.new.date,
                     amount: duplicateEntries.new.amount,
-                    description: duplicateEntries.new.description,                    
-                    categoryRuleID: duplicateEntries.new.categoryRuleID,
+                    description: duplicateEntries.new.description,
+                    categoryRuleID: duplicateEntries.new.categoryRuleID
                 }))
-            }      
+            }
         }
         props.onImport(entriesToCreate, entriesToUpdate);
     };
