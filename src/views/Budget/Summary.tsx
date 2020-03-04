@@ -172,7 +172,7 @@ const Summary = () => {
                             } else {
                                 return (
                                     <FETable
-                                        height={520}
+                                        height={tableHeight}
                                         initialRowsPerPage={20}
                                         columns={[
                                             {
