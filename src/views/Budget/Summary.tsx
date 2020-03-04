@@ -36,6 +36,7 @@ const Summary = () => {
     const [budget, setBudget] = useState<Budget | undefined>(undefined);
     const [selectedBudgetTab, setSelectedBudgetTab] = useState('Summary');
     const [appBarWidth, setAppBarWidth] = useState(0);
+    const [tableHeight, setTableHeight] = useState(1);
 
     useEffect(() => {
         const getBudgetForDateRange = async () => {
@@ -59,6 +60,10 @@ const Summary = () => {
     const handleSelectedBudgetTabChange = (event: React.ChangeEvent<{}>, newValue: string) => {
         setSelectedBudgetTab(newValue);
     };
+
+    if (tableHeight !== document.documentElement.clientHeight - 128) {
+        setTableHeight(document.documentElement.clientHeight - 128);
+    }
 
     return (
         <div className={classes.root}>
@@ -133,7 +138,7 @@ const Summary = () => {
                             if (selectedBudgetTab === 'Summary') {
                                 return (
                                     <FETable
-                                        height={520}
+                                        height={tableHeight}
                                         initialRowsPerPage={20}
                                         columns={[
                                             {
