@@ -3,20 +3,12 @@ import {
     FindManyResponse as BudgetEntryFindManyResponse,
     FindManyRequest as BudgetEntryFindManyRequest
 } from 'bizzle/budget/entry/Store';
-import TextSubstringCriterionType from 'bizzle/search/criterion/text/Substring';
 import {Query} from 'bizzle/search/query';
 import {BPTable} from 'components/Table';
 import {SubstringFilter} from 'components/Table/BPTable/filters/text';
 import React, {useEffect, useState} from 'react';
-import {createStyles, makeStyles, Theme} from '@material-ui/core';
 import moment from 'moment';
 import {BudgetEntryCategoryRule, BudgetEntryCategoryRuleStore} from 'bizzle/budget/entry/categoryRule';
-
-const useStyles = makeStyles((theme: Theme) => createStyles({
-    muscleGroupFilterSelect: {
-        width: 400
-    }
-}));
 
 let fetchDataTimeout: any;
 
