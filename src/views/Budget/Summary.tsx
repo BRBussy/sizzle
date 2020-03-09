@@ -83,6 +83,7 @@ const Summary = () => {
             await BudgetEntryAdmin.DeleteOne({
                 identifier: IDIdentifier(budgetEntry.id)
             });
+            setRefreshToggle(!refreshToggle);
         } catch (e) {
             console.error(`error getting budget for date range: ${e.message ? e.message : e.toString()}`)
         }
