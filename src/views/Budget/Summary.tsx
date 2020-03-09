@@ -6,11 +6,15 @@ import {
     CircularProgress
 } from '@material-ui/core';
 import { Budget, BudgetAdmin } from 'bizzle/budget';
-import { BudgetEntry } from 'bizzle/budget/entry';
+import { BudgetEntry, BudgetEntryAdmin } from 'bizzle/budget/entry';
 import { FETable } from 'components/Table';
 import moment from 'moment';
-import { Edit as EditIcon } from '@material-ui/icons';
+import {
+    Edit as EditIcon,
+    Delete as DeleteIcon
+} from '@material-ui/icons';
 import {BudgetEntryDialog} from 'components/Budget';
+import { IDIdentifier } from 'bizzle/search/identifier';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
@@ -72,6 +76,18 @@ const Summary = () => {
     if (tableHeight !== document.documentElement.clientHeight - 128) {
         setTableHeight(document.documentElement.clientHeight - 128);
     }
+
+    const handleDeleteOneBudgetEntry = (budgetEntry: BudgetEntry) => async () => {
+        setLoading(true);
+        try {
+            await BudgetEntryAdmin.DeleteOne({
+                identifier: IDIdentifier(budgetEntry.id)
+            });
+        } catch (e) {
+            console.error(`error getting budget for date range: ${e.message ? e.message : e.toString()}`)
+        }
+        setLoading(false);
+    };
 
     return (
         <div className={classes.root}>
@@ -207,6 +223,19 @@ const Summary = () => {
                                                             onClick={() => setSelectedBudgetEntry(data as BudgetEntry)}
                                                         >
                                                             <EditIcon />
+                                                        </IconButton>
+                                                    );
+                                                }
+                                            },
+                                            {
+                                                label: '',
+                                                accessor: (data: any) => {
+                                                    return (
+                                                        <IconButton
+                                                            size={'small'}
+                                                            onClick={handleDeleteOneBudgetEntry(data as BudgetEntry)}
+                                                        >
+                                                            <DeleteIcon/>
                                                         </IconButton>
                                                     );
                                                 }
