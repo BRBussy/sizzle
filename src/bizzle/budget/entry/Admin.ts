@@ -1,6 +1,7 @@
 import config from 'react-global-configuration';
 import jsonRPCRequest from 'utilities/network/jsonRPCRequest';
 import {BudgetEntry} from '.';
+import Identifier from 'bizzle/search/identifier/Identifier'
 
 export interface XLSXStandardBankStatementToBudgetCompositeEntriesRequest {
     xlsxStatement: string;
@@ -59,6 +60,15 @@ export interface UpdateManyResponse {
 
 }
 
+export interface DeleteOneRequest {
+    identifier: Identifier;
+}
+
+// tslint:disable-next-line:no-empty-interface
+export interface DeleteOneResponse {
+
+}
+
 const Admin = {
     serviceProvider: 'BudgetEntry-Admin',
     async XLSXStandardBankStatementToBudgetEntries(request: XLSXStandardBankStatementToBudgetCompositeEntriesRequest): Promise<XLSXStandardBankStatementToBudgetCompositeEntriesResponse> {
@@ -113,6 +123,13 @@ const Admin = {
         return await jsonRPCRequest({
             url: config.get('budgetURL'),
             method: `${Admin.serviceProvider}.UpdateMany`,
+            request
+        })
+    },
+    async DeleteOne(request: DeleteOneRequest): Promise<DeleteOneResponse> {
+        return await jsonRPCRequest({
+            url: config.get('budgetURL'),
+            method: `${Admin.serviceProvider}.DeleteOne`,
             request
         })
     }
