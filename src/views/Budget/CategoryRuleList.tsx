@@ -104,13 +104,15 @@ const EntryList = () => {
                 columns={[
                     {
                         label: 'Name',
-                        field: 'name',
-                        minWidth: 100
+                        field: 'name'
                     },
                     {
-                        label: 'Description',
-                        field: 'description',
-                        minWidth: 200
+                        label: 'Ideal Amount',
+                        field: 'idealAmount'
+                    },
+                    {
+                        label: 'Ideal Amount Period',
+                        field: 'idealAmountPeriod'
                     }
                 ]}
                 data={budgetEntryFindManyResponse.records}
