@@ -91,7 +91,7 @@ const EntryList = () => {
             }
             net += (period / bcr.expectedAmountPeriod) * bcr.expectedAmount;
         });
-        setNetValue(net.toFixed(2));
+        setNetValue(+net.toFixed(2));
     }, [period, budgetEntryFindManyResponse.records]);
 
     return (
