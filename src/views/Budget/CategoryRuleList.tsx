@@ -104,15 +104,15 @@ const EntryList = () => {
                                 className={classes.textField}
                                 label={'Period'}
                                 InputProps={{readOnly: true}}
-                                value={netValue}
+                                value={period}
                             />
                         </Grid>
                         <Grid item>
                             <TextField
                                 className={classes.textField}
                                 label={'Net'}
-                                InputProps={{redOnly: true}}
-                                value={period}
+                                InputProps={{readOnly: true}}
+                                value={netValue}
                             />
                         </Grid>
                     </Grid>
