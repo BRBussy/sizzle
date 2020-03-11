@@ -30,14 +30,14 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     netCardRootOverride: {
         paddingTop: theme.spacing(0.5),
-        paddingBottom: `${theme.spacing(0.5)}px !important`,
+        paddingBottom: `${theme.spacing(0.5)}px !important`
     },
     tableCardRootOverride: {
         padding: 0,
-        paddingBottom: '0 !important',
+        paddingBottom: '0 !important'
     },
     textField: {
-        width: 140,
+        width: 140
     }
 }));
 
@@ -86,12 +86,12 @@ const EntryList = () => {
     useEffect(() => {
         let net = 0;
         budgetEntryFindManyResponse.records.forEach((bcr) => {
-            if (bcr.idealAmountPeriod === 0) {
+            if (bcr.expectedAmountPeriod === 0) {
                 return;
             }
-            net += (period / bcr.idealAmountPeriod) * bcr.idealAmount;
+            net += (period / bcr.expectedAmountPeriod) * bcr.expectedAmount;
         });
-        setNetValue(net);
+        setNetValue(net.toFixed(2));
     }, [period, budgetEntryFindManyResponse.records]);
 
     return (

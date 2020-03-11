@@ -156,7 +156,7 @@ export default function EntryDialog(props: EntryDialogProps) {
                             margin={'normal'}
                             variant={'outlined'}
                             InputLabelProps={{shrink: true}}
-                            value={budgetEntryCategoryRule.idealAmount}
+                            value={budgetEntryCategoryRule.expectedAmount}
                             disabled={loading}
                             inputProps={{type: 'number'}}
                             onChange={(e) => handleFieldChange('idealAmount')(+e.target.value)}
@@ -169,7 +169,7 @@ export default function EntryDialog(props: EntryDialogProps) {
                             margin={'normal'}
                             variant={'outlined'}
                             InputLabelProps={{shrink: true}}
-                            value={budgetEntryCategoryRule.idealAmountPeriod}
+                            value={budgetEntryCategoryRule.expectedAmountPeriod}
                             disabled={loading}
                             inputProps={{type: 'number'}}
                             onChange={(e) => handleFieldChange('idealAmountPeriod')(+e.target.value)}
