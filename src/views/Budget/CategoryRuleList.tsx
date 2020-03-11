@@ -61,7 +61,7 @@ const EntryList = () => {
     const [selectedBudgetEntries, setSelectedBudgetEntries] = useState<BudgetEntryCategoryRule[]>([]);
     const [refreshDataToggle, setRefreshDataToggle] = useState(false);
     const [tableHeight, setTableHeight] = useState(1);
-    const [netValue, setNetValue] = useState(0);
+    const [netValue, setNetValue] = useState('0');
     const [period, setPeriod] = useState(30);
 
     if (tableHeight !== document.documentElement.clientHeight - 128) {
@@ -91,7 +91,7 @@ const EntryList = () => {
             }
             net += (period / bcr.expectedAmountPeriod) * bcr.expectedAmount;
         });
-        setNetValue(+net.toFixed(2));
+        setNetValue(net.toFixed(2));
     }, [period, budgetEntryFindManyResponse.records]);
 
     return (
@@ -171,12 +171,12 @@ const EntryList = () => {
                         field: 'name'
                     },
                     {
-                        label: 'Ideal Amount',
-                        field: 'idealAmount'
+                        label: 'Expected',
+                        field: 'expectedAmount'
                     },
                     {
-                        label: 'Ideal Amount Period',
-                        field: 'idealAmountPeriod'
+                        label: 'Period',
+                        field: 'expectedAmountPeriod'
                     }
                 ]}
                 data={budgetEntryFindManyResponse.records}
