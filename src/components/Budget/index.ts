@@ -1,7 +1,7 @@
 import BudgetEntryDialog from './EntryDialog';
-import CategoryRuleDialog from './CategoryRuleDialog';
+import BudgetEntryCategoryRuleDialog from './BudgetEntryCategoryRuleDialog';
 
 export {
     BudgetEntryDialog,
-    CategoryRuleDialog
+    BudgetEntryCategoryRuleDialog
 }

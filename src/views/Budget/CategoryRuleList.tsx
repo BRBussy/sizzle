@@ -7,7 +7,6 @@ import {Query} from 'bizzle/search/query';
 import {BPTable} from 'components/Table';
 import {SubstringFilter} from 'components/Table/BPTable/filters/text';
 import React, {useEffect, useState} from 'react';
-import moment from 'moment';
 import {BudgetEntryCategoryRuleDialog} from 'components/Budget';
 import {
     EditOutlined as EditIcon,
@@ -118,14 +117,13 @@ const EntryList = () => {
             />
             {budgetEntryDialogOpen &&
             <BudgetEntryCategoryRuleDialog
-              budgetEntry={selectedBudgetEntries.length ? selectedBudgetEntries[0] : new BudgetEntryCategoryRule({
+              budgetEntryCategoryRule={selectedBudgetEntries.length ? selectedBudgetEntries[0] : new BudgetEntryCategoryRule({
                   ...new BudgetEntryCategoryRule(),
                   ownerID: appContextLoginClaims.userID
               })}
               closeDialog={() => setBudgetEntryCategoryRuleDialogOpen(false)}
               onBudgetEntryCategoryRuleUpdate={() => setRefreshDataToggle(!refreshDataToggle)}
               onBudgetEntryCategoryRuleCreate={() => setRefreshDataToggle(!refreshDataToggle)}
-              budgetEntryCategoryRules={Object.values(budgetEntryCategoryRuleIdx)}
             />}
         </React.Fragment>
     );
