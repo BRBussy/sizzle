@@ -13,13 +13,36 @@ import {
     Add as CreateIcon
 } from '@material-ui/icons';
 import {
-    IconButton, Tooltip
+    Card,
+    CardContent,
+    createStyles, Grid,
+    IconButton, makeStyles, TextField, Theme, Tooltip
 } from '@material-ui/core';
 import {useAppContext} from 'context/App';
 
 let fetchDataTimeout: any;
 
+const useStyles = makeStyles((theme: Theme) => createStyles({
+    root: {
+        display: 'grid',
+        gridTemplateRows: 'auto 1fr',
+        gridRowGap: theme.spacing(1)
+    },
+    netCardRootOverride: {
+        paddingTop: theme.spacing(0.5),
+        paddingBottom: `${theme.spacing(0.5)}px !important`,
+    },
+    tableCardRootOverride: {
+        padding: 0,
+        paddingBottom: '0 !important',
+    },
+    textField: {
+        width: 140,
+    }
+}));
+
 const EntryList = () => {
+    const classes = useStyles();
     const {appContextLoginClaims} = useAppContext();
     const [loading, setLoading] = useState(false);
     const [budgetEntryFindManyResponse, setBudgetEntryCategoryRuleFindManyResponse] = useState<BudgetEntryCategoryRuleFindManyResponse>({
@@ -37,6 +60,13 @@ const EntryList = () => {
     const [budgetEntryDialogOpen, setBudgetEntryCategoryRuleDialogOpen] = useState(false);
     const [selectedBudgetEntries, setSelectedBudgetEntries] = useState<BudgetEntryCategoryRule[]>([]);
     const [refreshDataToggle, setRefreshDataToggle] = useState(false);
+    const [tableHeight, setTableHeight] = useState(1);
+    const [netValue, setNetValue] = useState(0);
+    const [period, setPeriod] = useState(30);
+
+    if (tableHeight !== document.documentElement.clientHeight - 128) {
+        setTableHeight(document.documentElement.clientHeight - 128);
+    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -53,9 +83,43 @@ const EntryList = () => {
         fetchDataTimeout = setTimeout(fetchData, 400);
     }, [budgetEntryCategoryRuleFindManyRequest, refreshDataToggle]);
 
+    useEffect(() => {
+        let net = 0;
+        budgetEntryFindManyResponse.records.forEach((bcr) => {
+            if (bcr.idealAmountPeriod === 0) {
+                return;
+            }
+            net += (period / bcr.idealAmountPeriod) * bcr.idealAmount;
+        });
+        setNetValue(net);
+    }, [period, budgetEntryFindManyResponse.records]);
+
     return (
-        <React.Fragment>
+        <div className={classes.root}>
+            <Card classes={{root: classes.netCardRootOverride}}>
+                <CardContent classes={{root: classes.netCardRootOverride}}>
+                    <Grid container direction={'row'} spacing={1} alignItems={'center'} justify={'center'}>
+                        <Grid item>
+                            <TextField
+                                className={classes.textField}
+                                label={'Period'}
+                                InputProps={{readOnly: true}}
+                                value={netValue}
+                            />
+                        </Grid>
+                        <Grid item>
+                            <TextField
+                                className={classes.textField}
+                                label={'Net'}
+                                InputProps={{redOnly: true}}
+                                value={period}
+                            />
+                        </Grid>
+                    </Grid>
+                </CardContent>
+            </Card>
             <BPTable
+                height={tableHeight}
                 loading={loading}
                 title={'Category Rules'}
                 onQueryChange={(updatedQuery) => setBudgetEntryCategoryRuleFindManyRequest({
@@ -127,7 +191,7 @@ const EntryList = () => {
               onBudgetEntryCategoryRuleUpdate={() => setRefreshDataToggle(!refreshDataToggle)}
               onBudgetEntryCategoryRuleCreate={() => setRefreshDataToggle(!refreshDataToggle)}
             />}
-        </React.Fragment>
+        </div>
     );
 };
 
