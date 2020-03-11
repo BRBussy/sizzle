@@ -18,11 +18,11 @@ try {
 
 if (subdomain === 'localhost') {
     config.set({
-        authURL: 'http://localhost:8080/api',
-        userURL: 'http://localhost:8081/api',
-        roleURL: 'http://localhost:8082/api',
-        exerciseURL: 'http://localhost:8083/api',
-        budgetURL: 'http://localhost:8084/api'
+        authURL: 'http://localhost:8180/api',
+        userURL: 'http://localhost:8181/api',
+        roleURL: 'http://localhost:8182/api',
+        exerciseURL: 'http://localhost:8183/api',
+        budgetURL: 'http://localhost:8184/api'
     });
 } else {
     config.set({
