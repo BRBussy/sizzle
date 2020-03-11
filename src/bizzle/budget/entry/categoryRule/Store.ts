@@ -3,7 +3,7 @@ import config from 'react-global-configuration';
 import jsonRPCRequest from 'utilities/network/jsonRPCRequest';
 import CategoryRule from './CategoryRule';
 
-interface FindManyRequest {
+export interface FindManyRequest {
     criteria: any;
     query?: Query;
 }
@@ -16,7 +16,7 @@ export interface FindManyResponse {
 const Store = {
     serviceProvider: 'BudgetEntryCategoryRule-Store',
     async FindMany(request: FindManyRequest): Promise<FindManyResponse> {
-        const response =  await jsonRPCRequest({
+        const response = await jsonRPCRequest({
             url: config.get('budgetURL'),
             method: `${Store.serviceProvider}.FindMany`,
             request
