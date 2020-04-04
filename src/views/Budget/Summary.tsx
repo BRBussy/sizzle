@@ -17,6 +17,7 @@ import {
 } from '@material-ui/icons';
 import {BudgetEntryDialog} from 'components/Budget';
 import {IDIdentifier} from 'bizzle/search/identifier';
+import {CategoryTotal} from 'bizzle/budget/Budget';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
@@ -189,12 +190,19 @@ const Summary = () => {
                                         },
                                         {
                                             label: 'Amount',
-                                            field: 'amount'
+                                            field: 'amount',
+                                            accessor: (data: any) => {
+                                                const summaryItem = data as {
+                                                    summaryLabel: string,
+                                                    categoryTotal: CategoryTotal
+                                                };
+                                                return summaryItem.categoryTotal.amount;
+                                            }
                                         }
                                     ]}
                                     data={Object.keys(budget.summary).map((summaryLabel) => ({
                                         summaryLabel,
-                                        amount: budget.summary[summaryLabel]
+                                        categoryTotal: budget.summary[summaryLabel]
                                     }))}
                                     title={''}
                                 />
@@ -284,7 +292,7 @@ const Summary = () => {
                     </Grid>
                     <Grid item>
                       <div>
-                          Net:
+                        Net:
                       </div>
                     </Grid>
                     <Grid item>
