@@ -2,8 +2,8 @@ import config from 'react-global-configuration';
 import jsonRPCRequest from 'utilities/network/jsonRPCRequest';
 import BudgetConfig from './Config';
 
+// tslint:disable-next-line:no-empty-interface
 export interface GetMyConfigRequest {
-    month: number;
 }
 
 export interface GetMyConfigResponse {
