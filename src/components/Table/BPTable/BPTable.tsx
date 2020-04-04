@@ -40,6 +40,8 @@ interface Column {
     addStyle?: { [key: string]: any };
 }
 
+const rowsPerPageOptions = [10, 25, 100, 150, 200, 250, 300, 350, 400];
+
 const BPTable = (props: BPTableProps) => {
     const classes = useStyles();
     const [paginationComponentHeight, setPaginationComponentHeight] = useState(56);
@@ -312,7 +314,16 @@ const BPTable = (props: BPTableProps) => {
                         setPaginationComponentHeight(paginationRef.clientHeight);
                     }
                 }}
-                rowsPerPageOptions={[10, 25, 100, 150, 200, 250, 300, 350, 400]}
+                rowsPerPageOptions={(() => {
+                    // check if rows per page options includes initial query.limit amount
+                    if (props.initialQuery && !rowsPerPageOptions.includes(props.initialQuery.limit)) {
+                        return ([
+                            ...rowsPerPageOptions,
+                            props.initialQuery.limit
+                        ]).sort((a, b) => (a - b));
+                    }
+                    return rowsPerPageOptions;
+                })()}
                 component='div'
                 count={props.totalNoRecords}
                 rowsPerPage={query.limit}

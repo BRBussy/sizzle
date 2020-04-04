@@ -38,26 +38,15 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     overflow: 'hidden !important'
   },
   content: {
-    marginTop: '50px',
-    padding: '8px 2px',
-
+    marginTop: '55px',
+    padding: theme.spacing(1),
     height: 'calc(100vh)',
     overflowY: 'hidden'
   },
   container: {
-    'paddingRight': '15px',
-    'paddingLeft': '15px',
-    'marginRight': 'auto',
-    'marginLeft': 'auto',
-    '&:before,&:after': {
-      display: 'table',
-      content: '" "'
-    },
-    '&:after': {
-      clear: 'both' as 'both'
-    },
-    'height': 'calc(100vh - 55px)',
-    'overflowY': 'scroll'
+    height: 'calc(100vh - 55px)',
+    overflowY: 'scroll',
+    overflowX: 'hidden'
   }
 }));
 

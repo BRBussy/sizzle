@@ -23,11 +23,6 @@ import {useAppContext} from 'context/App';
 let fetchDataTimeout: any;
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
-    root: {
-        display: 'grid',
-        gridTemplateRows: 'auto 1fr',
-        gridRowGap: theme.spacing(1)
-    },
     netCardRootOverride: {
         paddingTop: theme.spacing(0.5),
         paddingBottom: `${theme.spacing(0.5)}px !important`
@@ -52,7 +47,7 @@ const EntryList = () => {
     const [budgetEntryCategoryRuleFindManyRequest, setBudgetEntryCategoryRuleFindManyRequest] = useState<BudgetEntryCategoryRuleFindManyRequest>({
         criteria: {},
         query: new Query({
-            limit: 10,
+            limit: 30,
             offset: 0,
             sorting: []
         })
@@ -64,8 +59,8 @@ const EntryList = () => {
     const [netValue, setNetValue] = useState('0');
     const [period, setPeriod] = useState(30);
 
-    if (tableHeight !== document.documentElement.clientHeight - 128) {
-        setTableHeight(document.documentElement.clientHeight - 128);
+    if (tableHeight !== document.documentElement.clientHeight - 145) {
+        setTableHeight(document.documentElement.clientHeight - 145);
     }
 
     useEffect(() => {
@@ -95,92 +90,99 @@ const EntryList = () => {
     }, [period, budgetEntryFindManyResponse.records]);
 
     return (
-        <div className={classes.root}>
-            <Card classes={{root: classes.netCardRootOverride}}>
-                <CardContent classes={{root: classes.netCardRootOverride}}>
-                    <Grid container direction={'row'} spacing={1} alignItems={'center'} justify={'center'}>
-                        <Grid item>
-                            <TextField
-                                className={classes.textField}
-                                label={'Period'}
-                                InputProps={{readOnly: true}}
-                                value={period}
-                            />
-                        </Grid>
-                        <Grid item>
-                            <TextField
-                                className={classes.textField}
-                                label={'Net'}
-                                InputProps={{readOnly: true}}
-                                value={netValue}
-                            />
-                        </Grid>
-                    </Grid>
-                </CardContent>
-            </Card>
-            <BPTable
-                height={tableHeight}
-                loading={loading}
-                title={'Category Rules'}
-                onQueryChange={(updatedQuery) => setBudgetEntryCategoryRuleFindManyRequest({
-                    ...budgetEntryCategoryRuleFindManyRequest,
-                    query: updatedQuery
-                })}
-                initialQuery={budgetEntryCategoryRuleFindManyRequest.query}
-                totalNoRecords={budgetEntryFindManyResponse.total}
-                filters={[
-                    <SubstringFilter
-                        onChange={(updatedCriteria) => setBudgetEntryCategoryRuleFindManyRequest({
+        <React.Fragment>
+            <Grid container spacing={1}>
+                <Grid item xs={12}>
+                    <Card classes={{root: classes.netCardRootOverride}}>
+                        <CardContent classes={{root: classes.netCardRootOverride}}>
+                            <Grid container direction={'row'} spacing={1} alignItems={'center'} justify={'center'}>
+                                <Grid item>
+                                    <TextField
+                                        className={classes.textField}
+                                        label={'Period'}
+                                        InputProps={{readOnly: true}}
+                                        value={period}
+                                    />
+                                </Grid>
+                                <Grid item>
+                                    <TextField
+                                        className={classes.textField}
+                                        label={'Net'}
+                                        InputProps={{readOnly: true}}
+                                        value={netValue}
+                                    />
+                                </Grid>
+                            </Grid>
+                        </CardContent>
+                    </Card>
+                </Grid>
+                <Grid item xs={12}>
+                    <BPTable
+                        height={tableHeight}
+                        loading={loading}
+                        title={'Category Rules'}
+                        onQueryChange={(updatedQuery) => setBudgetEntryCategoryRuleFindManyRequest({
                             ...budgetEntryCategoryRuleFindManyRequest,
-                            criteria: updatedCriteria ? {description: updatedCriteria} : {}
+                            query: updatedQuery
                         })}
+                        initialQuery={budgetEntryCategoryRuleFindManyRequest.query}
+                        totalNoRecords={budgetEntryFindManyResponse.total}
+                        filters={[
+                            <SubstringFilter
+                                onChange={(updatedCriteria) => setBudgetEntryCategoryRuleFindManyRequest({
+                                    ...budgetEntryCategoryRuleFindManyRequest,
+                                    criteria: updatedCriteria ? {description: updatedCriteria} : {}
+                                })}
+                            />
+                        ]}
+                        toolBarControls={(() => {
+                            if (selectedBudgetEntries.length === 1) {
+                                return [
+                                    <Tooltip title='Edit'>
+                                        <IconButton
+                                            size={'small'}
+                                            onClick={() => setBudgetEntryCategoryRuleDialogOpen(true)}
+                                        >
+                                            <EditIcon/>
+                                        </IconButton>
+                                    </Tooltip>
+                                ];
+                            } else if (selectedBudgetEntries.length > 1) {
+                                return [];
+                            }
+                            return [
+                                <Tooltip title='Create'>
+                                    <IconButton
+                                        size={'small'}
+                                        onClick={() => setBudgetEntryCategoryRuleDialogOpen(true)}
+                                    >
+                                        <CreateIcon/>
+                                    </IconButton>
+                                </Tooltip>
+                            ]
+                        })()}
+                        onSelectedDataChange={(allSelectedData: { [key: string]: any }[]) =>
+                            setSelectedBudgetEntries(allSelectedData as BudgetEntryCategoryRule[])
+                        }
+                        columns={[
+                            {
+                                label: 'Name',
+                                field: 'name',
+                                minWidth: 200
+                            },
+                            {
+                                label: 'Expected',
+                                field: 'expectedAmount'
+                            },
+                            {
+                                label: 'Period',
+                                field: 'expectedAmountPeriod'
+                            }
+                        ]}
+                        data={budgetEntryFindManyResponse.records}
                     />
-                ]}
-                toolBarControls={(() => {
-                    if (selectedBudgetEntries.length === 1) {
-                        return [
-                            <Tooltip title='Edit'>
-                                <IconButton
-                                    size={'small'}
-                                    onClick={() => setBudgetEntryCategoryRuleDialogOpen(true)}
-                                >
-                                    <EditIcon/>
-                                </IconButton>
-                            </Tooltip>
-                        ];
-                    } else if (selectedBudgetEntries.length > 1) {
-                        return [];
-                    }
-                    return [
-                        <Tooltip title='Create'>
-                            <IconButton
-                                size={'small'}
-                                onClick={() => setBudgetEntryCategoryRuleDialogOpen(true)}
-                            >
-                                <CreateIcon/>
-                            </IconButton>
-                        </Tooltip>
-                    ]
-                })()}
-                onSelectedDataChange={(allSelectedData: { [key: string]: any }[]) =>
-                    setSelectedBudgetEntries(allSelectedData as BudgetEntryCategoryRule[])
-                }
-                columns={[
-                    {
-                        label: 'Name',
-                        field: 'name'
-                    },
-                    {
-                        label: 'Expected',
-                        field: 'expectedAmount'
-                    },
-                    {
-                        label: 'Period',
-                        field: 'expectedAmountPeriod'
-                    }
-                ]}
-                data={budgetEntryFindManyResponse.records}
-            />
+                </Grid>
+            </Grid>
             {budgetEntryDialogOpen &&
             <BudgetEntryCategoryRuleDialog
               budgetEntryCategoryRule={selectedBudgetEntries.length ? selectedBudgetEntries[0] : new BudgetEntryCategoryRule({
@@ -191,7 +193,7 @@ const EntryList = () => {
               onBudgetEntryCategoryRuleUpdate={() => setRefreshDataToggle(!refreshDataToggle)}
               onBudgetEntryCategoryRuleCreate={() => setRefreshDataToggle(!refreshDataToggle)}
             />}
-        </div>
+        </React.Fragment>
     );
 };
 
