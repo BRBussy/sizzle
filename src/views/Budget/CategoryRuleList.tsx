@@ -10,28 +10,28 @@ import React, {useEffect, useState} from 'react';
 import {BudgetEntryCategoryRuleDialog} from 'components/Budget';
 import {
     EditOutlined as EditIcon,
-    Add as CreateIcon, ExpandMore as ExpandMoreIcon
+    Add as CreateIcon
 } from '@material-ui/icons';
 import {
-    Card,
-    CardContent,
-    CircularProgress, createStyles, ExpansionPanel, ExpansionPanelDetails,
-    ExpansionPanelSummary, Grid, IconButton, makeStyles, TextField,
-    Theme, Tooltip, Typography
+    Card, CardContent, createStyles,
+    Grid, IconButton, makeStyles, TextField,
+    Theme, Tooltip
 } from '@material-ui/core';
 import {useAppContext} from 'context/App';
 
 let fetchDataTimeout: any;
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
+    netCardRootOverride: {
+        paddingTop: theme.spacing(0.5),
+        paddingBottom: `${theme.spacing(0.5)}px !important`
+    },
+    tableCardRootOverride: {
+        padding: 0,
+        paddingBottom: '0 !important'
+    },
     textField: {
         width: 100
-    },
-    expansionPanelSummaryLayout: {
-        display: 'grid',
-        gridTemplateColumns: 'auto auto',
-        alignItems: 'center',
-        gridColumnGap: theme.spacing(1)
     }
 }));
 

@@ -27,11 +27,11 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     dateSelectCardRootOverride: {
         paddingTop: theme.spacing(0.5),
-        paddingBottom: `${theme.spacing(0.5)}px !important`,
+        paddingBottom: `${theme.spacing(0.5)}px !important`
     },
     tableCardRootOverride: {
         padding: 0,
-        paddingBottom: '0 !important',
+        paddingBottom: '0 !important'
     }
 }));
 
@@ -209,7 +209,7 @@ const Summary = () => {
                                             {
                                                 label: 'Description',
                                                 field: 'description',
-                                                minWidth: 200,
+                                                minWidth: 200
                                             },
                                             {
                                                 label: 'Amount',

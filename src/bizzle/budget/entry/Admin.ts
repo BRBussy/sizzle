@@ -89,11 +89,11 @@ const Admin = {
             uniques: response.uniques.map((be: BudgetEntry) => (new BudgetEntry(be))),
             exactDuplicates: response.exactDuplicates.map((ed: DuplicateEntries) => ({
                 existing: new BudgetEntry(ed.existing),
-                new: new BudgetEntry(ed.new),
+                new: new BudgetEntry(ed.new)
             })),
             suspectedDuplicates: response.suspectedDuplicates.map((sd: DuplicateEntries) => ({
                 existing: new BudgetEntry(sd.existing),
-                new: new BudgetEntry(sd.new),
+                new: new BudgetEntry(sd.new)
             }))
         };
     },
