@@ -108,13 +108,11 @@ const EntryList = () => {
         });
         if (ignoredBudgetEntryCategoryRuleIDs.length !== updatedIgnoredBudgetCategoryRuleIDs.length) {
             setIgnoredBudgetBudgetEntryCategoryRuleIDs(updatedIgnoredBudgetCategoryRuleIDs);
-            setSelectedBudgetCategoryRules([]);
         }
     };
 
     const handleUnIgnoreBudgetCategoryRule = (bcrID: string) => () => {
         setIgnoredBudgetBudgetEntryCategoryRuleIDs(ignoredBudgetEntryCategoryRuleIDs.filter((id) => (id !== bcrID)));
-        setSelectedBudgetCategoryRules([]);
     };
 
     return (
