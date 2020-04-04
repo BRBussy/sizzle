@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     overflow: 'hidden !important'
   },
   content: {
-    marginTop: '55px',
+    marginTop: '50px',
     padding: theme.spacing(1),
     height: 'calc(100vh)',
     overflowY: 'hidden'
