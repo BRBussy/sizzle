@@ -40,6 +40,7 @@ const EntryList = () => {
     const [budgetEntryDialogOpen, setBudgetEntryDialogOpen] = useState(false);
     const [selectedBudgetEntries, setSelectedBudgetEntries] = useState<BudgetEntry[]>([]);
     const [refreshDataToggle, setRefreshDataToggle] = useState(false);
+    const [tableHeight, setTableHeight] = useState(1);
 
     useEffect(() => {
         const fetchBudgetEntryCategoryRules = async () => {
@@ -75,9 +76,14 @@ const EntryList = () => {
         fetchDataTimeout = setTimeout(fetchData, 400);
     }, [budgetEntryFindManyRequest, refreshDataToggle]);
 
+    if (tableHeight !== document.documentElement.clientHeight - 70) {
+        setTableHeight(document.documentElement.clientHeight - 70);
+    }
+
     return (
         <React.Fragment>
             <BPTable
+                height={tableHeight}
                 loading={loading}
                 title={'Budget Entries'}
                 onQueryChange={(updatedQuery) => setBudgetEntryFindManyRequest({
@@ -147,7 +153,7 @@ const EntryList = () => {
                     {
                         label: 'Description',
                         field: 'description',
-                        minWidth: 200
+                        minWidth: 400
                     },
                     {
                         field: 'amount',

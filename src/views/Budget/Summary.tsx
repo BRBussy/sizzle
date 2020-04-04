@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         gridRowGap: theme.spacing(1)
     },
     dateField: {
-        width: 140,
+        width: 140
     },
     dateSelectCardRootOverride: {
         paddingTop: theme.spacing(0.5),
