@@ -196,7 +196,28 @@ const Summary = () => {
                                                     summaryLabel: string,
                                                     categoryTotal: CategoryTotal
                                                 };
-                                                return summaryItem.categoryTotal.amount;
+                                                let className;
+                                                const actualGreaterThanExpected = Math.abs(summaryItem.categoryTotal.amount) > Math.abs(summaryItem.categoryTotal.budgetEntryCategoryRule.expectedAmount);
+                                                const expectedPositive = summaryItem.categoryTotal.budgetEntryCategoryRule.expectedAmount > 0;
+                                                if (expectedPositive) {
+                                                    if (actualGreaterThanExpected) {
+                                                        className = classes.in;
+                                                    } else {
+                                                        className = classes.out;
+                                                    }
+                                                } else {
+                                                    // expected negative
+                                                    if (actualGreaterThanExpected) {
+                                                        className = classes.out;
+                                                    } else {
+                                                        className = classes.in;
+                                                    }
+                                                }
+                                                return (
+                                                    <div className={className}>
+                                                        {`${summaryItem.categoryTotal.amount} / ${summaryItem.categoryTotal.budgetEntryCategoryRule.expectedAmount}`}
+                                                    </div>
+                                                );
                                             }
                                         }
                                     ]}
