@@ -10,12 +10,14 @@ import React, {useEffect, useState} from 'react';
 import {BudgetEntryCategoryRuleDialog} from 'components/Budget';
 import {
     EditOutlined as EditIcon,
-    Add as CreateIcon
+    Add as CreateIcon,
+    ThumbDown as IgnoreIcon,
+    ThumbUp as UnIgnoreIcon
 } from '@material-ui/icons';
 import {
     Card, CardContent, createStyles,
     Grid, IconButton, makeStyles, TextField,
-    Theme, Tooltip
+    Theme, Tooltip, Typography
 } from '@material-ui/core';
 import {useAppContext} from 'context/App';
 
@@ -32,6 +34,11 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     textField: {
         width: 100
+    },
+    ignoredName: {
+        display: 'grid',
+        gridTemplateColumns: 'auto auto',
+        gridColumnGap: theme.spacing(1)
     }
 }));
 
@@ -59,8 +66,8 @@ const EntryList = () => {
     const [netValue, setNetValue] = useState('0');
     const [period, setPeriod] = useState(31);
 
-    if (tableHeight !== document.documentElement.clientHeight - 130) {
-        setTableHeight(document.documentElement.clientHeight - 130);
+    if (tableHeight !== document.documentElement.clientHeight - 135) {
+        setTableHeight(document.documentElement.clientHeight - 135);
     }
 
     useEffect(() => {
@@ -162,12 +169,21 @@ const EntryList = () => {
                                             size={'small'}
                                             onClick={handleIgnoreSelectedBudgetCategoryRules}
                                         >
-                                            <EditIcon/>
+                                            <IgnoreIcon/>
                                         </IconButton>
                                     </Tooltip>
                                 ];
                             } else if (selectedBudgetCategoryRules.length > 1) {
-                                return [];
+                                return [
+                                    <Tooltip title='Ignore'>
+                                        <IconButton
+                                            size={'small'}
+                                            onClick={handleIgnoreSelectedBudgetCategoryRules}
+                                        >
+                                            <IgnoreIcon/>
+                                        </IconButton>
+                                    </Tooltip>
+                                ];
                             }
                             return [
                                 <Tooltip title='Create'>
@@ -187,7 +203,27 @@ const EntryList = () => {
                             {
                                 label: 'Name',
                                 field: 'name',
-                                minWidth: 200
+                                minWidth: 200,
+                                accessor: (data: any) => {
+                                    const bcr = data as BudgetEntryCategoryRule;
+                                    if (ignoredBudgetEntryIDs.includes(bcr.id)) {
+                                        return (
+                                            <div className={classes.ignoredName}>
+                                                <Tooltip title='Ignore'>
+                                                    <IconButton
+                                                        size={'small'}
+                                                    >
+                                                        <UnIgnoreIcon/>
+                                                    </IconButton>
+                                                </Tooltip>
+                                                <Typography>
+                                                    {bcr.name}
+                                                </Typography>
+                                            </div>
+                                        )
+                                    }
+                                    return bcr.name
+                                }
                             },
                             {
                                 label: 'Expected',
