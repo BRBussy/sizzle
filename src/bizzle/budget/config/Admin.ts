@@ -26,7 +26,7 @@ const Admin = {
             method: `${Admin.serviceProvider}.GetMyConfig`,
             request
         });
-        return {budgetConfig: new BudgetConfig(response.budget)}
+        return {budgetConfig: new BudgetConfig(response.budgetConfig)}
     },
     async SetMyConfig(request: SetMyConfigRequest): Promise<SetMyConfigResponse> {
         return await jsonRPCRequest({
