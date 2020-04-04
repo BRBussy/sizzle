@@ -13,6 +13,8 @@ import {
     Add as CreateIcon, ExpandMore as ExpandMoreIcon
 } from '@material-ui/icons';
 import {
+    Card,
+    CardContent,
     CircularProgress, createStyles, ExpansionPanel, ExpansionPanelDetails,
     ExpansionPanelSummary, Grid, IconButton, makeStyles, TextField,
     Theme, Tooltip, Typography
@@ -102,24 +104,15 @@ const EntryList = () => {
         <React.Fragment>
             <Grid container spacing={1}>
                 <Grid item xs={12}>
-                    <ExpansionPanel>
-                        <ExpansionPanelSummary
-                            classes={{content: classes.expansionPanelSummaryLayout}}
-                            expandIcon={<ExpandMoreIcon/>}
-                            aria-controls={'panel1bh-content'}
-                            id={'panel1bh-header'}
-                        >
-                            <Typography>Check Net</Typography>
-                            {loading && <CircularProgress size={20}/>}
-                        </ExpansionPanelSummary>
-                        <ExpansionPanelDetails>
+                    <Card classes={{root: classes.netCardRootOverride}}>
+                        <CardContent classes={{root: classes.netCardRootOverride}}>
                             <Grid container direction={'row'} spacing={1} alignItems={'center'} justify={'center'}>
                                 <Grid item>
                                     <TextField
                                         className={classes.textField}
                                         label={'Period'}
+                                        InputProps={{readOnly: true}}
                                         value={period}
-                                        onChange={(e) => setPeriod(+e.target.value)}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -131,8 +124,8 @@ const EntryList = () => {
                                     />
                                 </Grid>
                             </Grid>
-                        </ExpansionPanelDetails>
-                    </ExpansionPanel>
+                        </CardContent>
+                    </Card>
                 </Grid>
                 <Grid item xs={12}>
                     <BPTable
