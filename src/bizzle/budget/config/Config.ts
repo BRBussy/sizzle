@@ -1,0 +1,14 @@
+export default class Config {
+    public id: string = '';
+    public ownerID: string = '';
+    public otherCategoryRuleID: string = '';
+
+    constructor(config?: Config) {
+        if (!config) {
+            return;
+        }
+        this.id = config.id;
+        this.ownerID = config.ownerID;
+        this.otherCategoryRuleID = config.otherCategoryRuleID;
+    }
+}

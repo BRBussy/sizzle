@@ -2,13 +2,15 @@ import {
     Map as MapIcon,
     Money as MoneyIcon,
     Pages as BudgetIcon,
-    List as CategoryRuleListIcon
+    List as CategoryRuleListIcon,
+    Settings as ConfigIcon
 } from '@material-ui/icons';
 import {RouteType} from 'routes/Route';
 import BudgetImportView from 'views/Budget/Import';
 import BudgetSummaryView from 'views/Budget/Summary';
 import BudgetEntryListView from 'views/Budget/EntryList'
 import BudgetEntryCategoryRuleListView from 'views/Budget/CategoryRuleList';
+import ConfigurationView from 'views/Budget/Configuration';
 import ExerciseView from 'views/Exercise';
 import {Party1HomeView} from 'views/Home';
 import ProfileView from 'views/Profile';
@@ -57,6 +59,12 @@ export const routes: RouteType[] = [
                 path: '/app/budget/categories',
                 icon: CategoryRuleListIcon,
                 component: BudgetEntryCategoryRuleListView
+            },
+            {
+                name: 'Config',
+                path: '/app/budget/configuration',
+                icon: ConfigIcon,
+                component: ConfigurationView
             }
         ]
     }
