@@ -66,8 +66,8 @@ const EntryList = () => {
     const [netValue, setNetValue] = useState('0');
     const [period, setPeriod] = useState(31);
 
-    if (tableHeight !== document.documentElement.clientHeight - 135) {
-        setTableHeight(document.documentElement.clientHeight - 135);
+    if (tableHeight !== document.documentElement.clientHeight - 140) {
+        setTableHeight(document.documentElement.clientHeight - 140);
     }
 
     useEffect(() => {
