@@ -7,7 +7,15 @@ export interface GetMyConfigRequest {
 }
 
 export interface GetMyConfigResponse {
-    config: BudgetConfig;
+    budgetConfig: BudgetConfig;
+}
+
+export interface SetMyConfigRequest {
+    budgetConfig: BudgetConfig;
+}
+
+// tslint:disable-next-line:no-empty-interface
+export interface SetMyConfigResponse {
 }
 
 const Admin = {
@@ -18,8 +26,15 @@ const Admin = {
             method: `${Admin.serviceProvider}.GetMyConfig`,
             request
         });
-        return {budget: new BudgetConfig(response.budget)}
+        return {budgetConfig: new BudgetConfig(response.budget)}
     },
+    async SetMyConfig(request: SetMyConfigRequest): Promise<SetMyConfigResponse> {
+        return await jsonRPCRequest({
+            url: config.get('budgetURL'),
+            method: `${Admin.serviceProvider}.SetMyConfig`,
+            request
+        });
+    }
 };
 
 export default Admin;
