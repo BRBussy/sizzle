@@ -17,7 +17,7 @@ import {
 import {
     Card, CardContent, createStyles,
     Grid, IconButton, makeStyles, TextField,
-    Theme, Tooltip, Typography
+    Theme, Tooltip
 } from '@material-ui/core';
 import {useAppContext} from 'context/App';
 
@@ -60,7 +60,7 @@ const EntryList = () => {
     });
     const [budgetEntryDialogOpen, setBudgetEntryCategoryRuleDialogOpen] = useState(false);
     const [selectedBudgetCategoryRules, setSelectedBudgetCategoryRules] = useState<BudgetEntryCategoryRule[]>([]);
-    const [ignoredBudgetEntryIDs, setIgnoredBudgetEntryIDs] = useState<string[]>([]);
+    const [ignoredBudgetEntryCategoryRuleIDs, setIgnoredBudgetBudgetEntryCategoryRuleIDs] = useState<string[]>([]);
     const [refreshDataToggle, setRefreshDataToggle] = useState(false);
     const [tableHeight, setTableHeight] = useState(1);
     const [netValue, setNetValue] = useState('0');
@@ -88,23 +88,33 @@ const EntryList = () => {
     useEffect(() => {
         let net = 0;
         budgetEntryFindManyResponse.records.forEach((bcr) => {
+            if (ignoredBudgetEntryCategoryRuleIDs.includes(bcr.id)) {
+                return;
+            }
             if (bcr.expectedAmountPeriod === 0) {
                 return;
             }
             net += (period / bcr.expectedAmountPeriod) * bcr.expectedAmount;
         });
         setNetValue(net.toFixed(2));
-    }, [period, budgetEntryFindManyResponse.records]);
+    }, [period, budgetEntryFindManyResponse.records, ignoredBudgetEntryCategoryRuleIDs]);
 
     const handleIgnoreSelectedBudgetCategoryRules = () => {
+        const updatedIgnoredBudgetCategoryRuleIDs = [...ignoredBudgetEntryCategoryRuleIDs];
         selectedBudgetCategoryRules.forEach((bcr) => {
-            if (!ignoredBudgetEntryIDs.includes(bcr.id)) {
-                setIgnoredBudgetEntryIDs([
-                    ...ignoredBudgetEntryIDs,
-                    bcr.id
-                ]);
+            if (!ignoredBudgetEntryCategoryRuleIDs.includes(bcr.id)) {
+                updatedIgnoredBudgetCategoryRuleIDs.push(bcr.id);
             }
         });
+        if (ignoredBudgetEntryCategoryRuleIDs.length !== updatedIgnoredBudgetCategoryRuleIDs.length) {
+            setIgnoredBudgetBudgetEntryCategoryRuleIDs(updatedIgnoredBudgetCategoryRuleIDs);
+            setSelectedBudgetCategoryRules([]);
+        }
+    };
+
+    const handleUnIgnoreBudgetCategoryRule = (bcrID: string) => () => {
+        setIgnoredBudgetBudgetEntryCategoryRuleIDs(ignoredBudgetEntryCategoryRuleIDs.filter((id) => (id !== bcrID)));
+        setSelectedBudgetCategoryRules([]);
     };
 
     return (
@@ -206,19 +216,20 @@ const EntryList = () => {
                                 minWidth: 200,
                                 accessor: (data: any) => {
                                     const bcr = data as BudgetEntryCategoryRule;
-                                    if (ignoredBudgetEntryIDs.includes(bcr.id)) {
+                                    if (ignoredBudgetEntryCategoryRuleIDs.includes(bcr.id)) {
                                         return (
                                             <div className={classes.ignoredName}>
                                                 <Tooltip title='Ignore'>
                                                     <IconButton
                                                         size={'small'}
+                                                        onClick={handleUnIgnoreBudgetCategoryRule(bcr.id)}
                                                     >
                                                         <UnIgnoreIcon/>
                                                     </IconButton>
                                                 </Tooltip>
-                                                <Typography>
+                                                <div>
                                                     {bcr.name}
-                                                </Typography>
+                                                </div>
                                             </div>
                                         )
                                     }
