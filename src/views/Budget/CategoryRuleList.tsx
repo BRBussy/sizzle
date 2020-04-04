@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         paddingBottom: '0 !important'
     },
     textField: {
-        width: 140
+        width: 100
     }
 }));
 
@@ -100,8 +100,8 @@ const EntryList = () => {
                                     <TextField
                                         className={classes.textField}
                                         label={'Period'}
-                                        InputProps={{readOnly: true}}
                                         value={period}
+                                        onChange={(e) => setPeriod(+e.target.value)}
                                     />
                                 </Grid>
                                 <Grid item>

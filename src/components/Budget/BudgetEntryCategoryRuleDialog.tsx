@@ -47,6 +47,7 @@ export default function EntryDialog(props: EntryDialogProps) {
     const [duplicateBudgetEntryCategoryRule, setDuplicateBudgetEntryCategoryRule] = useState(new BudgetEntryCategoryRule(props.budgetEntryCategoryRule));
 
     const handleFieldChange = (field: string) => (newValue: any) => {
+        console.log('change!')
         setBudgetEntryCategoryRule(new BudgetEntryCategoryRule({
             ...budgetEntryCategoryRule,
             [field]: newValue
@@ -96,7 +97,7 @@ export default function EntryDialog(props: EntryDialogProps) {
                 <Grid container direction={'row'} alignItems={'center'} spacing={1}>
                     <Grid item>
                         <Typography>
-                            Category RUle
+                            Category Rule
                         </Typography>
                     </Grid>
                     {loading && <Grid item>
@@ -159,7 +160,7 @@ export default function EntryDialog(props: EntryDialogProps) {
                             value={budgetEntryCategoryRule.expectedAmount}
                             disabled={loading}
                             inputProps={{type: 'number'}}
-                            onChange={(e) => handleFieldChange('idealAmount')(+e.target.value)}
+                            onChange={(e) => handleFieldChange('expectedAmount')(+e.target.value)}
                         />
                     </Grid>
                     <Grid item>
