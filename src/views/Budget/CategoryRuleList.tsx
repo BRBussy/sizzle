@@ -57,7 +57,7 @@ const EntryList = () => {
     const [refreshDataToggle, setRefreshDataToggle] = useState(false);
     const [tableHeight, setTableHeight] = useState(1);
     const [netValue, setNetValue] = useState('0');
-    const [period, setPeriod] = useState(30);
+    const [period, setPeriod] = useState(31);
 
     if (tableHeight !== document.documentElement.clientHeight - 130) {
         setTableHeight(document.documentElement.clientHeight - 130);
@@ -111,7 +111,7 @@ const EntryList = () => {
                                     <TextField
                                         className={classes.textField}
                                         label={'Period'}
-                                        InputProps={{readOnly: true}}
+                                        onChange={(e) => setPeriod(+e.target.value)}
                                         value={period}
                                     />
                                 </Grid>
