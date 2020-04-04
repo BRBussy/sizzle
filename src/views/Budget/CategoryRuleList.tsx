@@ -10,29 +10,26 @@ import React, {useEffect, useState} from 'react';
 import {BudgetEntryCategoryRuleDialog} from 'components/Budget';
 import {
     EditOutlined as EditIcon,
-    Add as CreateIcon
+    Add as CreateIcon, ExpandMore as ExpandMoreIcon
 } from '@material-ui/icons';
 import {
-    Card,
-    CardContent,
-    createStyles, Grid,
-    IconButton, makeStyles, TextField, Theme, Tooltip
+    CircularProgress, createStyles, ExpansionPanel, ExpansionPanelDetails,
+    ExpansionPanelSummary, Grid, IconButton, makeStyles, TextField,
+    Theme, Tooltip, Typography
 } from '@material-ui/core';
 import {useAppContext} from 'context/App';
 
 let fetchDataTimeout: any;
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
-    netCardRootOverride: {
-        paddingTop: theme.spacing(0.5),
-        paddingBottom: `${theme.spacing(0.5)}px !important`
-    },
-    tableCardRootOverride: {
-        padding: 0,
-        paddingBottom: '0 !important'
-    },
     textField: {
         width: 100
+    },
+    expansionPanelSummaryLayout: {
+        display: 'grid',
+        gridTemplateColumns: 'auto auto',
+        alignItems: 'center',
+        gridColumnGap: theme.spacing(1)
     }
 }));
 
@@ -53,14 +50,15 @@ const EntryList = () => {
         })
     });
     const [budgetEntryDialogOpen, setBudgetEntryCategoryRuleDialogOpen] = useState(false);
-    const [selectedBudgetEntries, setSelectedBudgetEntries] = useState<BudgetEntryCategoryRule[]>([]);
+    const [selectedBudgetCategoryRules, setSelectedBudgetCategoryRules] = useState<BudgetEntryCategoryRule[]>([]);
+    const [ignoredBudgetEntryIDs, setIgnoredBudgetEntryIDs] = useState<string[]>([]);
     const [refreshDataToggle, setRefreshDataToggle] = useState(false);
     const [tableHeight, setTableHeight] = useState(1);
     const [netValue, setNetValue] = useState('0');
     const [period, setPeriod] = useState(30);
 
-    if (tableHeight !== document.documentElement.clientHeight - 145) {
-        setTableHeight(document.documentElement.clientHeight - 145);
+    if (tableHeight !== document.documentElement.clientHeight - 130) {
+        setTableHeight(document.documentElement.clientHeight - 130);
     }
 
     useEffect(() => {
@@ -68,7 +66,7 @@ const EntryList = () => {
             setLoading(true);
             try {
                 setBudgetEntryCategoryRuleFindManyResponse(await BudgetEntryCategoryRuleStore.FindMany(budgetEntryCategoryRuleFindManyRequest));
-                setSelectedBudgetEntries([]);
+                setSelectedBudgetCategoryRules([]);
             } catch (e) {
                 console.error('error finding budgetEntries', e);
             }
@@ -89,12 +87,32 @@ const EntryList = () => {
         setNetValue(net.toFixed(2));
     }, [period, budgetEntryFindManyResponse.records]);
 
+    const handleIgnoreSelectedBudgetCategoryRules = () => {
+        selectedBudgetCategoryRules.forEach((bcr) => {
+            if (!ignoredBudgetEntryIDs.includes(bcr.id)) {
+                setIgnoredBudgetEntryIDs([
+                    ...ignoredBudgetEntryIDs,
+                    bcr.id
+                ]);
+            }
+        });
+    };
+
     return (
         <React.Fragment>
             <Grid container spacing={1}>
                 <Grid item xs={12}>
-                    <Card classes={{root: classes.netCardRootOverride}}>
-                        <CardContent classes={{root: classes.netCardRootOverride}}>
+                    <ExpansionPanel>
+                        <ExpansionPanelSummary
+                            classes={{content: classes.expansionPanelSummaryLayout}}
+                            expandIcon={<ExpandMoreIcon/>}
+                            aria-controls={'panel1bh-content'}
+                            id={'panel1bh-header'}
+                        >
+                            <Typography>Check Net</Typography>
+                            {loading && <CircularProgress size={20}/>}
+                        </ExpansionPanelSummary>
+                        <ExpansionPanelDetails>
                             <Grid container direction={'row'} spacing={1} alignItems={'center'} justify={'center'}>
                                 <Grid item>
                                     <TextField
@@ -113,8 +131,8 @@ const EntryList = () => {
                                     />
                                 </Grid>
                             </Grid>
-                        </CardContent>
-                    </Card>
+                        </ExpansionPanelDetails>
+                    </ExpansionPanel>
                 </Grid>
                 <Grid item xs={12}>
                     <BPTable
@@ -136,7 +154,7 @@ const EntryList = () => {
                             />
                         ]}
                         toolBarControls={(() => {
-                            if (selectedBudgetEntries.length === 1) {
+                            if (selectedBudgetCategoryRules.length === 1) {
                                 return [
                                     <Tooltip title='Edit'>
                                         <IconButton
@@ -145,9 +163,17 @@ const EntryList = () => {
                                         >
                                             <EditIcon/>
                                         </IconButton>
+                                    </Tooltip>,
+                                    <Tooltip title='Ignore'>
+                                        <IconButton
+                                            size={'small'}
+                                            onClick={handleIgnoreSelectedBudgetCategoryRules}
+                                        >
+                                            <EditIcon/>
+                                        </IconButton>
                                     </Tooltip>
                                 ];
-                            } else if (selectedBudgetEntries.length > 1) {
+                            } else if (selectedBudgetCategoryRules.length > 1) {
                                 return [];
                             }
                             return [
@@ -162,7 +188,7 @@ const EntryList = () => {
                             ]
                         })()}
                         onSelectedDataChange={(allSelectedData: { [key: string]: any }[]) =>
-                            setSelectedBudgetEntries(allSelectedData as BudgetEntryCategoryRule[])
+                            setSelectedBudgetCategoryRules(allSelectedData as BudgetEntryCategoryRule[])
                         }
                         columns={[
                             {
@@ -185,7 +211,7 @@ const EntryList = () => {
             </Grid>
             {budgetEntryDialogOpen &&
             <BudgetEntryCategoryRuleDialog
-              budgetEntryCategoryRule={selectedBudgetEntries.length ? selectedBudgetEntries[0] : new BudgetEntryCategoryRule({
+              budgetEntryCategoryRule={selectedBudgetCategoryRules.length ? selectedBudgetCategoryRules[0] : new BudgetEntryCategoryRule({
                   ...new BudgetEntryCategoryRule(),
                   ownerID: appContextLoginClaims.userID
               })}

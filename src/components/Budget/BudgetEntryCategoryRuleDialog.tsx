@@ -47,7 +47,6 @@ export default function EntryDialog(props: EntryDialogProps) {
     const [duplicateBudgetEntryCategoryRule, setDuplicateBudgetEntryCategoryRule] = useState(new BudgetEntryCategoryRule(props.budgetEntryCategoryRule));
 
     const handleFieldChange = (field: string) => (newValue: any) => {
-        console.log('change!')
         setBudgetEntryCategoryRule(new BudgetEntryCategoryRule({
             ...budgetEntryCategoryRule,
             [field]: newValue
