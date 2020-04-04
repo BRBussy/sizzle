@@ -11,7 +11,9 @@ import {FETable} from 'components/Table';
 import moment from 'moment';
 import {
     Edit as EditIcon,
-    Delete as DeleteIcon
+    Delete as DeleteIcon,
+    KeyboardArrowUp as OutIcon,
+    KeyboardArrowDown as InIcon
 } from '@material-ui/icons';
 import {BudgetEntryDialog} from 'components/Budget';
 import {IDIdentifier} from 'bizzle/search/identifier';
@@ -32,6 +34,16 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     tableCardRootOverride: {
         padding: 0,
         paddingBottom: '0 !important'
+    },
+    totalLayout: {
+        display: 'grid',
+        gridTemplateColumns: 'auto auto'
+    },
+    out: {
+        color: theme.palette.error.main
+    },
+    in: {
+        color: theme.palette.success.main
     }
 }));
 
@@ -135,136 +147,170 @@ const Summary = () => {
                 </CardContent>
             </Card>
             {!loading && budget &&
-            <Card classes={{root: classes.tableCardRootOverride}}>
-              <CardHeader
-                classes={{root: classes.tableCardRootOverride}}
-                ref={(cardHeaderRef: HTMLDivElement) => {
-                    if (!cardHeaderRef) {
-                        return;
-                    }
-                    if (cardHeaderRef.clientWidth !== appBarWidth) {
-                        setAppBarWidth(cardHeaderRef.clientWidth);
-                    }
-                }}
-                title={
-                    <AppBar position='static' style={{width: appBarWidth}}>
-                        <Tabs
-                            value={selectedBudgetTab}
-                            onChange={handleSelectedBudgetTabChange}
-                            variant={'scrollable'}
-                            scrollButtons={'on'}
-                        >
-                            <Tab label={'Summary'} value={'Summary'}/>
-                            {Object.keys(budget.entries).map((budgetEntryCategory, idx) => (
-                                <Tab key={idx} label={budgetEntryCategory} value={budgetEntryCategory}/>
-                            ))}
-                        </Tabs>
-                    </AppBar>
-                }
-              />
-              <CardContent classes={{root: classes.tableCardRootOverride}}>
-                  {(() => {
-                      if (selectedBudgetTab === 'Summary') {
-                          return (
-                              <FETable
-                                  height={tableHeight}
-                                  initialRowsPerPage={20}
-                                  columns={[
-                                      {
-                                          label: 'Item',
-                                          field: 'summaryLabel'
-                                      },
-                                      {
-                                          label: 'Amount',
-                                          field: 'amount'
-                                      }
-                                  ]}
-                                  data={Object.keys(budget.summary).map((summaryLabel) => ({
-                                      summaryLabel,
-                                      amount: budget.summary[summaryLabel]
-                                  }))}
-                                  title={''}
-                              />
-                          );
-                      } else {
-                          return (
-                              <FETable
-                                  height={tableHeight}
-                                  initialRowsPerPage={20}
-                                  columns={[
-                                      {
-                                          label: 'Date',
-                                          field: 'date',
-                                          minWidth: 100,
-                                          accessor: (data: any) => {
-                                              const be = data as BudgetEntry;
-                                              try {
-                                                  return moment(be.date).format('YY-MM-DD');
-                                              } catch (e) {
-                                                  console.error('error formatting date:', e);
-                                                  return '-';
-                                              }
-                                          }
-                                      },
-                                      {
-                                          label: 'Description',
-                                          field: 'description',
-                                          minWidth: 200
-                                      },
-                                      {
-                                          label: 'Amount',
-                                          field: 'amount'
-                                      },
-                                      {
-                                          label: '',
-                                          accessor: (data: any) => {
-                                              return (
-                                                  <IconButton
-                                                      size={'small'}
-                                                      onClick={() => setSelectedBudgetEntry(data as BudgetEntry)}
-                                                  >
-                                                      <EditIcon/>
-                                                  </IconButton>
-                                              );
-                                          }
-                                      },
-                                      {
-                                          label: '',
-                                          accessor: (data: any) => {
-                                              return (
-                                                  <IconButton
-                                                      size={'small'}
-                                                      onClick={handleDeleteOneBudgetEntry(data as BudgetEntry)}
-                                                  >
-                                                      <DeleteIcon/>
-                                                  </IconButton>
-                                              );
-                                          }
-                                      }
-                                  ]}
-                                  data={budget.entries[selectedBudgetTab]}
-                                  title={''}
-                              />
-                          );
+            <React.Fragment>
+              <Card classes={{root: classes.tableCardRootOverride}}>
+                <CardHeader
+                  classes={{root: classes.tableCardRootOverride}}
+                  ref={(cardHeaderRef: HTMLDivElement) => {
+                      if (!cardHeaderRef) {
+                          return;
                       }
-                  })()}
-              </CardContent>
-            </Card>}
-            <Card classes={{root: classes.dateSelectCardRootOverride}}>
-                <CardContent classes={{root: classes.dateSelectCardRootOverride}}>
-                    <Grid container direction={'row'} spacing={1} alignItems={'center'} justify={'center'}>
-                        <Grid item>
-                            Total In
-                        </Grid>
-                        <Grid item>
-                            Total Out
-                        </Grid>
-                        <Grid item>
-                            Net
-                        </Grid>
-                    </Grid>
+                      if (cardHeaderRef.clientWidth !== appBarWidth) {
+                          setAppBarWidth(cardHeaderRef.clientWidth);
+                      }
+                  }}
+                  title={
+                      <AppBar position='static' style={{width: appBarWidth}}>
+                          <Tabs
+                              value={selectedBudgetTab}
+                              onChange={handleSelectedBudgetTabChange}
+                              variant={'scrollable'}
+                              scrollButtons={'on'}
+                          >
+                              <Tab label={'Summary'} value={'Summary'}/>
+                              {Object.keys(budget.entries).map((budgetEntryCategory, idx) => (
+                                  <Tab key={idx} label={budgetEntryCategory} value={budgetEntryCategory}/>
+                              ))}
+                          </Tabs>
+                      </AppBar>
+                  }
+                />
+                <CardContent classes={{root: classes.tableCardRootOverride}}>
+                    {(() => {
+                        if (selectedBudgetTab === 'Summary') {
+                            return (
+                                <FETable
+                                    height={tableHeight}
+                                    initialRowsPerPage={20}
+                                    columns={[
+                                        {
+                                            label: 'Item',
+                                            field: 'summaryLabel'
+                                        },
+                                        {
+                                            label: 'Amount',
+                                            field: 'amount'
+                                        }
+                                    ]}
+                                    data={Object.keys(budget.summary).map((summaryLabel) => ({
+                                        summaryLabel,
+                                        amount: budget.summary[summaryLabel]
+                                    }))}
+                                    title={''}
+                                />
+                            );
+                        } else {
+                            return (
+                                <FETable
+                                    height={tableHeight}
+                                    initialRowsPerPage={20}
+                                    columns={[
+                                        {
+                                            label: 'Date',
+                                            field: 'date',
+                                            minWidth: 100,
+                                            accessor: (data: any) => {
+                                                const be = data as BudgetEntry;
+                                                try {
+                                                    return moment(be.date).format('YY-MM-DD');
+                                                } catch (e) {
+                                                    console.error('error formatting date:', e);
+                                                    return '-';
+                                                }
+                                            }
+                                        },
+                                        {
+                                            label: 'Description',
+                                            field: 'description',
+                                            minWidth: 200
+                                        },
+                                        {
+                                            label: 'Amount',
+                                            field: 'amount'
+                                        },
+                                        {
+                                            label: '',
+                                            accessor: (data: any) => {
+                                                return (
+                                                    <IconButton
+                                                        size={'small'}
+                                                        onClick={() => setSelectedBudgetEntry(data as BudgetEntry)}
+                                                    >
+                                                        <EditIcon/>
+                                                    </IconButton>
+                                                );
+                                            }
+                                        },
+                                        {
+                                            label: '',
+                                            accessor: (data: any) => {
+                                                return (
+                                                    <IconButton
+                                                        size={'small'}
+                                                        onClick={handleDeleteOneBudgetEntry(data as BudgetEntry)}
+                                                    >
+                                                        <DeleteIcon/>
+                                                    </IconButton>
+                                                );
+                                            }
+                                        }
+                                    ]}
+                                    data={budget.entries[selectedBudgetTab]}
+                                    title={''}
+                                />
+                            );
+                        }
+                    })()}
                 </CardContent>
-            </Card>
+              </Card>
+              <Card classes={{root: classes.dateSelectCardRootOverride}}>
+                <CardContent classes={{root: classes.dateSelectCardRootOverride}}>
+                  <Grid container direction={'row'} spacing={1} alignItems={'center'} justify={'center'}>
+                    <Grid item>
+                      <div className={classes.totalLayout}>
+                        <InIcon className={classes.in}/>
+                        <div className={classes.in}>
+                            {budget.totalIn.actual}
+                        </div>
+                      </div>
+                    </Grid>
+                    <Grid item>
+                      <div className={classes.totalLayout}>
+                        <OutIcon className={classes.out}/>
+                        <div className={classes.out}>
+                            {budget.totalOut.actual}
+                        </div>
+                      </div>
+                    </Grid>
+                    <Grid item>
+                      <div>
+                          Net:
+                      </div>
+                    </Grid>
+                    <Grid item>
+                        {budget.net >= 0
+                            ? (
+                                <div className={classes.totalLayout}>
+                                    <InIcon className={classes.in}/>
+                                    <div className={classes.in}>
+                                        {budget.net}
+                                    </div>
+                                </div>
+                            )
+                            : (
+                                <div className={classes.totalLayout}>
+                                    <OutIcon className={classes.out}/>
+                                    <div className={classes.out}>
+                                        {budget.net}
+                                    </div>
+                                </div>
+                            )
+                        }
+                    </Grid>
+                  </Grid>
+                </CardContent>
+              </Card>
+            </React.Fragment>}
             {!!selectedBudgetEntry &&
             <BudgetEntryDialog
               closeDialog={() => setSelectedBudgetEntry(undefined)}
