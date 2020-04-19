@@ -62,6 +62,22 @@ export default function Configuration() {
         setLoading(false);
     };
 
+    const handleUpdateSummaryDatePeriodRule = async (newDatePeriodCategoryRuleID: string) => {
+        setLoading(true);
+        try {
+            await BudgetConfigAdmin.SetMyConfig({
+                budgetConfig: new BudgetConfig({
+                    ...getMyBudgetConfigResponse.budgetConfig,
+                    summaryDatePeriodCategoryRuleID: newDatePeriodCategoryRuleID
+                })
+            });
+            setGetMyBudgetConfigToggle(!getMyBudgetConfigToggle);
+        } catch (e) {
+            console.error(`error setting my budget config: ${e.message ? e.message : e.toString()}`);
+        }
+        setLoading(false);
+    };
+
     const appLoading = loading || loadingBudgetCategoryRules;
 
     return (
@@ -84,6 +100,33 @@ export default function Configuration() {
                         disabled={appLoading}
                         variant={'outlined'}
                         onChange={(e) => handleUpdateDefaultOtherRule(e.target.value)}
+                    >
+                        {findManyBudgetCategoryRulesResponse.records.map((bcr) => (
+                            <MenuItem key={bcr.id} value={bcr.id}>
+                                {bcr.name}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                </ExpansionPanelDetails>
+            </ExpansionPanel>
+            <ExpansionPanel>
+                <ExpansionPanelSummary
+                    classes={{content: classes.expansionPanelSummaryLayout}}
+                    expandIcon={<ExpandMoreIcon/>}
+                    aria-controls={'panel1bh-content'}
+                    id={'panel1bh-header'}
+                >
+                    <Typography>Set Summary Date Period Rule</Typography>
+                    {appLoading && <CircularProgress size={20}/>}
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                    <TextField
+                        select
+                        fullWidth
+                        value={getMyBudgetConfigResponse.budgetConfig.summaryDatePeriodCategoryRuleID}
+                        disabled={appLoading}
+                        variant={'outlined'}
+                        onChange={(e) => handleUpdateSummaryDatePeriodRule(e.target.value)}
                     >
                         {findManyBudgetCategoryRulesResponse.records.map((bcr) => (
                             <MenuItem key={bcr.id} value={bcr.id}>
