@@ -4,7 +4,7 @@ import {
     Card, CardContent, AppBar, Tabs, Tab, CardHeader,
     IconButton,
     CircularProgress,
-    Toolbar, Collapse
+    Toolbar, Collapse, MenuItem
 } from '@material-ui/core';
 import {Budget, BudgetAdmin} from 'bizzle/budget';
 import {BudgetConfigAdmin} from 'bizzle/budget/config';
@@ -76,6 +76,8 @@ const Summary = () => {
     const [refreshToggle, setRefreshToggle] = useState(false);
     const [loading, setLoading] = useState(false);
     const [dateRangeSelectOpen, setDateRangeSelectOpen] = useState(false);
+    const [possibleDateRanges, setPossibleDateRanges] = useState<{ startDate: string, endDate: string, id: string }[]>([]);
+    const [selectedDateRange, setSelectedDateRange] = useState('');
 
     useEffect(() => {
         (async () => {
@@ -119,6 +121,25 @@ const Summary = () => {
                 // otherwise set date range from the date of the latest entry to now
                 setStartDate(moment(dateRangeSummaryRuleBudgetEntries[0].date).format('YYYY-MM-DD'));
                 setEndDate(moment().format('YYYY-MM-DD'));
+
+                // generate list of possible date ranges
+                const newPossibleDateRanges: { startDate: string, endDate: string, id: string }[] = [];
+                for (let i = dateRangeSummaryRuleBudgetEntries.length - 1; i > -1; i--) {
+                    if (i === 0) {
+                        newPossibleDateRanges.push({
+                            id: `${dateRangeSummaryRuleBudgetEntries[i].date}-${moment().format('YYYY-MM-DD')}`,
+                            startDate: moment(dateRangeSummaryRuleBudgetEntries[i].date).format('YYYY-MM-DD'),
+                            endDate: moment().format('YYYY-MM-DD')
+                        });
+                    } else {
+                        newPossibleDateRanges.push({
+                            id: `${dateRangeSummaryRuleBudgetEntries[i].date}-${dateRangeSummaryRuleBudgetEntries[i - 1].date}`,
+                            startDate: moment(dateRangeSummaryRuleBudgetEntries[i].date).format('YYYY-MM-DD'),
+                            endDate: moment(dateRangeSummaryRuleBudgetEntries[i - 1].date).subtract(1, 'day').format('YYYY-MM-DD')
+                        });
+                    }
+                }
+                setPossibleDateRanges(newPossibleDateRanges);
             } catch (e) {
                 console.error(`error getting my budget config: ${e.message ? e.message : e.toString()}`);
             }
@@ -150,8 +171,11 @@ const Summary = () => {
         setSelectedBudgetTab(newValue);
     };
 
-    if (tableHeight !== document.documentElement.clientHeight - 160) {
-        setTableHeight(document.documentElement.clientHeight - 160);
+    const expectedTableHeight = dateRangeSelectOpen
+        ? document.documentElement.clientHeight - 214
+        : document.documentElement.clientHeight - 160
+    if (tableHeight !== expectedTableHeight) {
+        setTableHeight(expectedTableHeight);
     }
 
     const handleDeleteOneBudgetEntry = (budgetEntry: BudgetEntry) => async () => {
@@ -165,6 +189,17 @@ const Summary = () => {
             console.error(`error getting budget for date range: ${e.message ? e.message : e.toString()}`)
         }
         setLoading(false);
+    };
+
+    const handleSelectedDateRangeChange = (selectedDateRangeValue: string) => {
+      const selectedPossibleDateRange = possibleDateRanges.find((pdr) => (pdr.id === selectedDateRangeValue));
+      if (!selectedPossibleDateRange) {
+          console.error('unable to find selected date range');
+          return;
+      }
+      setStartDate(selectedPossibleDateRange.startDate);
+      setEndDate(selectedPossibleDateRange.endDate);
+      setSelectedDateRange(selectedDateRangeValue);
     };
 
     return (
@@ -222,7 +257,19 @@ const Summary = () => {
                     </Grid>
                     <Collapse in={dateRangeSelectOpen}>
                         <div className={classes.dateRangeSelectLayout}>
-                            date range select!
+                            <TextField
+                                fullWidth
+                                margin={'dense'}
+                                select
+                                value={selectedDateRange}
+                                onChange={(e) => handleSelectedDateRangeChange(e.target.value)}
+                            >
+                                {possibleDateRanges.map((pdr, idx) => (
+                                    <MenuItem key={idx} value={pdr.id}>
+                                        {`${pdr.startDate} - ${pdr.endDate}`}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
                         </div>
                     </Collapse>
                 </CardContent>
