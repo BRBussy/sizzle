@@ -202,6 +202,14 @@ const Summary = () => {
       setSelectedDateRange(selectedDateRangeValue);
     };
 
+    // check if currently selected budget tab is present in updated budget
+    // only relevant if the summary tab is not the selected tab
+    if (budget) {
+        if (!(selectedBudgetTab === 'Summary' || budget.entries[selectedBudgetTab])) {
+            setSelectedBudgetTab('Summary');
+        }
+    }
+
     return (
         <div className={classes.root}>
             <Card classes={{root: classes.dateSelectCardRootOverride}}>
