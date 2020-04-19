@@ -215,7 +215,7 @@ const BPTable = (props: BPTableProps) => {
             >
                 <Table stickyHeader size={props.tableSize ? props.tableSize : 'small'}>
                     <TableHead
-                        ref={(tableHeadRef: HTMLDivElement) => {
+                        ref={(tableHeadRef: HTMLTableSectionElement | null) => {
                             if (!tableHeadRef) {
                                 return;
                             }

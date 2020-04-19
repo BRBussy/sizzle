@@ -5,3 +5,5 @@ export {
     Role,
     RoleStore
 }
+
+export * from './Store';
