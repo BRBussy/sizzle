@@ -220,7 +220,12 @@ export const Sidebar = (props: SidebarProps) => {
 
     const brand = (
         <div className={classes.brandLayout}>
-            <img src={logo} alt='logo' className={classes.logoImg}/>
+            <img
+                src={logo}
+                alt={'logo'}
+                className={classes.logoImg}
+                onClick={() => props.history.push('/')}
+            />
             <div
                 className={cx(
                     classes.logoNormal,
