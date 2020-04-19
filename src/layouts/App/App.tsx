@@ -58,6 +58,12 @@ const App = (props: AppProps) => {
           miniActive={false}
           sidebarMinimize={() => setMiniActive(!miniActive)}
           handleSidebarToggle={() => setSidebarOpen(!sidebarOpen)}
+          history={props.history}
+          allRoutes={[
+              ...props.sidebarRoutes,
+              props.profileRoute,
+              props.homeRoute
+          ]}
         />
         <div className={classes.content}>
           <div

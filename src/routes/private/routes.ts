@@ -24,31 +24,31 @@ export const routes: RouteType[] = [
         collapse: true,
         views: [
             {
-                name: 'Summary',
+                name: 'Budget Summary',
                 path: '/app/budget/summary',
                 icon: SummaryIcon,
                 component: BudgetSummaryView
             },
             {
-                name: 'Import',
+                name: 'Import Statements',
                 path: '/app/budget/import',
                 icon: ImportIcon,
                 component: BudgetImportView
             },
             {
-                name: 'List',
+                name: 'Budget Entry List',
                 path: '/app/budget/list',
                 icon: ListIcon,
                 component: BudgetEntryListView
             },
             {
-                name: 'Categories',
+                name: 'Budget Entry Category Rules',
                 path: '/app/budget/categories',
                 icon: ListIcon,
                 component: BudgetEntryCategoryRuleListView
             },
             {
-                name: 'Config',
+                name: 'Budget Config',
                 path: '/app/budget/configuration',
                 icon: ConfigIcon,
                 component: ConfigurationView
