@@ -125,26 +125,26 @@ export default function EntryDialog(props: EntryDialogProps) {
                         </Typography>
                     </Grid>
                     {loading && <Grid item>
-                      <CircularProgress size={25}/>
+                        <CircularProgress size={25}/>
                     </Grid>}
                 </Grid>
                 <Grid container direction={'row-reverse'} alignItems={'center'} spacing={1}>
                     {entryChanged &&
                     <Grid item>
-                      <IconButton
-                        size={'small'}
-                        onClick={() => {
-                            if (budgetEntry.id === '') {
-                                handleCreate().finally();
-                            } else {
-                                handleUpdate().finally();
-                            }
-                        }}
-                        className={classes.closeIcon}
-                        disabled={loading}
-                      >
-                        <SaveIcon/>
-                      </IconButton>
+                        <IconButton
+                            size={'small'}
+                            onClick={() => {
+                                if (budgetEntry.id === '') {
+                                    handleCreate().finally();
+                                } else {
+                                    handleUpdate().finally();
+                                }
+                            }}
+                            className={classes.closeIcon}
+                            disabled={loading}
+                        >
+                            <SaveIcon/>
+                        </IconButton>
                     </Grid>}
                     <Grid item>
                         <IconButton
@@ -184,9 +184,6 @@ export default function EntryDialog(props: EntryDialogProps) {
                             label={'Category'}
                             onChange={(e) => handleFieldChange('categoryRuleID')(e.target.value)}
                         >
-                            <MenuItem value={''}>
-                                Other
-                            </MenuItem>
                             {budgetEntryCategoryRules.map((bcr) => (
                                 <MenuItem key={bcr.id} value={bcr.id}>
                                     {bcr.name}
