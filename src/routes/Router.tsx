@@ -1,51 +1,52 @@
 import React from 'react';
-import { Route, Switch } from 'react-router';
-import { RouteType } from './Route';
+import {Route, Switch} from 'react-router';
+import {RouteType} from './Route';
 
 interface RouterProps {
-  routes: RouteType[];
+    routes: RouteType[];
 }
 
 const Router = (props: RouterProps) => {
-  return (
-    <Switch>
-      {props.routes.map((route, key) => {
+    const routesToRender: React.ReactNode[] = [];
+    props.routes.forEach((route, routeKey) => {
         // for collapsed routes, we return a route object for each embedded view
         if (route.collapse) {
-          if (route.views == null) {
-            return null;
-          }
-          return (
-            <React.Fragment key={key}>
-              {route.views.map((viewsRoute, viewsKey) => {
-                return (
-                  <Route
-                    key={viewsKey}
-                    exact
-                    path={viewsRoute.path}
-                    component={viewsRoute.component}
-                  />
+            if (route.views == null) {
+                return;
+            }
+            route.views.forEach((viewsRoute, viewsKey) => {
+                routesToRender.push(
+                    <Route
+                        key={`${routeKey}-${viewsKey}`}
+                        exact
+                        path={viewsRoute.path}
+                        component={viewsRoute.component}
+                    />
                 );
-              })}
-            </React.Fragment>
-          );
+            })
+            return;
         }
 
         // for normal route objects, we return a route object
         if (route.component == null) {
-          return null;
+            return;
         }
-        return (
-          <Route
-            key={key}
-            exact
-            path={route.path}
-            component={route.component}
-          />
-        );
-      })}
-    </Switch>
-  );
+
+        routesToRender.push(
+            <Route
+                key={`${routeKey}`}
+                exact
+                path={route.path}
+                component={route.component}
+            />
+        )
+    });
+
+    return (
+        <Switch>
+            {routesToRender}
+        </Switch>
+    );
 };
 
 export default Router;

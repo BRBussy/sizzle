@@ -13,6 +13,7 @@ import BudgetEntryCategoryRuleListView from 'views/Budget/CategoryRuleList';
 import ConfigurationView from 'views/Budget/Configuration';
 import ProfileView from 'views/Profile';
 import HomeView from 'views/Home';
+import UsersView from 'views/Users';
 
 export const routes: RouteType[] = [
     {
@@ -54,6 +55,15 @@ export const routes: RouteType[] = [
                 component: ConfigurationView
             }
         ]
+    },
+
+    {
+        name: 'User Management',
+        path: '/app/users',
+        icon: ConfigIcon,
+        component: UsersView,
+        collapse: false,
+        views: null
     }
 ];
 
