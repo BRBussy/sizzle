@@ -1,9 +1,9 @@
 import {
-    Map as MapIcon,
     Money as MoneyIcon,
-    Pages as BudgetIcon,
-    List as CategoryRuleListIcon,
-    Settings as ConfigIcon
+    List as ListIcon,
+    Settings as ConfigIcon,
+    Dashboard as SummaryIcon,
+    CloudUpload as ImportIcon
 } from '@material-ui/icons';
 import {RouteType} from 'routes/Route';
 import BudgetImportView from 'views/Budget/Import';
@@ -11,27 +11,14 @@ import BudgetSummaryView from 'views/Budget/Summary';
 import BudgetEntryListView from 'views/Budget/EntryList'
 import BudgetEntryCategoryRuleListView from 'views/Budget/CategoryRuleList';
 import ConfigurationView from 'views/Budget/Configuration';
-import ExerciseView from 'views/Exercise';
-import {Party1HomeView} from 'views/Home';
 import ProfileView from 'views/Profile';
+import HomeView from 'views/Home';
 
 export const routes: RouteType[] = [
-    // single route, no collapsible menu
-    {
-        name: 'Exercise',
-        path: '/app/exercise',
-        icon: MoneyIcon,
-        component: ExerciseView,
-
-        // views null since collapse is false
-        collapse: false,
-        views: null
-    },
-
     {
         name: 'Budget',
         path: '/app/budget',
-        icon: BudgetIcon,
+        icon: MoneyIcon,
         component: null,
 
         collapse: true,
@@ -39,25 +26,25 @@ export const routes: RouteType[] = [
             {
                 name: 'Summary',
                 path: '/app/budget/summary',
-                icon: MapIcon,
+                icon: SummaryIcon,
                 component: BudgetSummaryView
             },
             {
                 name: 'Import',
                 path: '/app/budget/import',
-                icon: MapIcon,
+                icon: ImportIcon,
                 component: BudgetImportView
             },
             {
                 name: 'List',
                 path: '/app/budget/list',
-                icon: MapIcon,
+                icon: ListIcon,
                 component: BudgetEntryListView
             },
             {
                 name: 'Categories',
                 path: '/app/budget/categories',
-                icon: CategoryRuleListIcon,
+                icon: ListIcon,
                 component: BudgetEntryCategoryRuleListView
             },
             {
@@ -70,11 +57,11 @@ export const routes: RouteType[] = [
     }
 ];
 
-export const routeBuilder: (partyType: string) => ({
+export const routeBuilder: () => ({
     homeRoute: RouteType,
     profileRoute: RouteType,
     sidebarRoutes: RouteType[]
-}) = (partyType: string) => {
+}) = () => {
     // do processing on party type and permissions to return routes
 
     return {
@@ -82,7 +69,7 @@ export const routeBuilder: (partyType: string) => ({
             name: 'Home',
             path: '/app',
             icon: MoneyIcon,
-            component: Party1HomeView,
+            component: HomeView,
             collapse: false,
             views: null
         },

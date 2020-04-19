@@ -27,7 +27,7 @@ const App: React.FC = () => {
         );
     }
 
-    const routes = privateRouteBuilder('a');
+    const routes = privateRouteBuilder();
 
     return (
         <BrowserRouter>
