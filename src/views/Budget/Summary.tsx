@@ -43,8 +43,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     dateRangeSelectLayout: {
         borderTop: `1px solid ${theme.palette.divider}`,
-        marginTop: theme.spacing(1),
-        paddingTop: theme.spacing(0.5)
+        marginTop: theme.spacing(1)
     },
     tableCardRootOverride: {
         padding: 0,
@@ -172,7 +171,7 @@ const Summary = () => {
     };
 
     const expectedTableHeight = dateRangeSelectOpen
-        ? document.documentElement.clientHeight - 214
+        ? document.documentElement.clientHeight - 210
         : document.documentElement.clientHeight - 160
     if (tableHeight !== expectedTableHeight) {
         setTableHeight(expectedTableHeight);
@@ -274,7 +273,7 @@ const Summary = () => {
                             >
                                 {possibleDateRanges.map((pdr, idx) => (
                                     <MenuItem key={idx} value={pdr.id}>
-                                        {`${pdr.startDate} - ${pdr.endDate}`}
+                                        {`${moment(pdr.startDate).format('MMM \'YY')} → ${moment(pdr.endDate).format('MMM \'YY')}`}
                                     </MenuItem>
                                 ))}
                             </TextField>
