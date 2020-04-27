@@ -1,15 +1,13 @@
-import {IDIdentifierType} from './types';
+import {IdentifierType} from '.';
 
-interface IDIdentifier {
-    type: string;
+export default interface IDIdentifier {
+    type: IdentifierType;
     id: string;
 }
 
-function IDIdentifier(id: string): IDIdentifier {
+export function IDIdentifier(id: string): IDIdentifier {
     return {
-        type: IDIdentifierType,
+        type: IdentifierType.IDIdentifierType,
         id
     };
 }
-
-export default IDIdentifier;

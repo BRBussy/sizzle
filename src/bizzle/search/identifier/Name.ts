@@ -1,15 +1,13 @@
-import {NameIdentifierType} from './types';
+import {IdentifierType} from '.';
 
-interface NameIdentifier {
-    type: string;
+export default interface NameIdentifier {
+    type: IdentifierType;
     name: string;
 }
 
-function NameIdentifier(name: string): NameIdentifier {
+export function NameIdentifier(name: string): NameIdentifier {
     return {
-        type: NameIdentifierType,
+        type: IdentifierType.NameIdentifierType,
         name
     };
 }
-
-export default NameIdentifier;

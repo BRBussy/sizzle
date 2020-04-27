@@ -1,7 +1,10 @@
-import IDIdentifier from './ID';
-import NameIdentifier from './Name';
+import {IDIdentifier} from './ID';
+import {NameIdentifier} from './Name';
 
-export * from './types';
+export enum IdentifierType {
+    IDIdentifierType = 'ID',
+    NameIdentifierType = 'Name'
+}
 
 export {
     IDIdentifier,
