@@ -4,7 +4,7 @@ import {
     makeStyles, Theme, TextField, Typography, CircularProgress,
     IconButton
 } from '@material-ui/core';
-import {User} from 'bizzle/user';
+import {User, UserAdmin} from 'bizzle/user';
 import {
     Close as CloseIcon,
     Save as SaveIcon
@@ -12,6 +12,7 @@ import {
 import {isEqual as _isEqual} from 'lodash';
 import {Role, useRoleStoreFindMany} from 'bizzle/security/role';
 import {Autocomplete} from '@material-ui/lab';
+import {useAppContext} from '../../context/App';
 
 const useStyles = makeStyles((theme: Theme) => ({
     dialogTitleOverride: {
@@ -51,6 +52,7 @@ export default function UserDialog(props: EntryDialogProps) {
         findManyResponse: findManyRolesResponse,
         loading: findManyRolesLoading
     } = useRoleStoreFindMany();
+    const {appContextLoginClaims} = useAppContext();
 
     const handleFieldChange = (field: string) => (newValue: any) => {
         setUser(new User({
@@ -76,12 +78,8 @@ export default function UserDialog(props: EntryDialogProps) {
     const handleCreate = async () => {
         setAPILoading(true);
         try {
-            // const createOneResponse = await UserAdmin.CreateOne({user});
-            // if (props.onBudgetEntryCreate) {
-            //     props.onBudgetEntryCreate(new User(createOneResponse.user));
-            // }
-            // setUser(new User(createOneResponse.user));
-            // setDuplicateBudgetEntry(new User(createOneResponse.user));
+            user.ownerID = appContextLoginClaims.userID;
+            await UserAdmin.CreateOne({user})
         } catch (e) {
             console.error('unable to create entry', e);
         }

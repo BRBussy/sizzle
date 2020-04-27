@@ -1,5 +1,6 @@
 export default class User {
     public id: string = '';
+    public ownerID: string = '';
     public name: string = '';
     public email: string = '';
     public roleIDs: string[] = [];
@@ -10,6 +11,7 @@ export default class User {
             return;
         }
         this.id = user.id;
+        this.ownerID = user.ownerID;
         this.name = user.name;
         this.email = user.email;
         this.roleIDs = [...user.roleIDs];
