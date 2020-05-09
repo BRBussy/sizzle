@@ -94,15 +94,18 @@ const Import = () => {
                 })(),
                 (async () => {
                     if (entriesToCreate.length) {
-                        await BudgetEntryAdmin.CreateMany({
-                            budgetEntries: entriesToCreate.filter(
-                                (be) => (
-                                    !ignoredBudgetEntries.find(
-                                        (i) => (i.description === getDescriptor(be))
-                                    )
+                        const entriesToCreateWithoutIgnored = entriesToCreate.filter(
+                            (be) => (
+                                !ignoredBudgetEntries.find(
+                                    (i) => (i.description === getDescriptor(be))
                                 )
                             )
-                        })
+                        )
+                        if (entriesToCreateWithoutIgnored.length) {
+                            await BudgetEntryAdmin.CreateMany({
+                                budgetEntries: entriesToCreateWithoutIgnored
+                            });
+                        }
                     }
                 })()
             ])
