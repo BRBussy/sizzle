@@ -2,6 +2,7 @@ import config from 'react-global-configuration';
 import jsonRPCRequest from 'utilities/network/jsonRPCRequest';
 import {BudgetEntry} from '.';
 import Identifier from 'bizzle/search/identifier/Identifier'
+import {Ignored} from './ignored';
 
 export interface XLSXStandardBankStatementToBudgetCompositeEntriesRequest {
     xlsxStatement: string;
@@ -91,7 +92,7 @@ export interface IgnoredCheckRequest {
 
 // tslint:disable-next-line:no-empty-interface
 export interface IgnoredCheckResponse {
-    budgetEntries: BudgetEntry[];
+    ignored: Ignored[];
 }
 
 const Admin = {
@@ -178,7 +179,7 @@ const Admin = {
             method: `${Admin.serviceProvider}.IgnoredCheck`,
             request
         })
-        return {budgetEntries: response.budgetEntries.map((be: BudgetEntry) => (new BudgetEntry(be)))}
+        return {ignored: response.ignored.map((be: Ignored) => (new Ignored(be)))}
     }
 };
 

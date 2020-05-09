@@ -16,6 +16,7 @@ import {
     Cancel as ClearFilterIcon,
     Refresh as RestartIcon
 } from '@material-ui/icons';
+import {Ignored} from '../../bizzle/budget/entry/ignored';
 
 enum AppStep {
     preparation,
@@ -37,7 +38,7 @@ const Import = () => {
         suspectedDuplicates: []
     });
     const [budgetEntryCategoryRules, setBudgetEntryCategoryRules] = useState<BudgetEntryCategoryRule[]>([]);
-    const [ignoredBudgetEntries, setIgnoredBudgetEntries] = useState<BudgetEntry[]>([]);
+    const [ignoredBudgetEntries, setIgnoredBudgetEntries] = useState<Ignored[]>([]);
 
     useEffect(() => {
         const fetchBudgetEntryCategoryRules = async () => {
@@ -62,7 +63,7 @@ const Import = () => {
             });
             setIgnoredBudgetEntries((await BudgetEntryAdmin.IgnoredCheck({
                 budgetEntries: newDuplicateCheckResponse.uniques
-            })).budgetEntries);
+            })).ignored);
             setDuplicateCheckResponse(newDuplicateCheckResponse);
         } catch (e) {
             console.error('error performing duplicate check', e.message ? e.message : e.toString);
@@ -104,7 +105,7 @@ const Import = () => {
             await BudgetEntryAdmin.IgnoreOne({budgetEntry});
             setIgnoredBudgetEntries((await BudgetEntryAdmin.IgnoredCheck({
                 budgetEntries: duplicateCheckResponse.uniques
-            })).budgetEntries)
+            })).ignored)
         } catch (e) {
             console.error(`error ignoring one: ${e.message ? e.message : e.toString()}`)
         }
@@ -115,7 +116,7 @@ const Import = () => {
             await BudgetEntryAdmin.RecogniseOne({budgetEntry});
             setIgnoredBudgetEntries((await BudgetEntryAdmin.IgnoredCheck({
                 budgetEntries: duplicateCheckResponse.uniques
-            })).budgetEntries)
+            })).ignored)
         } catch (e) {
             console.error(`error ignoring one: ${e.message ? e.message : e.toString()}`)
         }
@@ -263,7 +264,7 @@ interface PrepareImportStepProps {
     budgetEntryCategoryRules: BudgetEntryCategoryRule[];
     duplicateCheckResponse: DuplicateCheckResponse;
     onImport: (entriesToCreate: BudgetEntry[], entriesToUpdate: BudgetEntry[]) => void
-    ignoredBudgetEntries: BudgetEntry[];
+    ignoredBudgetEntries: Ignored[];
     handleIgnore: (budgetEntry: BudgetEntry) => Promise<void>
     handleRecognise: (budgetEntry: BudgetEntry) => Promise<void>
 }
@@ -570,13 +571,18 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                             label: 'Ignore',
                                             field: 'ignore',
                                             accessor: (data: any) => {
+                                                const descriptor = `${
+                                                    moment((data as BudgetEntry).date).format('MMDDYY')
+                                                }-${
+                                                    (data as BudgetEntry).description.toLowerCase()
+                                                }`
                                                 return (
                                                     <FormControl>
                                                         <FormControlLabel
                                                             control={<Checkbox
                                                                 onChange={handleIgnoreRecogniseIgnoreToggle(data as BudgetEntry)}
                                                                 checked={!!props.ignoredBudgetEntries.find((be) => (
-                                                                    be.description === (data as BudgetEntry).description
+                                                                    be.description === descriptor
                                                                 ))}
                                                                 inputProps={{'aria-label': 'primary checkbox'}}
                                                             />}
