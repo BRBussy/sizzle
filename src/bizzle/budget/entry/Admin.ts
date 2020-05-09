@@ -69,6 +69,23 @@ export interface DeleteOneResponse {
 
 }
 
+export interface IgnoreOneRequest {
+    budgetEntry: BudgetEntry;
+}
+
+// tslint:disable-next-line:no-empty-interface
+export interface IgnoreOneResponse {
+}
+
+export interface IgnoredCheckRequest {
+    budgetEntries: BudgetEntry[];
+}
+
+// tslint:disable-next-line:no-empty-interface
+export interface IgnoredCheckResponse {
+    budgetEntries: BudgetEntry[];
+}
+
 const Admin = {
     serviceProvider: 'BudgetEntry-Admin',
     async XLSXStandardBankStatementToBudgetEntries(request: XLSXStandardBankStatementToBudgetCompositeEntriesRequest): Promise<XLSXStandardBankStatementToBudgetCompositeEntriesResponse> {
@@ -132,6 +149,21 @@ const Admin = {
             method: `${Admin.serviceProvider}.DeleteOne`,
             request
         })
+    },
+    async IgnoreOne(request: IgnoreOneRequest): Promise<IgnoreOneResponse> {
+        return await jsonRPCRequest({
+            url: config.get('budgetURL'),
+            method: `${Admin.serviceProvider}.IgnoreOne`,
+            request
+        })
+    },
+    async IgnoredCheck(request: IgnoredCheckRequest): Promise<IgnoredCheckResponse> {
+        const response = await jsonRPCRequest({
+            url: config.get('budgetURL'),
+            method: `${Admin.serviceProvider}.IgnoredCheck`,
+            request
+        })
+        return {budgetEntries: response.budgetEntries.map((be: BudgetEntry) => (new BudgetEntry(be)))}
     }
 };
 

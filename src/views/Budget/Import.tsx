@@ -37,6 +37,7 @@ const Import = () => {
         suspectedDuplicates: []
     });
     const [budgetEntryCategoryRules, setBudgetEntryCategoryRules] = useState<BudgetEntryCategoryRule[]>([]);
+    const [ignoredBudgetEntries, setIgnoredBudgetEntries] = useState<BudgetEntry[]>([]);
 
     useEffect(() => {
         const fetchBudgetEntryCategoryRules = async () => {
@@ -56,9 +57,13 @@ const Import = () => {
         setActiveAppStep(AppStep.performDuplicateCheck);
         setBudgetEntries(parsedBudgetEntries);
         try {
-            setDuplicateCheckResponse(await BudgetEntryAdmin.DuplicateCheck({
+            const newDuplicateCheckResponse = await BudgetEntryAdmin.DuplicateCheck({
                 budgetEntries: parsedBudgetEntries
-            }));
+            });
+            setIgnoredBudgetEntries((await BudgetEntryAdmin.IgnoredCheck({
+                budgetEntries: duplicateCheckResponse.uniques
+            })).budgetEntries);
+            setDuplicateCheckResponse(newDuplicateCheckResponse);
         } catch (e) {
             console.error('error performing duplicate check', e.message ? e.message : e.toString);
             setError(e.message ? e.message : e.toString);
@@ -93,6 +98,17 @@ const Import = () => {
         }
         setActiveAppStep(AppStep.done);
     };
+
+    const handleIgnore = async (budgetEntry: BudgetEntry) => {
+        try {
+            await BudgetEntryAdmin.IgnoreOne({budgetEntry});
+            setIgnoredBudgetEntries((await BudgetEntryAdmin.IgnoredCheck({
+                budgetEntries: duplicateCheckResponse.uniques
+            })).budgetEntries)
+        } catch (e) {
+            console.error(`error ignoring one: ${e.message ? e.message : e.toString()}`)
+        }
+    }
 
     if (error) {
         return (
@@ -165,6 +181,8 @@ const Import = () => {
                                     budgetEntryCategoryRules={budgetEntryCategoryRules}
                                     duplicateCheckResponse={duplicateCheckResponse}
                                     onImport={handleImport}
+                                    ignoredBudgetEntries={ignoredBudgetEntries}
+                                    handleIgnore={handleIgnore}
                                 />
                             );
 
@@ -233,6 +251,8 @@ interface PrepareImportStepProps {
     budgetEntryCategoryRules: BudgetEntryCategoryRule[];
     duplicateCheckResponse: DuplicateCheckResponse;
     onImport: (entriesToCreate: BudgetEntry[], entriesToUpdate: BudgetEntry[]) => void
+    ignoredBudgetEntries: BudgetEntry[];
+    handleIgnore: (budgetEntry: BudgetEntry) => Promise<void>
 }
 
 const usePrepareImportStepStyles = makeStyles((theme: Theme) => createStyles({
@@ -271,6 +291,26 @@ enum PrepareImportTab {
     suspectDuplicates = 'Suspect Duplicates'
 }
 
+function filterBudgetEntries(
+    budgetEntries: BudgetEntry[],
+    categoryRuleID: string,
+    description: string
+): BudgetEntry[] {
+    let filtered: BudgetEntry[] = budgetEntries;
+
+    if (categoryRuleID) {
+        filtered = filtered.filter((be) => (be.categoryRuleID === categoryRuleID));
+    }
+
+    if (description) {
+        filtered = filtered.filter((be) => (be.description.toLowerCase().includes(description.toLowerCase())));
+    }
+
+    return filtered
+}
+
+let descriptionFilterTimeout: any
+
 const PrepareImportStep = (props: PrepareImportStepProps) => {
     const [selectedTab, setSelectedTab] = useState(PrepareImportTab.uniques);
     const [uniquesToImport, setUniquesToImport] = useState(props.duplicateCheckResponse.uniques);
@@ -285,6 +325,7 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
     }>({})
     const classes = usePrepareImportStepStyles();
     const [selectedBudgetCategoryRuleFilter, setSelectedBudgetCategoryRuleFilter] = useState('')
+    const [descriptionFilter, setDescriptionFilter] = useState('');
 
     const handleTabChange = (event: React.ChangeEvent<{}>, newValue: PrepareImportTab) => {
         setSelectedTab(newValue);
@@ -473,9 +514,49 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                                     children={bcr.name}
                                                 />
                                             ))}
-                                        </TextField>
+                                        </TextField>,
+                                        <TextField
+                                            label={'Description'}
+                                            className={classes.categoryFilter}
+                                            onChange={(e) => {
+                                                clearTimeout(descriptionFilterTimeout);
+                                                descriptionFilterTimeout = setTimeout(((a) => (() => {
+                                                    setDescriptionFilter(a);
+                                                }))(e.target.value), 100);
+                                            }}
+                                            value={descriptionFilter}
+                                            InputProps={{
+                                                endAdornment: selectedBudgetCategoryRuleFilter && (
+                                                    <InputAdornment
+                                                        position={'end'}
+                                                        className={classes.clearFilterIcon}
+                                                    >
+                                                        <IconButton
+                                                            size={'small'}
+                                                            onClick={() => setDescriptionFilter('')}
+                                                        >
+                                                            <ClearFilterIcon/>
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                )
+                                            }}
+                                        />
                                     ]}
                                     columns={[
+                                        {
+                                            label: 'Ignore',
+                                            field: 'ignore',
+                                            accessor: (data: any) => {
+                                                const bd = data as BudgetEntry;
+                                                return (
+                                                    <IconButton
+                                                        size={'small'}
+                                                    >
+                                                        <ClearFilterIcon/>
+                                                    </IconButton>
+                                                )
+                                            }
+                                        },
                                         {
                                             label: 'Date',
                                             field: 'date',
@@ -515,10 +596,7 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                             }
                                         }
                                     ]}
-                                    data={selectedBudgetCategoryRuleFilter
-                                        ? uniquesToImport.filter((entry) => (entry.categoryRuleID === selectedBudgetCategoryRuleFilter))
-                                        : uniquesToImport
-                                    }
+                                    data={filterBudgetEntries(uniquesToImport, selectedBudgetCategoryRuleFilter, descriptionFilter)}
                                     title={'These will be created'}
                                 />
                             );
@@ -542,7 +620,7 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                                             <FormControlLabel
                                                                 control={<Checkbox
                                                                     onChange={handleExactDuplicateCreateNewCheck(duplicateEntries)}
-                                                                    checked={!!exactDuplicatesCreateNewActions[duplicateEntries.existing.id]}
+                                                                    checked={exactDuplicatesCreateNewActions[duplicateEntries.existing.id]}
                                                                     inputProps={{'aria-label': 'primary checkbox'}}
                                                                 />}
                                                                 label={<Typography variant={'caption'}>
