@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
 import {
+    Collapse, Grid,
     IconButton, Paper, Table,
     TableBody, TableCell,
     TableHead, TablePagination, TableRow
 } from '@material-ui/core';
 import {FilterList as FilterIcon} from '@material-ui/icons';
-import useStyles, {tableTitleRowHeight} from './style';
+import useStyles, {tableTitleRowHeight, tableFilterPanelHeight} from './style';
 
 interface FETableProps {
     columns: Column[];
@@ -14,6 +15,7 @@ interface FETableProps {
     height?: number;
     initialRowsPerPage?: number;
     tableSize?: 'medium' | 'small';
+    filters?: React.ReactNode[];
 }
 
 interface Column {
@@ -21,7 +23,7 @@ interface Column {
     label: string;
     minWidth?: number;
     align?: 'right';
-    accessor?: (data: {[key: string]: any}, dataIdx: number) => string | number | React.ReactNode;
+    accessor?: (data: { [key: string]: any }, dataIdx: number) => string | number | React.ReactNode;
     addStyle?: { [key: string]: any };
 }
 
@@ -29,7 +31,7 @@ const renderCellData = (
     data: { [key: string]: any },
     dataIdx: number,
     field?: string,
-    accessor?: (data: {[key: string]: any}, dataIdx: number) => string | number | React.ReactNode
+    accessor?: (data: { [key: string]: any }, dataIdx: number) => string | number | React.ReactNode
 ): string | number | React.ReactNode => {
     try {
         // if an accessor function was provided, call it with the data
@@ -56,9 +58,12 @@ export default function FETable(props: FETableProps) {
     const [rowsPerPage, setRowsPerPage] = React.useState(props.initialRowsPerPage ? props.initialRowsPerPage : 10);
     const [paginationComponentHeight, setPaginationComponentHeight] = useState(56);
     const [tableHeadHeight, setTableHeadHeight] = useState(53);
+    const [filterPanelOpen, setFilterPanelOpen] = useState(false);
     const tableHeight = props.height ? props.height : 600;
 
-    const tableWrapperHeight = tableHeight - tableTitleRowHeight - paginationComponentHeight;
+    const tableWrapperHeight = filterPanelOpen
+        ? tableHeight - tableTitleRowHeight - tableFilterPanelHeight - paginationComponentHeight
+        : tableHeight - tableTitleRowHeight - paginationComponentHeight;
 
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage);
@@ -75,11 +80,24 @@ export default function FETable(props: FETableProps) {
             <div className={classes.tableTitleLayout}>
                 <div className={classes.tableTitle}>{props.title}</div>
                 <div className={classes.tableTitleControlLayout}>
+                    {props.filters &&
                     <IconButton size={'small'}>
                         <FilterIcon/>
-                    </IconButton>
+                    </IconButton>}
                 </div>
             </div>}
+            {props.filters &&
+            <Collapse in={filterPanelOpen}>
+                <div className={classes.filterLayout}>
+                    <Grid container spacing={2} alignItems={'center'}>
+                        {props.filters.map((f, idx) => (
+                            <Grid item key={idx}>
+                                {f}
+                            </Grid>
+                        ))}
+                    </Grid>
+                </div>
+            </Collapse>}
             <div
                 className={classes.tableWrapper}
                 style={{height: tableWrapperHeight}}

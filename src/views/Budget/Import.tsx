@@ -3,7 +3,7 @@ import {
     CircularProgress, Tab, Tabs, Stepper,
     Step, StepLabel, TextField, MenuItem, makeStyles,
     createStyles, Theme, Checkbox, FormControl, FormControlLabel,
-    Typography
+    Typography, Grid
 } from '@material-ui/core';
 import {BudgetEntry, BudgetEntryAdmin} from 'bizzle/budget/entry';
 import {BudgetEntryCategoryRule, BudgetEntryCategoryRuleStore} from 'bizzle/budget/entry/categoryRule';
@@ -101,26 +101,32 @@ const Import = () => {
     return (
         <Card>
             <CardHeader
-                title={<Stepper activeStep={activeAppStep} alternativeLabel>
-                    <Step key={AppStep.preparation}>
-                        <StepLabel>Preparation</StepLabel>
-                    </Step>
-                    <Step key={AppStep.selectFile}>
-                        <StepLabel>Select File</StepLabel>
-                    </Step>
-                    <Step key={AppStep.parseFile}>
-                        <StepLabel>Parse File</StepLabel>
-                    </Step>
-                    <Step key={AppStep.performDuplicateCheck}>
-                        <StepLabel>Duplicate Check</StepLabel>
-                    </Step>
-                    <Step key={AppStep.selectFile}>
-                        <StepLabel>Prepare Import</StepLabel>
-                    </Step>
-                    <Step key={AppStep.selectFile}>
-                        <StepLabel>Perform Import</StepLabel>
-                    </Step>
-                </Stepper>}
+                title={
+                    <Grid container>
+                        <Grid item>
+                            <Stepper activeStep={activeAppStep} alternativeLabel>
+                                <Step key={AppStep.preparation}>
+                                    <StepLabel>Preparation</StepLabel>
+                                </Step>
+                                <Step key={AppStep.selectFile}>
+                                    <StepLabel>Select File</StepLabel>
+                                </Step>
+                                <Step key={AppStep.parseFile}>
+                                    <StepLabel>Parse File</StepLabel>
+                                </Step>
+                                <Step key={AppStep.performDuplicateCheck}>
+                                    <StepLabel>Duplicate Check</StepLabel>
+                                </Step>
+                                <Step key={AppStep.selectFile}>
+                                    <StepLabel>Prepare Import</StepLabel>
+                                </Step>
+                                <Step key={AppStep.selectFile}>
+                                    <StepLabel>Perform Import</StepLabel>
+                                </Step>
+                            </Stepper>
+                        </Grid>
+                    </Grid>
+                }
             />
             <CardContent>
                 {(() => {
