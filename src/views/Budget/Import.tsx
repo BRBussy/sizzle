@@ -61,7 +61,7 @@ const Import = () => {
                 budgetEntries: parsedBudgetEntries
             });
             setIgnoredBudgetEntries((await BudgetEntryAdmin.IgnoredCheck({
-                budgetEntries: duplicateCheckResponse.uniques
+                budgetEntries: newDuplicateCheckResponse.uniques
             })).budgetEntries);
             setDuplicateCheckResponse(newDuplicateCheckResponse);
         } catch (e) {
@@ -102,6 +102,17 @@ const Import = () => {
     const handleIgnore = async (budgetEntry: BudgetEntry) => {
         try {
             await BudgetEntryAdmin.IgnoreOne({budgetEntry});
+            setIgnoredBudgetEntries((await BudgetEntryAdmin.IgnoredCheck({
+                budgetEntries: duplicateCheckResponse.uniques
+            })).budgetEntries)
+        } catch (e) {
+            console.error(`error ignoring one: ${e.message ? e.message : e.toString()}`)
+        }
+    }
+
+    const handleRecognise = async (budgetEntry: BudgetEntry) => {
+        try {
+            await BudgetEntryAdmin.RecogniseOne({budgetEntry});
             setIgnoredBudgetEntries((await BudgetEntryAdmin.IgnoredCheck({
                 budgetEntries: duplicateCheckResponse.uniques
             })).budgetEntries)
@@ -183,6 +194,7 @@ const Import = () => {
                                     onImport={handleImport}
                                     ignoredBudgetEntries={ignoredBudgetEntries}
                                     handleIgnore={handleIgnore}
+                                    handleRecognise={handleRecognise}
                                 />
                             );
 
@@ -253,6 +265,7 @@ interface PrepareImportStepProps {
     onImport: (entriesToCreate: BudgetEntry[], entriesToUpdate: BudgetEntry[]) => void
     ignoredBudgetEntries: BudgetEntry[];
     handleIgnore: (budgetEntry: BudgetEntry) => Promise<void>
+    handleRecognise: (budgetEntry: BudgetEntry) => Promise<void>
 }
 
 const usePrepareImportStepStyles = makeStyles((theme: Theme) => createStyles({
@@ -344,6 +357,16 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
         }
         setExactDuplicateEntries([...exactDuplicateEntries]);
     };
+
+    const handleIgnoreRecogniseIgnoreToggle = (budgetEntry: BudgetEntry) => async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.checked) {
+            // item is to be recognised
+            console.log('arlready ignored!')
+            return;
+        }
+        // otherwise item is to be ignored
+        props.handleIgnore(budgetEntry).finally();
+    }
 
     const handleSuspectedDuplicateEntryCategoryChange = (suspectedDuplicateEntryIdx: number, existing: boolean) => (e: React.ChangeEvent<HTMLInputElement>) => {
         if (existing) {
@@ -548,13 +571,21 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                             field: 'ignore',
                                             accessor: (data: any) => {
                                                 return (
-                                                    <IconButton
-                                                        size={'small'}
-                                                        onClick={() => props.handleIgnore(data as BudgetEntry)}
-                                                    >
-                                                        <ClearFilterIcon/>
-                                                    </IconButton>
-                                                )
+                                                    <FormControl>
+                                                        <FormControlLabel
+                                                            control={<Checkbox
+                                                                onChange={handleIgnoreRecogniseIgnoreToggle(data as BudgetEntry)}
+                                                                checked={!!props.ignoredBudgetEntries.find((be) => (
+                                                                    be.description === (data as BudgetEntry).description
+                                                                ))}
+                                                                inputProps={{'aria-label': 'primary checkbox'}}
+                                                            />}
+                                                            label={<Typography variant={'caption'}>
+                                                                Ignored
+                                                            </Typography>}
+                                                        />
+                                                    </FormControl>
+                                                );
                                             }
                                         },
                                         {

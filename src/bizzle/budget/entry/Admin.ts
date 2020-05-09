@@ -77,6 +77,14 @@ export interface IgnoreOneRequest {
 export interface IgnoreOneResponse {
 }
 
+export interface RecogniseOneRequest {
+    budgetEntry: BudgetEntry;
+}
+
+// tslint:disable-next-line:no-empty-interface
+export interface RecogniseOneResponse {
+}
+
 export interface IgnoredCheckRequest {
     budgetEntries: BudgetEntry[];
 }
@@ -154,6 +162,13 @@ const Admin = {
         return await jsonRPCRequest({
             url: config.get('budgetURL'),
             method: `${Admin.serviceProvider}.IgnoreOne`,
+            request
+        })
+    },
+    async RecogniseOne(request: RecogniseOneRequest): Promise<RecogniseOneResponse> {
+        return await jsonRPCRequest({
+            url: config.get('budgetURL'),
+            method: `${Admin.serviceProvider}.RecogniseOne`,
             request
         })
     },
