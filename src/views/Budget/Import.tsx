@@ -28,6 +28,14 @@ enum AppStep {
     done
 }
 
+function getDescriptor(budgetEntry: BudgetEntry): string {
+    return `${
+        moment(budgetEntry.date).format('MMDDYY')
+    }-${
+        budgetEntry.description.toLowerCase()
+    }`;
+}
+
 const Import = () => {
     const [, setBudgetEntries] = useState<BudgetEntry[]>([]);
     const [activeAppStep, setActiveAppStep] = useState<AppStep>(AppStep.preparation);
@@ -87,7 +95,13 @@ const Import = () => {
                 (async () => {
                     if (entriesToCreate.length) {
                         await BudgetEntryAdmin.CreateMany({
-                            budgetEntries: entriesToCreate
+                            budgetEntries: entriesToCreate.filter(
+                                (be) => (
+                                    !ignoredBudgetEntries.find(
+                                        (i) => (i.description === getDescriptor(be))
+                                    )
+                                )
+                            )
                         })
                     }
                 })()
@@ -571,11 +585,7 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                             label: 'Ignore',
                                             field: 'ignore',
                                             accessor: (data: any) => {
-                                                const descriptor = `${
-                                                    moment((data as BudgetEntry).date).format('MMDDYY')
-                                                }-${
-                                                    (data as BudgetEntry).description.toLowerCase()
-                                                }`
+                                                const descriptor = getDescriptor(data as BudgetEntry)
                                                 return (
                                                     <FormControl>
                                                         <FormControlLabel
