@@ -362,7 +362,7 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
     const handleIgnoreRecogniseIgnoreToggle = (budgetEntry: BudgetEntry) => async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.checked) {
             // item is to be recognised
-            console.log('arlready ignored!')
+            props.handleRecognise(budgetEntry).finally()
             return;
         }
         // otherwise item is to be ignored
