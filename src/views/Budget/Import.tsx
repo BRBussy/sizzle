@@ -12,7 +12,10 @@ import {useDropzone} from 'react-dropzone';
 import {FETable} from 'components/Table';
 import {DuplicateCheckResponse, DuplicateEntries} from 'bizzle/budget/entry/Admin';
 import moment from 'moment';
-import {Cancel as ClearFilterIcon} from '@material-ui/icons';
+import {
+    Cancel as ClearFilterIcon,
+    Refresh as RestartIcon
+} from '@material-ui/icons';
 
 enum AppStep {
     preparation,
@@ -104,6 +107,15 @@ const Import = () => {
             <CardHeader
                 title={
                     <Grid container>
+                        {!(activeAppStep === AppStep.preparation || activeAppStep === AppStep.performImport) &&
+                        <Grid item>
+                            <IconButton
+                                size={'small'}
+                                onClick={() => setActiveAppStep(AppStep.selectFile)}
+                            >
+                                <RestartIcon/>
+                            </IconButton>
+                        </Grid>}
                         <Grid item>
                             <Stepper activeStep={activeAppStep} alternativeLabel>
                                 <Step key={AppStep.preparation}>
@@ -503,7 +515,10 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                             }
                                         }
                                     ]}
-                                    data={uniquesToImport}
+                                    data={selectedBudgetCategoryRuleFilter
+                                        ? uniquesToImport.filter((entry) => (entry.categoryRuleID === selectedBudgetCategoryRuleFilter))
+                                        : uniquesToImport
+                                    }
                                     title={'These will be created'}
                                 />
                             );
