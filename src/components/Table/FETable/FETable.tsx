@@ -81,7 +81,10 @@ export default function FETable(props: FETableProps) {
                 <div className={classes.tableTitle}>{props.title}</div>
                 <div className={classes.tableTitleControlLayout}>
                     {props.filters &&
-                    <IconButton size={'small'}>
+                    <IconButton
+                        onClick={() => setFilterPanelOpen(!filterPanelOpen)}
+                        size={'small'}
+                    >
                         <FilterIcon/>
                     </IconButton>}
                 </div>

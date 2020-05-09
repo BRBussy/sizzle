@@ -3,7 +3,7 @@ import {
     CircularProgress, Tab, Tabs, Stepper,
     Step, StepLabel, TextField, MenuItem, makeStyles,
     createStyles, Theme, Checkbox, FormControl, FormControlLabel,
-    Typography, Grid
+    Typography, Grid, InputAdornment, IconButton
 } from '@material-ui/core';
 import {BudgetEntry, BudgetEntryAdmin} from 'bizzle/budget/entry';
 import {BudgetEntryCategoryRule, BudgetEntryCategoryRuleStore} from 'bizzle/budget/entry/categoryRule';
@@ -12,6 +12,7 @@ import {useDropzone} from 'react-dropzone';
 import {FETable} from 'components/Table';
 import {DuplicateCheckResponse, DuplicateEntries} from 'bizzle/budget/entry/Admin';
 import moment from 'moment';
+import {Cancel as ClearFilterIcon} from '@material-ui/icons';
 
 enum AppStep {
     preparation,
@@ -243,6 +244,12 @@ const usePrepareImportStepStyles = makeStyles((theme: Theme) => createStyles({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center'
+    },
+    categoryFilter: {
+        minWidth: 200
+    },
+    clearFilterIcon: {
+        marginRight: 20
     }
 }));
 
@@ -265,6 +272,7 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
         }
     }>({})
     const classes = usePrepareImportStepStyles();
+    const [selectedBudgetCategoryRuleFilter, setSelectedBudgetCategoryRuleFilter] = useState('')
 
     const handleTabChange = (event: React.ChangeEvent<{}>, newValue: PrepareImportTab) => {
         setSelectedTab(newValue);
@@ -422,6 +430,39 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                             return (
                                 <FETable
                                     height={700}
+                                    filters={[
+                                        <TextField
+                                            label={'Category'}
+                                            select
+                                            className={classes.categoryFilter}
+                                            onChange={(e) => setSelectedBudgetCategoryRuleFilter(e.target.value)}
+                                            value={selectedBudgetCategoryRuleFilter}
+                                            InputProps={{
+                                                endAdornment: selectedBudgetCategoryRuleFilter && (
+                                                    <InputAdornment
+                                                        position={'end'}
+                                                        className={classes.clearFilterIcon}
+                                                    >
+                                                        <IconButton
+                                                            size={'small'}
+                                                            onClick={() => setSelectedBudgetCategoryRuleFilter('')}
+                                                        >
+                                                            <ClearFilterIcon/>
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                )
+                                            }}
+                                        >
+                                            <MenuItem value={''} children={'-'}/>
+                                            {props.budgetEntryCategoryRules.map((bcr) => (
+                                                <MenuItem
+                                                    key={bcr.id}
+                                                    value={bcr.id}
+                                                    children={bcr.name}
+                                                />
+                                            ))}
+                                        </TextField>
+                                    ]}
                                     columns={[
                                         {
                                             label: 'Date',
