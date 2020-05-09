@@ -547,10 +547,10 @@ const PrepareImportStep = (props: PrepareImportStepProps) => {
                                             label: 'Ignore',
                                             field: 'ignore',
                                             accessor: (data: any) => {
-                                                const bd = data as BudgetEntry;
                                                 return (
                                                     <IconButton
                                                         size={'small'}
+                                                        onClick={() => props.handleIgnore(data as BudgetEntry)}
                                                     >
                                                         <ClearFilterIcon/>
                                                     </IconButton>
